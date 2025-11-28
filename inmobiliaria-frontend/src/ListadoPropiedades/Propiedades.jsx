@@ -1,0 +1,125 @@
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'
+import { FaBed, FaBath, FaHome } from 'react-icons/fa';
+
+const API_BASE_URL = 'http://localhost:1337/api/inmuebles';
+
+function Propiedades() {
+  const { tipoOperacion } = useParams();
+    const [inmuebles, setInmuebles] = useState([]);
+    const [cargando, setCargando] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const obtenerInmuebles = async () => {
+            setCargando(true);
+            let apiUrl = `${API_BASE_URL}?populate=*`;
+            
+            // Aplicamos el filtro externo
+          if (tipoOperacion) { 
+                // Convertimos a minúsculas por si acaso
+                const filtro = tipoOperacion.toUpperCase();
+                apiUrl = `${API_BASE_URL}?filters[TipoOperacion][$eq]=${filtro}&populate=*`;
+            }
+            
+            try {
+                const respuesta = await fetch(apiUrl);
+                if (!respuesta.ok) {
+                    throw new Error(`Error HTTP: ${respuesta.status}`);
+                }
+                const datos = await respuesta.json();
+                setInmuebles(datos.data);
+            } catch (err) {
+                console.error("Error al obtener inmuebles:", err);
+                setError("No se pudo conectar con la API o hubo un error al obtener los datos.");
+            } finally {
+                setCargando(false);
+            }
+        };
+
+        obtenerInmuebles();
+    }, [tipoOperacion]);
+
+    if (cargando) {
+        return <div className="text-center p-12 text-xl font-semibold text-gray-600">Cargando Propiedades...</div>;
+    }
+
+    // Manejo de estado de Error
+    if (error) {
+        return <div className="text-center p-12 text-xl font-bold text-red-600">{error}</div>;
+    }
+
+const titulo = tipoOperacion 
+        ? `Propiedades en ${tipoOperacion.toUpperCase()}` 
+        : 'Todas las Propiedades Disponibles';
+
+       // Definimos el color del tag según el tipo disponibilidad  
+         let tagColor = '';
+         let Disponible = true;
+                    
+
+return (
+        <div className="container mx-auto p-4 md:p-8">
+        <h2 className="text-3xl font-bold mb-8 text-gray-800 border-b pb-2 text-center">
+                {titulo} ({inmuebles.length})
+            </h2>
+            
+         {inmuebles.length === 0 ? (
+                <p className="text-center text-gray-500 mt-10">No hay inmuebles cargados que coincidan con la búsqueda.</p>
+            ) : (
+                // Grid de Inmuebles (basado en el diseño anterior)
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {inmuebles.map(inmueble => {
+                        const atributos = inmueble;
+                        const imagenURL =  `http://localhost:1337${atributos.Imagenes?.[0]?.url}`;
+                        
+                            if (inmueble.Disponible) {
+                        tagColor = 'bg-green-500';  
+                        Disponible= true;
+                    }
+                        else{
+                        tagColor = 'bg-red-500';
+                        Disponible= false;
+                    };
+
+                        return (
+                            <div key={inmueble.id} className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden">
+                                
+                                <img src={imagenURL} alt={atributos.Titulo || 'Inmueble'} className="w-full h-48 object-cover" />
+                                
+                                <div className="p-4">
+                                        <span className={`inline-block text-sm font-semibold px-3 py-1 rounded-full text-white mb-3 ${tagColor}`}>
+                                        {atributos.TipoOperacion} - {Disponible ? 'Disponible' : 'No Disponible'}
+                                    </span>
+                                    
+                    
+                                    <h3 className="text-xl font-semibold text-gray-900 mb-2 truncate">{atributos.Titulo || atributos.Descripcion}</h3>
+                                    <p className="text-2xl font-bold text-primary-blue mb-3">${atributos.Valor}</p>
+                                    
+                                    {/* Características */}
+                                    <div className="flex justify-between text-gray-600 text-sm mt-3 border-t pt-3">
+                                        <p className="flex items-center space-x-1">
+                                            <FaHome /> <span>{atributos.Ambientes} Amb.</span>
+                                        </p>
+                                        <p className="flex items-center space-x-1">
+                                            <FaBed /> <span>{atributos.Dormitorios} Dor.</span>
+                                        </p>
+                                        <p className="flex items-center space-x-1">
+                                            <FaBath /> <span>{atributos.Banos} Baños</span>
+                                        </p>
+                                    </div>
+
+                                    <button className="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded transition duration-200">
+                                        Ver Detalles
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+        </div>
+    );
+}
+
+export default Propiedades;
