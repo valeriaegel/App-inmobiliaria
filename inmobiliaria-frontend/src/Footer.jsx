@@ -40,7 +40,7 @@ function Footer() {
   const colorAzul = 'text-primary-blue'; // Usamos el color de marca que definimos
 
   return (
-    <footer className="bg-gray-800 text-gray-300 pt-8 pb-6 border-t-6 border-primary-blue">
+    <footer className="bg-[#253E57] text-gray-300 pt-8 pb-6 border-t-6 border-primary-blue">
       <div className="container mx-auto px-6">
         
         {cargando ? (
@@ -61,17 +61,17 @@ function Footer() {
                 {/* Columna 2: Información de Contacto (usando datos de Strapi) */}
                 <div>
                     <h3 className="text-xl font-semibold mb-4 text-white">Contacto</h3>
-                    <ul className="space-y-3 p-4 bg-gray-700 rounded-lg">
+                    <ul className="space-y-3 p-4 bg-[#9CB0B1] rounded-lg">
                         {/* Teléfono */}
                         {datosContacto.Telefono && (
-                            <li className="flex items-center space-x-2">
+                            <li className="flex items-center space-x-2 text-[#253E57]">
                                 <FaPhone className={colorAzul} />
                                 <a href={`tel:${datosContacto.Telefono}`} className="hover:text-primary-blue">{datosContacto.Telefono}</a>
                             </li>
                         )}
                         {/* Email */}
                         {datosContacto.Mail && (
-                            <li className="flex items-center space-x-2">
+                            <li className="flex items-center space-x-2 text-[#253E57]">
                                 <FaEnvelope className={colorAzul} />
                                 <a href={`mailto:${datosContacto.Mail}`} className="hover:text-primary-blue">{datosContacto.Mail}</a>
                             </li>

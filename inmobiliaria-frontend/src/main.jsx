@@ -1,14 +1,14 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Propiedades from './ListadoPropiedades/Propiedades.jsx'; // Asegúrate de crear este archivo
-// Importa el resto de componentes (Nosotros, Contacto, etc.)
 import './index.css';
 import Encabezado from './Encabezado.jsx';
 import Inicio from './Inicio/Inicio.jsx';
 import Servicios from './Inicio/Servicios.jsx'; // Asegúrate de crear este archivo
 import Contacto from './Contacto/Contacto.jsx';
 import Footer from './Footer.jsx';
+import DetallePropiedad from './Propiedades/DetallePropiedad.jsx';
+import Propiedades from './Propiedades/Propiedades.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -23,12 +23,13 @@ createRoot(document.getElementById('root')).render(
         <Route path="/" element={<Inicio />} />
         
         {/* Ruta para Propiedades: Muestra el componente Propiedades */}
-        <Route path="/propiedades/:tipoOperacion" element={<Propiedades />} />
+        <Route path="/propiedades/:tipoOperacion" element={<Propiedades/>} />
         
         {/* Rutas para los demás enlaces  */}
       <Route path="/servicios" element={<Servicios />}/>
          {/* <Route path="/nosotros" element={<div>Contenido Nosotros</div>} /> */}
         <Route path="/contacto" element={<Contacto/>} /> 
+        <Route path="/propiedades/detalle/:documentId" element={<DetallePropiedad />} />
       </Routes>
     <Footer />
     </Router>

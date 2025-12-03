@@ -4,13 +4,13 @@ import MapaOficina from './MapaOficina';
 
 function InformacionContacto() {
     return (
-        <div className="grid grid-cols-2 gap-8 p-6 mx-auto max-w-7xl">
-        <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg border border-gray-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-12 mx-auto max-w-7xl">
+        <div className="@container bg-white p-8 md:p-10 rounded-xl shadow-lg border border-gray-100">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 Información de Contacto
             </h3>
             
-            <div className="space-y-6">
+            <div className="space-y-6 ">
                 
                 {/* Ítem: Dirección */}
                 <ContactItem 
@@ -18,7 +18,7 @@ function InformacionContacto() {
                     title="Dirección"
                     content={
                         <>
-                            Eva Peron 42, Oficina 15-Entrepiso<br/>
+                            Eva Peron 61, Oficina 15-Entrepiso<br/>
                             Entre Rios, Argentina
                         </>
                     }
@@ -83,9 +83,9 @@ function ContactItem({ icon, title, content }) {
             </div>
             
             {/* Contenido */}
-            <div>
+            <div className='mb-5'>
                 <p className="text-base font-semibold text-gray-900 mb-0.5">{title}</p>
-                <div className="text-gray-600 text-sm leading-relaxed">
+                <div className="text-gray-600 text-sm leading-relaxed hover:text-pink-500 transition duration-200">
                     {content}
                 </div>
             </div>
