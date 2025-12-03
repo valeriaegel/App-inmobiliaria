@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom'
 import { FaBed, FaBath, FaHome } from 'react-icons/fa';
 
 const API_BASE_URL = 'http://localhost:1337/api/inmuebles';
@@ -58,17 +58,18 @@ const titulo = tipoOperacion
          let Disponible = true;
                     
 
+
 return (
-        <div className="container mx-auto p-4 md:p-8">
+        <div className="container mx-auto p-4 md:p-8 bg-[#F0F2ED]">
         <h2 className="text-3xl font-bold mb-8 text-gray-800 border-b pb-2 text-center">
-                {titulo} ({inmuebles.length})
+                {titulo} 
             </h2>
             
          {inmuebles.length === 0 ? (
                 <p className="text-center text-gray-500 mt-10">No hay inmuebles cargados que coincidan con la búsqueda.</p>
             ) : (
                 // Grid de Inmuebles (basado en el diseño anterior)
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 bg-[#F0F2ED]">
                     {inmuebles.map(inmueble => {
                         const atributos = inmueble;
                         const imagenURL =  `http://localhost:1337${atributos.Imagenes?.[0]?.url}`;
@@ -81,9 +82,9 @@ return (
                         tagColor = 'bg-red-500';
                         Disponible= false;
                     };
-
+const documentId = inmueble.documentId;
                         return (
-                            <div key={inmueble.id} className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden">
+                            <div key={inmueble.id} className="bg-[#F0F2ED] rounded-xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden">
                                 
                                 <img src={imagenURL} alt={atributos.Titulo || 'Inmueble'} className="w-full h-48 object-cover" />
                                 
@@ -109,9 +110,12 @@ return (
                                         </p>
                                     </div>
 
-                                    <button className="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded transition duration-200">
+                                 <Link 
+                                      to={`/propiedades/detalle/${documentId}`} // <-- Usamos el ID del inmueble
+                                      className="mt-4 w-full bg-gray-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded transition duration-200 block text-center"
+                                    >
                                         Ver Detalles
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         );

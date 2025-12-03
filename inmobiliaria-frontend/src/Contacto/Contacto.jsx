@@ -8,7 +8,7 @@ import Formulario from './Formulario.jsx';
 function Contacto() {
     return (
         // Contenedor principal: padding y fondo sutil
-        <section className="py-16 md:py-24 bg-gray-50">
+        <section className="py-16 md:py-24 bg-[#F0F2ED]">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
                 {/* Contenedor de dos columnas (texto a la izquierda, formulario a la derecha) */}
