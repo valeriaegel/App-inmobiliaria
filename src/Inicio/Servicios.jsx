@@ -9,7 +9,7 @@ const whatsappUrl = `https://wa.me/${telefonoCDORA}?text=¡Hola%20Denise!%20Vi%2
 return (
     
         // Contenedor principal de la sección
-        <section className="py-16 md:py-24 bg-white">
+        <section className="py-16 md:py-24 bg-[#F0F2ED]">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
                 {/* Encabezado de la Sección */}
@@ -29,15 +29,16 @@ return (
                     <ServiceCard
                         icon="🗝️" 
                         title="Administración de Alquileres"
-                        description="Gestión completa de tus propiedades en alquiler. Nos encargamos de la búsqueda de inquilinos hasta el cobro mensual y mantenimiento."
+                        description="Gestión completa de tus propiedades en alquiler."
                         items={[
                             "Selección de inquilinos",
                             "Cobro de alquileres",
                             "Mantenimiento preventivo",
                         ]}
                         // Fondo similar al azul claro/lavanda de la imagen
-                        bgColor="bg-indigo-50" 
+                        bgColor="bg-[#A3C4C9]" 
                         textColor="text-indigo-800"
+                        Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20administracion%20de%20alquileres.%20Mi%20nombre%20es..."
                     />
 
                     {/* Tarjeta 2: Compra y Venta */}
@@ -51,8 +52,9 @@ return (
                             "Negociación profesional",
                         ]}
                         // Fondo similar al lila/rosado claro de la imagen
-                        bgColor="bg-purple-50" 
-                        textColor="text-purple-800"
+                        bgColor="bg-[#A3C4C9]" 
+                        textColor="text-indigo-800"
+                        Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20compra%20y%20venta.%20Mi%20nombre%20es..."
                     />
 
                     {/* Tarjeta 3: Tasaciones */}
@@ -64,13 +66,14 @@ return (
                             "Análisis de mercado",
                         ]}
                         // Fondo similar al verde claro de la imagen
-                        bgColor="bg-green-50" 
-                        textColor="text-green-800"
-                    />
+                        bgColor="bg-[#A3C4C9]" 
+                        textColor="text-indigo-800"
+                        Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20tasaciones.%20Mi%20nombre%20es..."              
+              />
 
                 </div>
             </div>
-  <div className="p-8 rounded-xl shadow-lg transition duration-300 hover:shadow-xl  bg-gray-100 container mx-auto text-center mt-16 max-w-3xl">
+  <div className="p-8 rounded-xl shadow-lg bg-[#A3C4C9] container mx-auto text-center mt-16 max-w-3xl">
       <h1 className='text-2xl font-bold mb-3 text-gray-900'>
         Otros servicios</h1>
       <p className="mt-4 text-gray-700 ">
@@ -80,40 +83,37 @@ return (
         <ul className="list-disc list-inside mt-2">
                 <li  className="flex  text-gray-700">
                         {/* Checkmark (simulado con emoji o ícono de check) */}
-                        <span className={`mr-2 text-sm font-bold `}>✓</span>
-                        Contadora: Denise Florencia Egel
+                        <span className={`mr-2 text-sm font-bold  text-indigo-800`}>✓</span>
+                        Contadora: Denise Florencia Egel 
                     </li>
                        <li  className="flex items-start text-gray-700">
                         {/* Checkmark (simulado con emoji o ícono de check) */}
-                        <span className={`mr-2 text-sm font-bold `}>✓</span>
+                        <span className={`mr-2 text-sm font-bold text-indigo-800 `}>✓</span>
                      Matricula: 5508 C.P.C.E.E.R
                     </li>
              <li className="flex items-start text-gray-700">
                         {/* Checkmark (simulado con emoji o ícono de check) */}
-                        <span className={`mr-2 text-sm font-bold `}>✓ </span>
+                        <span className={`mr-2 text-sm font-bold text-indigo-800`}>✓ </span>
                       <p>Servicios: Declaraciones Juradas, Asesoramiento impositivo y contable para personas físicas y jurídicas.</p>
                  </li>
         </ul>
          </div>
-        <div className=' bg-gray-700 p-5 rounded-lg mt-8 text-white inline-block w-1/2'>
+        <div className=' bg-[#253E57] p-5 rounded-lg mt-8 text-white inline-block w-1/2'>
          <h3 className="text-xl font-semibold mb-4 text-white">Contacto</h3>
                          <ul className="space-y-3 rounded-lg ">
                              {/* Teléfono */}
                              
                                  <li className="flex items-center space-x-2  pt-3 border-t border-gray-100">
                                      <FaPhone />
-<a 
-  href={whatsappUrl}     
-  target="_blank" 
-  rel="noopener noreferrer" 
-  className="hover:text-primary-blue"
->
-  5493442625374
-</a>
+                                        <a 
+                                        href={whatsappUrl}     
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="hover:text-primary-blue">
+                                        5493442625374
+                                        </a>
                                  </li>
-             
                              {/* Email */}
-            
                                  <li className="flex items-center space-x-2">
                                      <FaEnvelope />
                                      <a href={`mailto:${" deniseegel@gmail.com"}`}
@@ -141,8 +141,9 @@ export default Servicios;
  * @param {string[]} props.items - Lista de características incluidas.
  * @param {string} props.bgColor - Clase de Tailwind para el color de fondo.
  * @param {string} props.textColor - Clase de Tailwind para el color principal.
- */
-function ServiceCard({ icon, title, description, items, bgColor, textColor }) {
+ * @param {string} props.Link - Clase de Tailwind para el color del enlace.
+*/
+function ServiceCard({ icon, title, description, items, bgColor, textColor, Link }) {
     return (
         <div className={`p-8 rounded-xl shadow-lg transition duration-300 hover:shadow-xl ${bgColor}`}>
             
@@ -172,9 +173,8 @@ function ServiceCard({ icon, title, description, items, bgColor, textColor }) {
 
             {/* Enlace "Más información" */}
             <div className="mt-auto">
-                <a href="#" className={`flex items-center text-sm font-semibold ${textColor} hover:underline`}>
+                <a href={`https://wa.me/5493442666333?text=${Link}`} className={`flex items-center text-sm font-semibold text-[#253E57] hover:underline`}>
                     Más información
-                    {/* Flecha a la derecha (simulada con un emoji) */}
                     <span className="ml-1 text-base">→</span>
                 </a>
             </div>

@@ -7,7 +7,7 @@ import Contacto from '../Contacto/Contacto'
 
 const Inicio = () => {
   return (
-    <div>
+    <div className='bg-[#F0F2ED]'>
     <Bienvenida />
     <Servicios />
     <InformacionContacto />
