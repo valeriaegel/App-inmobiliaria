@@ -8,7 +8,7 @@ import Servicios from './Inicio/Servicios.jsx'; // Asegúrate de crear este arch
 import Contacto from './Contacto/Contacto.jsx';
 import Footer from './Footer.jsx';
 import DetallePropiedad from './Propiedades/DetallePropiedad.jsx';
-import Propiedades from './Propiedades/Propiedades.jsx';
+import PropContainer from './Propiedades/PropContainer.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -23,7 +23,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/" element={<Inicio />} />
         
         {/* Ruta para Propiedades: Muestra el componente Propiedades */}
-        <Route path="/propiedades/:tipoOperacion" element={<Propiedades/>} />
+        <Route path="/propiedades/:tipoOperacion" element={<PropContainer/>} />
         
         {/* Rutas para los demás enlaces  */}
       <Route path="/servicios" element={<Servicios />}/>
