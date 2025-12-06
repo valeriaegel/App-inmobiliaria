@@ -1,44 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom'
+
+import { Link } from 'react-router-dom'
 import { FaBed, FaBath, FaHome } from 'react-icons/fa';
 
-const API_BASE_URL = 'http://localhost:1337/api/inmuebles';
 
-function Propiedades() {
-  const { tipoOperacion } = useParams();
-    const [inmuebles, setInmuebles] = useState([]);
-    const [cargando, setCargando] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const obtenerInmuebles = async () => {
-            setCargando(true);
-            let apiUrl = `${API_BASE_URL}?populate=*`;
-            
-            // Aplicamos el filtro externo
-          if (tipoOperacion) { 
-                // Convertimos a minúsculas por si acaso
-                const filtro = tipoOperacion.toUpperCase();
-                apiUrl = `${API_BASE_URL}?filters[TipoOperacion][$eq]=${filtro}&populate=*`;
-            }
-            
-            try {
-                const respuesta = await fetch(apiUrl);
-                if (!respuesta.ok) {
-                    throw new Error(`Error HTTP: ${respuesta.status}`);
-                }
-                const datos = await respuesta.json();
-                setInmuebles(datos.data);
-            } catch (err) {
-                console.error("Error al obtener inmuebles:", err);
-                setError("No se pudo conectar con la API o hubo un error al obtener los datos.");
-            } finally {
-                setCargando(false);
-            }
-        };
-
-        obtenerInmuebles();
-    }, [tipoOperacion]);
+function Propiedades({inmuebles, cargando, error, tipoOperacion}) {
 
     if (cargando) {
         return <div className="text-center p-12 text-xl font-semibold text-gray-600">Cargando Propiedades...</div>;
@@ -54,8 +19,8 @@ const titulo = tipoOperacion
         : 'Todas las Propiedades Disponibles';
 
        // Definimos el color del tag según el tipo disponibilidad  
-         let tagColor = '';
-         let Disponible = true;
+         var tagColor = '';
+         var Disponible = true;
                     
 
 
@@ -82,7 +47,7 @@ return (
                         tagColor = 'bg-red-500';
                         Disponible= false;
                     };
-const documentId = inmueble.documentId;
+                    const documentId = inmueble.documentId;
                         return (
                             <div key={inmueble.id} className="bg-[#F0F2ED] rounded-xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden">
                                 
