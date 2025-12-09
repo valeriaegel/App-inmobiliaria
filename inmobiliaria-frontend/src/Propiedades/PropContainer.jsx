@@ -5,7 +5,6 @@ import { useState, useEffect } from "react"
 
 const STRAPI_BASE_URL = 'http://localhost:1337';
 const API_BASE_URL = `${STRAPI_BASE_URL}/api/inmuebles`; 
-// Query de Deep Populate
 const POPULATE_QUERY = 'populate[Imagenes][populate]=*&populate[ciudad]=*&populate[tipo_inmueble]=*';
 
 function PropContainer () {
@@ -27,9 +26,9 @@ function PropContainer () {
             setError(null);
             console.log('Tipo de Operación desde URL:', tipoOperacion);
             // 1. Filtro de Operación (de la URL)
-            const filtroOperacionQuery = tipoOperacion
+            const filtroOperacionQuery = tipoOperacion.toUpperCase()
                 ? // *** CORRECCIÓN CRÍTICA: toLowerCase() para evitar el 400 Bad Request ***
-                  `filters[TipoOperacion][$eq]=${tipoOperacion}`
+                  `filters[TipoOperacion][$eq]=${tipoOperacion.toUpperCase()}`
                 : '';
 
             // 2. Combinación de Queries (Operación + Avanzado)
@@ -38,15 +37,13 @@ function PropContainer () {
                 queries.push(filtroOperacionQuery);
             }
             if (filtroAvanzadoQuery) {
-                queries.push(filtroAvanzadoQuery); // <-- Ahora sí incluye el filtro de Busqueda
+                queries.push(filtroAvanzadoQuery); 
             }
             
             const queryTotal = queries.join('&');
 
-            
-            
             // 3. Construir la URL Final
-            let apiUrl = `${API_BASE_URL}??${queryTotal ? queryTotal + '&' : ''}&populate=*`;
+            let apiUrl = `${API_BASE_URL}?${queryTotal ? queryTotal + '&' : ''}&populate=*`;
             console.log('Query Total Construida:', queryTotal);
             console.log('URL de la API a llamar:', apiUrl);
             
