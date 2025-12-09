@@ -73,7 +73,8 @@ return (
 
                 </div>
             </div>
-  <div className="p-8 rounded-xl shadow-lg bg-[#A3C4C9] container mx-auto text-center mt-16 max-w-3xl">
+              <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+  <div className=" container p-8 rounded-xl shadow-lg bg-[#A3C4C9] mx-auto text-center mt-16 max-w-3xl">
       <h1 className='text-2xl font-bold mb-3 text-gray-900'>
         Otros servicios</h1>
       <p className="mt-4 text-gray-700 ">
@@ -122,7 +123,7 @@ return (
                         </ul>
         </div>
         
-  
+  </div>
  </div>
 
         </section>

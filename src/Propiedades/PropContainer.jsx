@@ -79,7 +79,7 @@ function PropContainer () {
 
      
     return (
-        <div className="container mx-auto p-4 md:p-8">
+        <div className=" p-4 bg-[#F0F2ED]">
             
             {/* 1. COMPONENTE DE FILTROS AVANZADOS */}
             <FiltrosBusqueda onFiltrosAplicados={aplicarFiltrosAvanzados} /> 

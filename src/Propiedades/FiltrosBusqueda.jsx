@@ -117,7 +117,7 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
     
     // --- RENDERING DEL COMPONENTE ---
     return (
-        <div className="bg-white p-6 rounded-xl shadow-lg mb-8 border border-gray-100">
+        <div className="bg-[#C6CFCC] p-6 rounded-xl shadow-lg mb-8 border border-gray-100">
             <div className="flex justify-between items-center mb-4 border-b pb-4">
                 <h3 className="text-xl font-bold text-primary-blue flex items-center">
                     <FaFilter className="mr-2"/> Filtros de Búsqueda
@@ -141,7 +141,7 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                         <select 
                             value={filtros.ciudad}
                             onChange={(e) => handleFilterChange('ciudad', e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-blue focus:border-primary-blue"
+                            className="w-full p-2 border border-gray-400 rounded-md focus:ring-primary-blue focus:border-primary-blue"
                         >
                             <option value="">Todas</option>
                             {opcionesCiudades.map(op => <option key={op.id} value={op.id}>{op.nombre}</option>)}
@@ -154,7 +154,7 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                         <select 
                             value={filtros.tipoInmueble}
                             onChange={(e) => handleFilterChange('tipoInmueble', e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-blue focus:border-primary-blue"
+                            className="w-full p-2 border border-gray-400 rounded-md focus:ring-primary-blue focus:border-primary-blue"
                         >
                             <option value="">Todos</option>
                             {opcionesTipos.map(op => <option key={op.id} value={op.id}>{op.nombre}</option>)}
@@ -167,15 +167,15 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                         <select 
                             value={filtros.ambientes}
                             onChange={(e) => handleFilterChange('ambientes', e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-blue focus:border-primary-blue"
+                            className="w-full p-2 border border-gray-400 rounded-md focus:ring-gray-500 focus:border-gray-300 "
                         >
                             {opcionesAmbientes.map(op => <option key={op} value={op}>{op}</option>)}
                         </select>
                     </div>
-                    <div className="col-span-1 md:col-span-1">
+                    <div className="col-span-1 md:col-span-1 flex md:items-end mt-4 md:mt-0">
                     <button
                         onClick={handleBuscarClick}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-4 rounded-md transition duration-200 flex items-center justify-center space-x-2 mt-6 md:mt-0"
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 flex items-center justify-center space-x-2 mt-6 md:mt-0"
                     >
                         <FaSearch />
                         <span>Buscar</span>
