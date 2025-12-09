@@ -24,7 +24,6 @@ function PropContainer () {
         const obtenerInmuebles = async () => {
             setCargando(true);
             setError(null);
-            console.log('Tipo de Operación desde URL:', tipoOperacion);
             // 1. Filtro de Operación (de la URL)
             const filtroOperacionQuery = tipoOperacion.toUpperCase()
                 ? // *** CORRECCIÓN CRÍTICA: toLowerCase() para evitar el 400 Bad Request ***
@@ -44,11 +43,7 @@ function PropContainer () {
 
             // 3. Construir la URL Final
             let apiUrl = `${API_BASE_URL}?${queryTotal ? queryTotal + '&' : ''}&populate=*`;
-            console.log('Query Total Construida:', queryTotal);
-            console.log('URL de la API a llamar:', apiUrl);
-            
-            console.log('API URL FINAL:', apiUrl);
-
+         
             try {
                 const respuesta = await fetch(apiUrl);
                 if (!respuesta.ok) {

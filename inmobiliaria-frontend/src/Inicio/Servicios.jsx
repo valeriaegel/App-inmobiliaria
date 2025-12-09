@@ -36,7 +36,7 @@ return (
                             "Mantenimiento preventivo",
                         ]}
                         // Fondo similar al azul claro/lavanda de la imagen
-                        bgColor="bg-[#A3C4C9]" 
+                        bgColor="bg-[#C6CFCC]" 
                         textColor="text-indigo-800"
                         Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20administracion%20de%20alquileres.%20Mi%20nombre%20es..."
                     />
@@ -52,7 +52,7 @@ return (
                             "Negociación profesional",
                         ]}
                         // Fondo similar al lila/rosado claro de la imagen
-                        bgColor="bg-[#A3C4C9]" 
+                        bgColor="bg-[#C6CFCC]" 
                         textColor="text-indigo-800"
                         Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20compra%20y%20venta.%20Mi%20nombre%20es..."
                     />
@@ -66,7 +66,7 @@ return (
                             "Análisis de mercado",
                         ]}
                         // Fondo similar al verde claro de la imagen
-                        bgColor="bg-[#A3C4C9]" 
+                        bgColor="bg-[#C6CFCC]" 
                         textColor="text-indigo-800"
                         Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20tasaciones.%20Mi%20nombre%20es..."              
               />
@@ -74,7 +74,7 @@ return (
                 </div>
             </div>
               <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-  <div className=" container p-8 rounded-xl shadow-lg bg-[#A3C4C9] mx-auto text-center mt-16 max-w-3xl">
+  <div className=" container p-8 rounded-xl shadow-lg bg-[#C6CFCC] mx-auto text-center mt-16 max-w-3xl">
       <h1 className='text-2xl font-bold mb-3 text-gray-900'>
         Otros servicios</h1>
       <p className="mt-4 text-gray-700 ">

@@ -14,7 +14,7 @@ function Propiedades({inmuebles, cargando, error, tipoOperacion}) {
     }
 
 const titulo = tipoOperacion 
-        ? `Propiedades en ${tipoOperacion.toUpperCase()}` 
+        ? `Propiedades en ${tipoOperacion.toLowerCase()}` 
         : 'Todas las Propiedades Disponibles';
 
        // Color del tag según el tipo disponibilidad  
@@ -23,7 +23,7 @@ const titulo = tipoOperacion
                     
 return (
         <div className="container mx-auto p-4 md:p-8 bg-[#F0F2ED]">
-        <h2 className="text-3xl font-bold mb-8 text-gray-800 border-b pb-2 text-center">
+        <h2 className="text-3xl font-semibold mb-8 text-gray-800 border-b pb-2 text-center">
                 {titulo} 
             </h2>
             
@@ -52,7 +52,7 @@ return (
                                 
                                 <div className="p-4">
                                         <span className={`inline-block text-sm font-semibold px-3 py-1 rounded-full text-white mb-3 ${tagColor}`}>
-                                        {atributos.TipoOperacion} - {Disponible ? 'Disponible' : 'No Disponible'}
+                                         {Disponible ? 'Disponible' : 'No Disponible'}
                                     </span>
                                     
                     
@@ -74,7 +74,7 @@ return (
 
                                  <Link 
                                       to={`/propiedades/detalle/${documentId}`} // <-- Usamos el ID del inmueble
-                                      className="mt-4 w-full bg-gray-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded transition duration-200 block text-center"
+                                      className="mt-4 w-full bg-[#253E57] hover:bg-[#AAAAA8] text-gray-100 hover:text-[#253E57] font-bold py-2 px-4 rounded transition duration-200 block text-center"
                                     >
                                         Ver Detalles
                                     </Link>

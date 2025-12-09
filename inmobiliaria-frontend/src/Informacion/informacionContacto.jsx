@@ -5,7 +5,7 @@ import MapaOficina from './MapaOficina';
 function InformacionContacto() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-12 mx-auto max-w-7xl">
-        <div className="@container bg-white p-8 md:p-10 rounded-xl shadow-lg border border-gray-100">
+        <div className="@container bg-[#C6CFCC] p-8 md:p-10 rounded-xl shadow-lg border border-gray-100">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 Información de Contacto
             </h3>
@@ -48,7 +48,7 @@ function InformacionContacto() {
                 
                 {/* Ítem: Horario de Atención */}
                 <ContactItem 
-                    icon="⏰" // Ícono de Reloj/Horario
+                    icon="🕒" // Ícono de Reloj/Horario
                     title="Horario de Atención"
                     content={
                         <>
@@ -60,7 +60,7 @@ function InformacionContacto() {
                 
             </div>
                 </div>
-        <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg border border-gray-100">   
+        <div className="bg-[#C6CFCC] p-8 md:p-10 rounded-xl shadow-lg border border-gray-100">   
             <MapaOficina />
         </div>
     
@@ -77,15 +77,14 @@ function ContactItem({ icon, title, content }) {
     return (
         <div className="flex items-start space-x-4">
             {/* Contenedor del Ícono */}
-            <div className=" text-xl pt-1">
-                {/* 💡 Estilo del ícono (simulando el color azul oscuro) */}
+            <div className=" text-2xl pt-2">
                 <span className="text-blue-900">{icon}</span>
             </div>
             
             {/* Contenido */}
             <div className='mb-5'>
-                <p className="text-base font-semibold text-gray-900 mb-0.5">{title}</p>
-                <div className="text-gray-600 text-sm leading-relaxed hover:text-pink-500 transition duration-200">
+                <p className="text-md font-bold text-gray-900 mb-0.5">{title}</p>
+                <div className="text-gray-600 text-base leading-relaxed hover:text-gray-700 transition duration-200">
                     {content}
                 </div>
             </div>

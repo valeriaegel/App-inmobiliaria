@@ -35,11 +35,11 @@ function PropRecientes({ propiedades, cargando, error }) {
                 // Determinar tipo de operación y color del tag (similar al de la imagen)
                 const isVenta = atributos.TipoOperacion?.toLowerCase() === 'venta';
                 const tagText = isVenta ? 'En Venta' : 'En Alquiler';
-                const tagClass = isVenta ? 'bg-blue-600' : 'bg-blue-500';
+                const tagClass = isVenta ? 'bg-[#253E57]' : 'bg-[#253E57]';
 
                 return (
                     
-                    <div key={propiedad.id} className="bg-white rounded-lg overflow-hidden hover:shadow-xl transition duration-300">
+                    <div key={propiedad.id} className="bg-[#C6CFCC] rounded-lg overflow-hidden hover:shadow-xl transition duration-300">
                         
                         {/* IMAGEN Y TAG */}
                         <div className="relative h-30 w-full">
@@ -56,7 +56,7 @@ function PropRecientes({ propiedades, cargando, error }) {
                             {/* BOTÓN VER DETALLES */}
                             <Link 
                                 to={`/propiedades/detalle/${propiedad.documentId}`}
-                                className="mt-4 block text-center bg-gray-100 hover:bg-gray-200 text-blue-600 font-semibold py-2 rounded transition"
+                                className="mt-4 block text-center bg-[#253E57] hover:bg-gray-400 text-gray-100 font-semibold py-2 rounded transition"
                             >
                                 Ver Detalles
                             </Link>
