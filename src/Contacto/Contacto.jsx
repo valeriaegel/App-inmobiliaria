@@ -25,7 +25,7 @@ function Contacto() {
                     </div>
 
                     {/* Columna Derecha: Formulario de Contacto */}
-                    <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg border border-gray-100">
+                    <div className="bg-[#C6CFCC] p-8 md:p-10 rounded-xl shadow-lg border border-gray-100">
                        <Formulario />
                     </div>
                 </div>

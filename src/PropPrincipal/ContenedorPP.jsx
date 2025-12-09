@@ -52,7 +52,7 @@ function ContenedorPP() {
 
                 <div className="lg:col-span-1 p-4">
                     {/* 2. Componente que renderiza las tarjetas de propiedades */}
-                    <p className="text-2xl font-bold text-gray-700 p-2 text-center">
+                    <p className="text-2xl font-bold text-[#253E57] p-2 text-center">
                         Ultimos ingresos
                     </p>
                     <PropRecientes

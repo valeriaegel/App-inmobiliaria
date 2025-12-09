@@ -95,7 +95,7 @@ ${message}
                                     rows="4"
                                     value={formData.message}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+                                    className="mt-1 block w-full px-4 py-3 border border-gray-500 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
                                     placeholder="How can we help you?"
                                     required
                                 ></textarea>
@@ -128,7 +128,7 @@ export default Formulario;
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+                className="mt-1 block w-full px-4 py-3 border border-gray-500 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
                 required
             />
         </div>
