@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom'
 import { FaBed, FaBath, FaHome } from 'react-icons/fa';
 
@@ -18,12 +17,10 @@ const titulo = tipoOperacion
         ? `Propiedades en ${tipoOperacion.toUpperCase()}` 
         : 'Todas las Propiedades Disponibles';
 
-       // Definimos el color del tag según el tipo disponibilidad  
+       // Color del tag según el tipo disponibilidad  
          var tagColor = '';
          var Disponible = true;
                     
-
-
 return (
         <div className="container mx-auto p-4 md:p-8 bg-[#F0F2ED]">
         <h2 className="text-3xl font-bold mb-8 text-gray-800 border-b pb-2 text-center">

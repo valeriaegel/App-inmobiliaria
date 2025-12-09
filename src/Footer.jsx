@@ -40,13 +40,13 @@ function Footer() {
   const colorAzul = 'text-primary-blue'; // Usamos el color de marca que definimos
 
   return (
-    <footer className="bg-[#253E57] text-gray-300 pt-8 pb-6 border-t-6 border-primary-blue">
-      <div className="container mx-auto px-6">
+    <footer className="bg-[#253E57] text-gray-300 pt-8 border-t-6 border-primary-blue">
+      <div className="mx-auto px-6">
         
         {cargando ? (
             <div className="text-center py-10">Cargando datos de contacto...</div>
         ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 {/* Columna 1: Logo */}
                 <div>
@@ -61,7 +61,7 @@ function Footer() {
                 {/* Columna 2: Información de Contacto (usando datos de Strapi) */}
                 <div>
                     <h3 className="text-xl font-semibold mb-4 text-white">Contacto</h3>
-                    <ul className="space-y-3 p-4 bg-[#9CB0B1] rounded-lg">
+                    <ul className="space-y-3 p-4 bg-[#9CB0B1] rounded-lg w-full max-w-xs">
                         {/* Teléfono */}
                         {datosContacto.Telefono && (
                             <li className="flex items-center space-x-2 text-[#253E57]">
@@ -80,7 +80,7 @@ function Footer() {
                    </ul>
                 </div>
                 {/* Columna 3: Información de Redes */}
-                <div>
+                <div >
                      <ul>
                         <h3 className="text-xl font-semibold mb-4 text-white">Redes Sociales</h3>
                         {/* Redes Sociales */}
