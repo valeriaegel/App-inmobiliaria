@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaMapMarkerAlt, FaRulerCombined, FaTag, FaBed, FaBath, FaHome, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+// Importación del Carrusel y sus estilos
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // Estilos base del carrusel
 
 const STRAPI_BASE_URL = 'http://localhost:1337';
 
 const DEEP_POPULATE = 'populate[0]=Imagenes&populate[1]=ciudad&populate[2]=servicios&populate[3]=tipo_inmueble';
 
 function DetallePropiedad() {
-  const { documentId } = useParams();
+    const { documentId } = useParams();
     const [inmueble, setInmueble] = useState(null);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const API_URL = `${STRAPI_BASE_URL}/api/inmuebles/${documentId}?${DEEP_POPULATE}`;
+        console.log("Fetching from URL:", API_URL);
 
         const obtenerDetalle = async () => {
             setCargando(true);
           
             try {
-             const respuesta = await fetch(API_URL);
+               const respuesta = await fetch(API_URL);
                 if (!respuesta.ok) {
                     throw new Error(`Error HTTP: ${respuesta.status}`);
                 }
@@ -27,8 +31,7 @@ function DetallePropiedad() {
                 const datos = await respuesta.json();
               
                 const objetoInmueble = datos.data;
-                               
-                // setInmueble ahora tiene el objeto completo: {id: 8, documentId: '...', Titulo: 'Prueba1', ...}
+                                        
                 setInmueble(objetoInmueble);
             } catch (err) {
                 console.error("Error al obtener el detalle:", err);
@@ -46,19 +49,14 @@ function DetallePropiedad() {
     if (error) return <div className="text-center p-20 text-xl font-bold text-red-600">{error}</div>;
     if (!inmueble) return <div className="text-center p-20 text-xl">Propiedad no encontrada.</div>;
 
-    const atributos = inmueble; // Atributos es el objeto principal de la propiedad
-    const servicios = atributos.servicios|| []; // Servicios (comodidades)
-    const ciudad = atributos.ciudad; // Ciudad relacionada
-const tipoInmueble = atributos.tipo_inmueble;
+    const atributos = inmueble; // Accede a los atributos de Strapi
+    const servicios = atributos.servicios || []; // Mapeo de servicios
+    const ciudad = atributos.ciudad.Ciudad; // Ciudad relacionada
+    const tipoInmueble = atributos.tipo_inmueble.Tipo; // Tipo de inmueble
+    const imagenes = atributos.Imagenes || []; // Array de imágenes
 
-
-    // Lógica para determinar la imagen principal
-    const imagenPrincipalUrl = atributos.Imagenes?.[0]?.url 
-                                ? `${STRAPI_BASE_URL}${atributos.Imagenes?.[2]?.url}`
-                                : '/placeholder-image.jpg';
-                                
     return (
-        <div className="container mx-auto p-4 md:p-12 bg-[#F0F2ED]">
+        <div className=" mx-auto p-4 md:p-12 bg-[#F0F2ED]">
             <h1 className="text-4xl font-extrabold text-gray-900 mb-2">{atributos.Titulo}</h1>
             <p className="text-xl text-gray-600 mb-6 flex items-center space-x-2">
                 <FaMapMarkerAlt />
@@ -71,28 +69,44 @@ const tipoInmueble = atributos.tipo_inmueble;
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 
-                {/* Columna Izquierda: Galería y Descripción */}
+                {/* Columna Izquierda: Carrusel y Descripción */}
                 <div className="lg:col-span-2">
-                    {/* Imagen Principal */}
-                    <img src={imagenPrincipalUrl} alt={atributos.Titulo} className="w-200 h-150 object-cover rounded-lg shadow-lg mb-6"/>
-
-                    {/* Galería (Muestra la primera imagen para simplificar, se puede mejorar con un carrusel) */}
-                    <div className="flex space-x-3 overflow-x-auto mb-8">
-                        {atributos.Imagenes?.data?.map((img, index) => (
-                            <img 
-                                key={index} 
-                                src={`${STRAPI_BASE_URL}${img.attributes.url}`} 
-                                alt={`Vista ${index + 1}`} 
-                                className="h-20 w-auto object-cover rounded-md cursor-pointer hover:border-2 hover:border-primary-blue"
-                            />
-                        ))}
+                    
+                    {/* IMPLEMENTACIÓN DEL CARRUSEL 🎠 */}
+                    <div className="rounded-lg shadow-xl overflow-hidden mb-6">
+                        {imagenes.length > 0 ? (
+                            <Carousel 
+                                showArrows={true} // Mostrar flechas de navegación
+                                showThumbs={false} // Mostrar miniaturas
+                                showStatus={false} // Ocultar el estado (ej: "1 de 5")
+                                infiniteLoop={true} // Bucle infinito
+                                autoPlay={false} // No autoejecutar
+                                // Personaliza la apariencia del Carrusel para que se vea bien
+                                thumbWidth={100}
+                            >
+                                {imagenes.map((img) => (
+                                    <div key={img.id}>
+                                        <img 
+                                            src={`${STRAPI_BASE_URL}${img.url}`} 
+                                            alt={atributos.Titulo} 
+                                            className="w-full h-[500px] object-cover" // Ajusta la altura
+                                        />
+                                        {/* Puedes añadir una leyenda si lo deseas */}
+                                        {/* <p className="legend">{img.attributes.caption}</p> */} 
+                                    </div>
+                                ))}
+                            </Carousel>
+                        ) : (
+                            <img src="/placeholder-image.jpg" alt="Sin imágenes" className="w-full h-[500px] object-cover" />
+                        )}
                     </div>
 
+                  
                     <h2 className="text-3xl font-bold mb-4 text-gray-800 border-b pb-2">Descripción</h2>
                     <p className="text-gray-700 leading-relaxed mb-8">{atributos.Descipcion}</p>
                 </div>
 
-                {/* Columna Derecha: Datos Clave y Comodidades */}
+                {/* Columna Derecha: Datos Clave y Comodidades (sin cambios importantes) */}
                 <div className="lg:col-span-1 space-y-6">
                     
                     {/* PRECIO Y OPERACIÓN */}
@@ -113,36 +127,36 @@ const tipoInmueble = atributos.tipo_inmueble;
                     <div className="bg-gray-50 p-6 rounded-lg shadow-md">
                         <h3 className="text-2xl font-semibold mb-4 text-gray-800">Ficha Técnica</h3>
                         <ul className="space-y-2 text-gray-700 text-right">
-                            <li className="flex justify-between items-center"><FaRulerCombined className="text-primary-blue"/>
-                            <ul>
-                               Superficie: <span>{atributos.SuperficieTotal} m²</span>
-                            </ul>
+                            {atributos.SuperficieTotal  && (
+                             <li className="flex justify-between items-center"><FaRulerCombined className="text-primary-blue"/>
+                            <span>Superficie Total: {atributos.SuperficieTotal} m²</span>
                             </li>
+                            )}
+                           {atributos.SuperficieConstruida > 0 && (
                             <li className="flex justify-between items-center"><FaRulerCombined className="text-primary-blue"/> 
-                              <ul>
-                               Superficie Const.: <span>{atributos.SuperficieConstruida} m²</span>
-                            </ul>
+                            <span>Superficie Const.: {atributos.SuperficieConstruida} m²</span>
                             </li>
+                            )}
+                            {atributos.Ambientes ==! null && (
                             <li className="flex justify-between items-center"><FaHome className="text-primary-blue"/> 
-                            <ul>
-                               Ambientes:  <span>{atributos.Ambientes}</span>
-                               </ul>
-                               </li>
-                            <li className="flex justify-between items-center"><FaBed className="text-primary-blue"/> 
-                            <ul>
-                                 Dormitorios: <span>{atributos.Dormitorios}</span>
-                            </ul>
+                            <span>Ambientes: {atributos.Ambientes}</span>
                             </li>
+                            )}
+                            {atributos.Dormitorios ==! null && (
+                            <li className="flex justify-between items-center"><FaBed className="text-primary-blue"/> 
+                            <span>Dormitorios: {atributos.Dormitorios}</span>
+                            </li>
+                            )}
+                            {atributos.Banos ==! null && (
                             <li className="flex justify-between items-center"><FaBath className="text-primary-blue"/> 
-                            <ul>
-                             Baños: <span>{atributos.Banos}</span>
-                            </ul>
-                           </li>
-                            
+                            <span>Baños: {atributos.Banos}</span>
+                            </li>
+                            )}
                         </ul>
                     </div>
                     
                     {/* COMODIDADES/SERVICIOS */}
+                    {atributos.servicios && atributos.servicios.length > 0 &&(
                     <div className="bg-gray-50 p-6 rounded-lg shadow-md ">
                         <h3 className="text-2xl font-semibold mb-4 text-gray-800">Servicios</h3>
                         <div className="grid grid-cols-2 gap-3 text-sm">
@@ -153,6 +167,7 @@ const tipoInmueble = atributos.tipo_inmueble;
                             ))}
                         </div>
                     </div>
+                    )}
 
                 </div>
             </div>
@@ -161,3 +176,6 @@ const tipoInmueble = atributos.tipo_inmueble;
 }
 
 export default DetallePropiedad;
+
+
+
