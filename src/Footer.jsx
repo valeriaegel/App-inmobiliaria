@@ -72,8 +72,8 @@ function Footer() {
                         {/* Email */}
                         {datosContacto.Mail && (
                             <li className="flex items-center space-x-2 text-[#253E57]">
-                                <FaEnvelope className={colorAzul} />
-                                <a href={`mailto:${datosContacto.Mail}`} className="hover:text-primary-blue">{datosContacto.Mail}</a>
+                                <FaEnvelope className='shrink-0 text-primary-blue' />
+                                <a href={`mailto:${datosContacto.Mail}`} className="hover:text-primary-blue">Inmobiliariacristinaeckerdt@gmail.com</a>
                             </li>
                         )}
 
