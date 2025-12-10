@@ -104,7 +104,7 @@ function Footer() {
 
       {/* Derechos de autor y base */}
       <div className="mt-6 pt-2 border-t border-gray-700 text-center text-sm text-gray-500">
-        &copy; {new Date().getFullYear()} Inmobiliaria Profesional. Todos los derechos reservados.
+        &copy; {new Date().getFullYear()}. By <a href="https://www.linkedin.com/in/valeria-egel-abb685155/" className='hover:text-gray-800'>Valeria Egel.</a>
       </div>
     </footer>
   );

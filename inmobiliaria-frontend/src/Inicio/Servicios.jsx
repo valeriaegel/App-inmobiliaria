@@ -17,8 +17,11 @@ return (
                     <h2 className="text-4xl font-extrabold text-gray-900">
                         Nuestros Servicios
                     </h2>
-                    <p className="mt-2 text-xl text-gray-600">
-                        Soluciones integrales para todas tus necesidades inmobiliarias
+                    <p className="mt-2 text-3xl font-bold text-gray-600">
+                       Corredora: Maria Cristina Eckerdt
+                    </p>
+                    <p className="mt-2 text-xl font-bold text-gray-600">
+                        Matricula 856 <a href="https://colegiocorredoreser.org.ar/" className='hover:text-gray-800'>C.I.E.R</a>
                     </p>
                 </div>
 

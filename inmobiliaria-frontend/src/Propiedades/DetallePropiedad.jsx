@@ -14,7 +14,12 @@ function DetallePropiedad() {
     const [inmueble, setInmueble] = useState(null);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
-
+   
+              
+        // 2. Parámetros de WhatsApp
+        const whatsappNumber = '5493442666333'; 
+      
+    
     useEffect(() => {
         const API_URL = `${STRAPI_BASE_URL}/api/inmuebles/${documentId}?${DEEP_POPULATE}`;
         console.log("Fetching from URL:", API_URL);
@@ -44,6 +49,7 @@ function DetallePropiedad() {
         obtenerDetalle();
     }, [documentId]);
 
+            
     // Manejo de estados
     if (cargando) return <div className="text-center p-20 text-xl">Cargando detalles de la propiedad...</div>;
     if (error) return <div className="text-center p-20 text-xl font-bold text-red-600">{error}</div>;
@@ -54,6 +60,15 @@ function DetallePropiedad() {
     const ciudad = atributos.ciudad.Ciudad; // Ciudad relacionada
     const tipoInmueble = atributos.tipo_inmueble.Tipo; // Tipo de inmueble
     const imagenes = atributos.Imagenes || []; // Array de imágenes
+
+       const subject = `Consulta Inmobiliaria`;
+      const body = `
+      Hola, tengo una consulta sobre la propiedad ubicada en ${atributos.Ubicacion}.
+            `.trim(); 
+
+      
+        const whatsappBody = `*${subject}*%0A${encodeURIComponent(body)}`;
+        const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappBody}`;
 
     return (
         <div className=" mx-auto p-4 md:p-12 bg-[#F0F2ED]">
@@ -118,8 +133,8 @@ function DetallePropiedad() {
                         ) : (
                             <p className="text-red-600 font-semibold mt-3 flex items-center"><FaTimesCircle className="mr-2"/> No Disponible</p>
                         )}
-                        <button className="w-full mt-4 bg-gray-500 hover:bg-blue-900 text-white font-bold py-2 rounded transition">
-                            Contactar por esta propiedad
+                        <button  className="w-full mt-4 bg-gray-500 hover:bg-blue-900 text-white font-bold py-2 rounded transition">
+                            <a href={whatsappLink}>Contactar por esta propiedad</a>
                         </button>
                     </div>
 

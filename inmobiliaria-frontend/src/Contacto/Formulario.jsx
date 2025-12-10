@@ -24,16 +24,15 @@ const Formulario = () => {
         // 1. Construir el mensaje
         const subject = `Consulta Inmobiliaria de ${name}`;
         const body = `
-Hola, mi nombre es ${name}.
-Email: ${email}
-Teléfono: ${phone}
+            Hola, mi nombre es ${name}.
+            Email: ${email}
+            Teléfono: ${phone}
 
-Mi consulta es la siguiente:
-${message}
+            Mi consulta es la siguiente:
+            ${message}
         `.trim(); 
 
         // 2. Parámetros de WhatsApp
-        // 💡 Reemplaza "5491100000000" con tu número de teléfono real.
         const whatsappNumber = '5493442666333'; 
         
         const whatsappBody = `*${subject}*%0A${encodeURIComponent(body)}`;
