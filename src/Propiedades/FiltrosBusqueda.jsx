@@ -2,17 +2,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { FaFilter, FaHome, FaTag, FaCity, FaSearch } from 'react-icons/fa';
 
 // URLS DE LAS COLECCIONES DINÁMICAS
-const STRAPI_BASE_URL = 'http://localhost:1337';
+const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_BASE_URL;
 const API_URL_CIUDADES = `${STRAPI_BASE_URL}/api/ciudads`; 
 const API_URL_TIPO_INMUEBLE = `${STRAPI_BASE_URL}/api/tipo-inmuebles`; 
-
 
 /**
  * Componente de filtros avanzados para la lista de propiedades.
  * @param {function} onFiltrosAplicados - Función que recibe la cadena de query final.
  */
 function FiltrosBusqueda({ onFiltrosAplicados }) {
-    
     // --- ESTADOS LOCALES ---
     const [opcionesCiudades, setOpcionesCiudades] = useState([]);
     const [opcionesTipos, setOpcionesTipos] = useState([]);
@@ -24,7 +22,6 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
         ambientes: '',
     });
     
-   
     // Opciones estáticas para Ambientes
     const opcionesAmbientes = ['Cualquiera', 1, 2, 3, 4, '5+']; 
 
@@ -36,17 +33,13 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                 // Fetch de Ciudades
                 const resCiudades = await fetch(`${API_URL_CIUDADES}?fields=Ciudad`);
                 const datosCiudades = await resCiudades.json();
-                
                 // Fetch de Tipos de Inmueble
                 const resTipos = await fetch(`${API_URL_TIPO_INMUEBLE}?fields=Tipo`);
                 const datosTipos = await resTipos.json();
-                
-                // Procesar datos de Strapi (asumo { id, attributes: { Nombre } })
+
                 // Mapeamos el ID y el Nombre para usar el ID en la query de filtro
                 setOpcionesCiudades(datosCiudades.data.map(item => ({ id: item.id, nombre: item.Ciudad })));
                 setOpcionesTipos(datosTipos.data.map(item => ({ id: item.id, nombre: item.Tipo })));
-
-        
             } catch (error) {    
                 console.error("Error al cargar opciones de filtro:", error);
             } finally {
@@ -57,24 +50,20 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
     }, []);
 
     // --- FUNCIÓN DE CONSTRUCCIÓN Y APLICACIÓN DE FILTROS ---
-
-
     const construirQuery = useCallback(() => {
-        const queryParts = [];
-        
-        // --- 1. Filtro por CIUDAD (Relación Many-to-One) ---
+        const queryParts = []; 
+        // --- Filtro por CIUDAD 
         if (filtros.ciudad) {
             // Filtra por el ID de la relación Many-to-One
             queryParts.push(`filters[ciudad][id][$eq]=${filtros.ciudad}`);
         }
-        
-        // --- 2. Filtro por TIPO DE PROPIEDAD (Relación Many-to-One) ---
+        // Filtra por TIPO DE PROPIEDAD 
         if (filtros.tipoInmueble) {
             // Filtra por el ID de la relación Many-to-One
             queryParts.push(`filters[tipo_inmueble][id][$eq]=${filtros.tipoInmueble}`);
         }
         
-        // --- 3. Filtro por AMBIENTES (Número/Enumeration) ---
+        // Filtra AMBIENTES (Número/Enumeration) 
         if (filtros.ambientes && filtros.ambientes !== 'Cualquiera') {
              if (filtros.ambientes.includes('+')) {
                 // Si es '5+', usamos mayor o igual ($gte)
@@ -85,15 +74,13 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                 queryParts.push(`filters[Ambientes][$eq]=${filtros.ambientes}`);
             }
         }
-        
-        // Devolvemos la cadena completa de filtros (ej: filters[a]=1&filters[b]=2)
+        // Devuelve la cadena completa con los filtros
         return queryParts.join('&');
     }, [filtros]);
 
     const handleFilterChange = (campo, valor) => {
         // Establece el valor o una cadena vacía si es una opción "neutral"
         const valorLimpio = valor === 'Todas' || valor === 'Todos' || valor === 'Cualquiera' || valor === '' ? '' : valor;
-        
         setFiltros(prev => ({
             ...prev,
             [campo]: valorLimpio,
@@ -106,16 +93,15 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
             tipoInmueble: '',
             ambientes: '',
         });
-        onFiltrosAplicados(''); // Llama al padre sin filtros
+        onFiltrosAplicados(''); 
     };
 
     const handleBuscarClick = () => {
         const query = construirQuery();
-        // Llama a la función del componente padre SOLAMENTE AHORA
         onFiltrosAplicados(query); 
     };
     
-    // --- RENDERING DEL COMPONENTE ---
+    
     return (
         <div className="bg-[#C6CFCC] p-6 rounded-xl shadow-lg mb-8 border border-gray-100">
             <div className="flex justify-between items-center mb-4 border-b pb-4">
@@ -134,8 +120,7 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                 <div className="text-center text-sm text-gray-500">Cargando opciones de filtro...</div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    
-                    {/* 1. CIUDAD (Dinámico) */}
+                    {/* 1. CIUDAD  */}
                     <div className="col-span-1">
                         <label className="text-sm font-medium text-gray-700 mb-1 items-center"><FaCity className="mr-1" /> Ciudad</label>
                         <select 
@@ -148,7 +133,7 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                         </select>
                     </div>
 
-                    {/* 2. TIPO DE PROPIEDAD (Dinámico) */}
+                    {/* 2. TIPO DE PROPIEDAD*/}
                     <div className="col-span-1">
                         <label className="text-sm font-medium text-gray-700 mb-1 items-center"><FaTag className="mr-1" /> Tipo de Propiedad</label>
                         <select 
@@ -161,7 +146,7 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                         </select>
                     </div>
 
-                    {/* 3. AMBIENTES (Estático/Enumeración) */}
+                    {/* 3. AMBIENTES */}
                     <div className="col-span-1">
                         <label className="text-sm font-medium text-gray-700 mb-1 items-center"><FaHome className="mr-1" /> Ambientes</label>
                         <select 
@@ -181,8 +166,7 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                         <span>Buscar</span>
                     </button>
                 </div>
-        
-                </div>
+         </div>
             )}
         </div>
     );

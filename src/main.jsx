@@ -7,7 +7,7 @@ import Inicio from './Inicio/Inicio.jsx';
 import Servicios from './Inicio/Servicios.jsx'; // Asegúrate de crear este archivo
 import Contacto from './Contacto/Contacto.jsx';
 import Footer from './Footer.jsx';
-import DetallePropiedad from './Propiedades/DetallePropiedad.jsx';
+import DetallePropiedad from './DetallePropiedad/DetallePropiedad.jsx';
 import PropContainer from './Propiedades/PropContainer.jsx';
 
 createRoot(document.getElementById('root')).render(

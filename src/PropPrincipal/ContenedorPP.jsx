@@ -1,11 +1,11 @@
 import PorOperaciones from './PorOperaciones'
 import { useState, useEffect } from 'react';
-import PropRecientes from './PropRecientes'; // Componente de tarjetas
+import PropRecientes from './PropRecientes'; 
 
-const STRAPI_BASE_URL = 'http://localhost:1337';
+const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_BASE_URL ;
 const API_BASE_URL = `${STRAPI_BASE_URL}/api/inmuebles`;
 
-const RECIENTES_QUERY = '?sort=publishedAt:desc&pagination[limit]=4';
+const RECIENTES_QUERY = '?sort=publishedAt:desc&pagination[limit]=2';
 const POPULATE_QUERY = '&populate[Imagenes][populate]=*'; // Solo necesitamos las imágenes
 
 function ContenedorPP() {

@@ -1,19 +1,17 @@
-
 import { Link } from 'react-router-dom';
+/*
+  * Componente para mostrar las propiedades recientes en la página de inicio.
+  * Recibe las propiedades, estado de carga y error como props.
+*/
+const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_BASE_URL;
 
-
-const STRAPI_BASE_URL = 'http://localhost:1337';
-
-function PropRecientes({ propiedades, cargando, error }) {
-    
+function PropRecientes({ propiedades, cargando, error }) {  
     if (cargando) {
         return <div className="text-center p-10 text-lg">Cargando Propiedades Destacadas...</div>;
     }
-    
     if (error) {
         return <div className="text-center p-10 text-lg font-bold text-red-600">{error}</div>;
     }
-
     if (propiedades.length === 0) {
         return <div className="text-center p-10 text-lg text-gray-500">No hay propiedades destacadas disponibles.</div>;
     }
@@ -23,22 +21,18 @@ function PropRecientes({ propiedades, cargando, error }) {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             {propiedadesVisibles.map(propiedad => {
-                // La propiedad ya es el objeto { id, documentId, attributes: {...} }
                 const atributos = propiedad;
-                
                 // Lógica para obtener la imagen principal
                 const imagenPath = atributos.Imagenes?.[0]?.url;
                 const imagenURL = imagenPath 
                                     ? `${STRAPI_BASE_URL}${imagenPath}` 
                                     : '/placeholder-image.jpg';
-
                 // Determinar tipo de operación y color del tag (similar al de la imagen)
                 const isVenta = atributos.TipoOperacion?.toLowerCase() === 'venta';
                 const tagText = isVenta ? 'En Venta' : 'En Alquiler';
                 const tagClass = isVenta ? 'bg-[#253E57]' : 'bg-[#253E57]';
 
-                return (
-                    
+                return (                    
                     <div key={propiedad.id} className="bg-[#C6CFCC] rounded-lg overflow-hidden hover:shadow-xl transition duration-300">
                         
                         {/* IMAGEN Y TAG */}
@@ -66,13 +60,8 @@ function PropRecientes({ propiedades, cargando, error }) {
 
             })}
             
-    </div>
-
-    
-               
+    </div>          
     );
 }
-
-
 
 export default PropRecientes;

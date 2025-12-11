@@ -1,10 +1,13 @@
 import React from 'react'
 import Bienvenida from './Bienvenida'
-import Servicios from './Servicios' // Asegúrate de crear este archivo
+import Servicios from './Servicios' 
 import InformacionContacto from '../Informacion/informacionContacto'
 import Contacto from '../Contacto/Contacto'
 import ContenedorPP from '../PropPrincipal/ContenedorPP'
 
+/*
+  * Componente principal de la página de inicio.
+*/
 
 const Inicio = () => {
   return (

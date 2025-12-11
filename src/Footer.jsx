@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-// Importamos el ícono de la casa/edificio que usamos en el Encabezado
+import { useState, useEffect } from 'react';
 import { FaHome, FaFacebook, FaInstagram, FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa'; 
 
 // URL base para la API de ConfiguracionGlobal
-const API_URL_CONFIG = 'http://localhost:1337/api/informacion-general';
+const API_URL_CONFIG = `${import.meta.env.VITE_STRAPI_BASE_URL}/api/informacion-general`;
 
 /**
  * Componente del Pie de Página que consume los datos de contacto de Strapi.
