@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { FaHome, FaFacebook, FaInstagram, FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa'; 
+import { fetchFromStrapi } from './api';
 
 // URL base para la API de ConfiguracionGlobal
-const API_URL_CONFIG = `${import.meta.env.VITE_STRAPI_BASE_URL}/api/informacion-general`;
+const API_URL_CONFIG = `/api/informacion-general`;
 
 /**
  * Componente del Pie de Página que consume los datos de contacto de Strapi.
@@ -14,7 +15,7 @@ function Footer() {
   useEffect(() => {
     const obtenerConfiguracion = async () => {
       try {
-        const respuesta = await fetch(API_URL_CONFIG);
+        const respuesta = await fetchFromStrapi(API_URL_CONFIG);
         if (!respuesta.ok) {
           throw new Error(`Error HTTP: ${respuesta.status}`);
         }
@@ -36,10 +37,10 @@ function Footer() {
 
   // Si aún no ha cargado, o falló la carga, se usa un objeto vacío o cargando
   const datosContacto = config || {}; 
-  const colorAzul = 'text-primary-blue'; // Usamos el color de marca que definimos
+  const colorAzul = 'text-primary-blue'; 
 
   return (
-    <footer className="bg-[#253E57] text-gray-300 pt-8 border-t-6 border-primary-blue">
+    <footer className="bg-[#253E57] text-gray-300 pt-8 border-t-6 border-primary-blue ">
       <div className="mx-auto px-6">
         
         {cargando ? (
@@ -57,7 +58,7 @@ function Footer() {
                         Servicios inmoniliarios, somos profesionales en venta y alquiler de propiedades
                     </p>
                 </div>
-                {/* Columna 2: Información de Contacto (usando datos de Strapi) */}
+                {/* Columna 2: Información de Contacto  */}
                 <div>
                     <h3 className="text-xl font-semibold mb-4 text-white">Contacto</h3>
                     <ul className="space-y-3 p-4 bg-[#9CB0B1] rounded-lg w-full max-w-xs">
@@ -72,7 +73,7 @@ function Footer() {
                         {datosContacto.Mail && (
                             <li className="flex items-center space-x-2 text-[#253E57]">
                                 <FaEnvelope className='shrink-0 text-primary-blue' />
-                                <a href={`mailto:${datosContacto.Mail}`} className="hover:text-primary-blue">Inmobiliariacristinaeckerdt@gmail.com</a>
+                                <a href={`mailto:${datosContacto.Mail}`} className="hover:text-primary-blue">Inmobiliariaeckerdt@gmail.com</a>
                             </li>
                         )}
 

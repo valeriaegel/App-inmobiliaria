@@ -5,6 +5,7 @@ import { Carousel } from 'react-responsive-carousel'; // Importación del Carrus
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Estilos base del carrusel
 import FichaTecnica from './FichaTecnica';
 import DatosPropiedad from './DatosPropiedad';
+import { fetchFromStrapi } from '../api';
 
 /*
     * Componente para mostrar el detalle de una propiedad inmobiliaria.
@@ -19,14 +20,14 @@ function DetallePropiedad() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const API_URL = `${STRAPI_BASE_URL}/api/inmuebles/${documentId}?${DEEP_POPULATE}`;
+        const API_URL = `/api/inmuebles/${documentId}?${DEEP_POPULATE}`;
         console.log("Fetching from URL:", API_URL);
 
         const obtenerDetalle = async () => {
             setCargando(true);
           
             try {
-               const respuesta = await fetch(API_URL);
+               const respuesta = await fetchFromStrapi(API_URL);
                 if (!respuesta.ok) {
                     throw new Error(`Error HTTP: ${respuesta.status}`);
                 }

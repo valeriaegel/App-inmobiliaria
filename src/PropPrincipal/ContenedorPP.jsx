@@ -1,12 +1,11 @@
 import PorOperaciones from './PorOperaciones'
 import { useState, useEffect } from 'react';
 import PropRecientes from './PropRecientes'; 
+import { fetchFromStrapi } from '../api';
 
-const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_BASE_URL ;
-const API_BASE_URL = `${STRAPI_BASE_URL}/api/inmuebles`;
-
+const API_BASE_URL = `/api/inmuebles`;
 const RECIENTES_QUERY = '?sort=publishedAt:desc&pagination[limit]=2';
-const POPULATE_QUERY = '&populate[Imagenes][populate]=*'; // Solo necesitamos las imágenes
+const POPULATE_QUERY = '&populate[Imagenes][populate]=*'; 
 
 function ContenedorPP() {
     const [propiedades, setPropiedades] = useState([]);
@@ -16,10 +15,8 @@ function ContenedorPP() {
     useEffect(() => {
         const fetchRecientes = async () => {
             setCargando(true);
-            const apiUrl = `${API_BASE_URL}${RECIENTES_QUERY}${POPULATE_QUERY}`;
-            
             try {
-                const respuesta = await fetch(apiUrl);
+                const respuesta = await fetchFromStrapi(`${API_BASE_URL}${RECIENTES_QUERY}${POPULATE_QUERY}`);;
                 if (!respuesta.ok) {
                     throw new Error(`Error HTTP: ${respuesta.status}`);
                 }

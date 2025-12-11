@@ -2,13 +2,12 @@ import FiltrosBusqueda from "./FiltrosBusqueda"
 import Propiedades from "./Propiedades" // Asumo Propiedades = ListaPropiedades
 import { useParams } from "react-router-dom"
 import { useState, useEffect } from "react"
+import { fetchFromStrapi } from "../api";
 
 /*
   * Componente contenedor que maneja la lógica y filtrado de propiedades.
 */
-
-const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_BASE_URL;
-const API_BASE_URL = `${STRAPI_BASE_URL}/api/inmuebles`; 
+const API_BASE_URL = `/api/inmuebles`; 
 
 function PropContainer () {
 
@@ -43,10 +42,10 @@ function PropContainer () {
             const queryTotal = queries.join('&');
 
             // 3. Construir la URL Final
-            let apiUrl = `${API_BASE_URL}?${queryTotal ? queryTotal + '&' : ''}&populate=*`;
+            let apiUrl = `/api/inmuebles?${queryTotal ? queryTotal + '&' : ''}&populate=*`;
          
             try {
-                const respuesta = await fetch(apiUrl);
+                const respuesta = await fetchFromStrapi(apiUrl);
                 if (!respuesta.ok) {
                     throw new Error(`Error HTTP: ${respuesta.status}`);
                 }

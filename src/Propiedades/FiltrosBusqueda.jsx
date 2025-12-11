@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FaFilter, FaHome, FaTag, FaCity, FaSearch } from 'react-icons/fa';
+import { fetchFromStrapi } from '../api';
 
 // URLS DE LAS COLECCIONES DINÁMICAS
-const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_BASE_URL;
-const API_URL_CIUDADES = `${STRAPI_BASE_URL}/api/ciudads`; 
-const API_URL_TIPO_INMUEBLE = `${STRAPI_BASE_URL}/api/tipo-inmuebles`; 
+const API_URL_CIUDADES = `/api/ciudads`; 
+const API_URL_TIPO_INMUEBLE = `/api/tipo-inmuebles`; 
 
 /**
  * Componente de filtros avanzados para la lista de propiedades.
@@ -31,10 +31,11 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
             setCargandoOpciones(true);
             try {
                 // Fetch de Ciudades
-                const resCiudades = await fetch(`${API_URL_CIUDADES}?fields=Ciudad`);
+                const resCiudades = await fetchFromStrapi(`${API_URL_CIUDADES}?fields=Ciudad`);
+              
                 const datosCiudades = await resCiudades.json();
                 // Fetch de Tipos de Inmueble
-                const resTipos = await fetch(`${API_URL_TIPO_INMUEBLE}?fields=Tipo`);
+                const resTipos = await fetchFromStrapi(`${API_URL_TIPO_INMUEBLE}?fields=Tipo`);
                 const datosTipos = await resTipos.json();
 
                 // Mapeamos el ID y el Nombre para usar el ID en la query de filtro

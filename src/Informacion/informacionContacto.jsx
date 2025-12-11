@@ -6,13 +6,13 @@ import MapaOficina from './MapaOficina';
 
 function InformacionContacto() {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-12 mx-auto max-w-7xl ">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 mx-auto max-w-7xl ">
         <div className="@container bg-[#C6CFCC] p-8 md:p-10 rounded-xl shadow-lg  transition duration-300 hover:shadow-xl">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 Información de Contacto
             </h3>
             
-            <div className="space-y-6 ">
+            <div className="space-y-6">
                 
                 {/* Ítem: Dirección */}
                 <ContactItem 
@@ -57,15 +57,15 @@ function InformacionContacto() {
                     title="Horario de Atención"
                     content={
                         <>
-                            Lunes a Viernes: 8:00 - 13:00 <br/>
-                                             16:00 - 18:00 
+                            Lunes a Viernes: 8:00-13:00 <br/>
+                                             16:00-18:00 
                         </>
                     }
                 />
                 
             </div>
                 </div>
-        <div className="bg-[#C6CFCC] p-8 md:p-10 rounded-xl shadow-lg">   
+        <div className="bg-[#C6CFCC] p-8 md:p-10 rounded-xl shadow-lg transition duration-300 hover:shadow-xl">   
             <MapaOficina />
         </div>
         </div>
@@ -88,9 +88,9 @@ function ContactItem({ icon, title, content , enlace}) {
             
             {/* Contenido */}
             <div className='mb-5'>
-                <p className="text-md font-bold text-gray-900 mb-0.5">{title}</p>
-                <div className="text-gray-600 text-base leading-relaxed hover:text-gray-700 transition duration-200">
-                    <a href={enlace} target="_blank"  rel="noopener noreferrer">{content}</a>
+                <p className="text-md font-bold text-gray-900">{title}</p>
+                <div className="text-gray-600 text-base hover:text-gray-700 transition duration-200 ">
+                    <a href={enlace} target="_blank" rel="noopener noreferrer">{content}</a>
                 </div>
             </div>
         </div>
