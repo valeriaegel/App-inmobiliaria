@@ -33,7 +33,7 @@ function Propiedades({inmuebles, cargando, error, tipoOperacion}) {
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 bg-[#F0F2ED]">
                     {inmuebles.map(inmueble => {
                         const atributos = inmueble;
-                        const imagenURL =  `${import.meta.env.VITE_STRAPI_BASE_URL}${atributos.Imagenes?.[0]?.url}`;
+                        const imagenURL =  `${atributos.Imagenes?.[0]?.url}`;
                         
                             if (inmueble.Disponible) {
                         tagColor = 'bg-green-500';  
