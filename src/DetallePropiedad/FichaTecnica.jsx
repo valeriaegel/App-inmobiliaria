@@ -25,7 +25,7 @@ const FichaTecnica = ({superficieTotal, superficieConstruida, ambientes, dormito
                                 <span>Ambientes: {ambientes}</span>
                                 </li>
                                 )}
-                                {dormitorios != null && (
+                                {dormitorios != 0 && (
                                 <li className="flex justify-between items-center"><FaBed className="text-primary-blue"/> 
                                 <span>Dormitorios: {dormitorios}</span>
                                 </li>

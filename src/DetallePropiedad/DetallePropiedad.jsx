@@ -11,7 +11,7 @@ import { fetchFromStrapi } from '../api';
     * Componente para mostrar el detalle de una propiedad inmobiliaria.
 */
 const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_BASE_URL;
-const DEEP_POPULATE = 'populate[0]=Imagenes&populate[1]=ciudad&populate[2]=servicios&populate[3]=tipo_inmueble';
+const DEEP_POPULATE = 'populate=*';
 
 function DetallePropiedad() {
     const { documentId } = useParams();
@@ -51,11 +51,10 @@ function DetallePropiedad() {
 
     const atributos = inmueble; 
     const servicios = atributos.servicios || []; // Mapeo de servicios
-    const ciudad = atributos.ciudad.Ciudad; // Nombre ciudad relacionada
+    const ciudad = atributos.ciudad; // Nombre ciudad relacionada
     const tipoInmueble = atributos.tipo_inmueble.Tipo; // Tipo de inmueble
     const imagenes = atributos.Imagenes || []; // Array de imágenes
-    
-   
+  
     return (
         <div className=" mx-auto p-4 md:p-12 bg-[#F0F2ED]">
             <h1 className="text-4xl font-extrabold text-gray-900 mb-2">{atributos.Titulo}</h1>
@@ -85,7 +84,7 @@ function DetallePropiedad() {
                                 {imagenes.map((img) => (
                                     <div key={img.id}>
                                         <img 
-                                            src={`${STRAPI_BASE_URL}${img.url}`} 
+                                            src={`${img.url}`}                                             
                                             alt={atributos.Titulo} 
                                             className="w-full h-[500px] object-cover" 
                                         />

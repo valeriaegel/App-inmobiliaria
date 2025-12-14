@@ -25,7 +25,7 @@ function PropRecientes({ propiedades, cargando, error }) {
                 // Lógica para obtener la imagen principal
                 const imagenPath = atributos.Imagenes?.[0]?.url;
                 const imagenURL = imagenPath 
-                                    ? `${STRAPI_BASE_URL}${imagenPath}` 
+                                    ? `${imagenPath}` 
                                     : '/placeholder-image.jpg';
                 // Determinar tipo de operación y color del tag (similar al de la imagen)
                 const isVenta = atributos.TipoOperacion?.toLowerCase() === 'venta';
