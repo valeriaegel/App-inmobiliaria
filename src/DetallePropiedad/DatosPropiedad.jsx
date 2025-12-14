@@ -1,13 +1,13 @@
 import FunContacto from "./FunContacto"
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"
 
-const DatosPropiedad = ({disponible, valor, tipoOperacion, Ubicacion}) => {
+const DatosPropiedad = ({disponible, valor, moneda, tipoOperacion, Ubicacion}) => {
 
 const whatsappLink = FunContacto(Ubicacion)
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-primary-blue">
-                            <p className="text-3xl font-extrabold text-primary-blue my-2">${valor}</p>
+                            <p className="text-3xl font-extrabold text-primary-blue my-2">{moneda}{valor}</p>
                             <p className="text-sm text-gray-500">Valor de {tipoOperacion}</p>
                             {disponible ? (
                                 <p className="text-green-600 font-semibold mt-3 flex items-center"><FaCheckCircle className="mr-2"/> Disponible</p>

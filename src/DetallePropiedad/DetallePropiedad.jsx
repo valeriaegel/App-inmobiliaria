@@ -54,6 +54,8 @@ function DetallePropiedad() {
     const ciudad = atributos.ciudad; // Nombre ciudad relacionada
     const tipoInmueble = atributos.tipo_inmueble.Tipo; // Tipo de inmueble
     const imagenes = atributos.Imagenes || []; // Array de imágenes
+
+    const moneda = atributos.Moneda === 'Peso' ? '$' : 'U$D';
   
     return (
         <div className=" mx-auto p-4 md:p-12 bg-[#F0F2ED]">
@@ -105,6 +107,7 @@ function DetallePropiedad() {
                     <DatosPropiedad
                         disponible={atributos.Disponible}
                         valor={atributos.Valor}
+                        moneda={moneda}
                         tipoOperacion={atributos.TipoOperacion}
                         Ubicacion={atributos.Ubicacion}
                     />

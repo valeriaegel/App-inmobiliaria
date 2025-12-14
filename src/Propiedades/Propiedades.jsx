@@ -20,6 +20,7 @@ function Propiedades({inmuebles, cargando, error, tipoOperacion}) {
        // Color del tag según el tipo disponibilidad  
          var tagColor = '';
          var Disponible = true;
+         var moneda = '';
                     
     return (
         <div className="container mx-auto p-4 md:p-8 bg-[#F0F2ED]">
@@ -34,6 +35,13 @@ function Propiedades({inmuebles, cargando, error, tipoOperacion}) {
                     {inmuebles.map(inmueble => {
                         const atributos = inmueble;
                         const imagenURL =  `${atributos.Imagenes?.[0]?.url}`;
+                        
+                        if (atributos.Moneda === 'Peso') {
+                            moneda='$';
+                        } else {
+                            moneda='U$D';
+                        }
+                            
                         
                             if (inmueble.Disponible) {
                         tagColor = 'bg-green-500';  
@@ -51,10 +59,9 @@ function Propiedades({inmuebles, cargando, error, tipoOperacion}) {
                                         <span className={`inline-block text-sm font-semibold px-3 py-1 rounded-full text-white mb-3 ${tagColor}`}>
                                          {Disponible ? 'Disponible' : 'No Disponible'}
                                         </span>
-
                                         <h3 className="text-xl font-semibold text-gray-900 mb-2 truncate">{atributos.Titulo || atributos.Descripcion}</h3>
-                                        <p className="text-2xl font-bold text-primary-blue mb-3">${atributos.Valor}</p>
-                                    
+                                        <p className="text-2xl font-bold text-primary-blue mb-3">
+                                            {moneda}{atributos.Valor}</p>
                                         {/* Características- Chequea que no sean nulas */}
                                         <div className="flex justify-between text-gray-600 text-sm mt-3 border-t pt-3">
                                         {atributos.Ambientes==! null&& (
