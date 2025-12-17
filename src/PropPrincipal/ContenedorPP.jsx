@@ -1,7 +1,7 @@
 import PorOperaciones from './PorOperaciones'
 import { useState, useEffect } from 'react';
 import PropRecientes from './PropRecientes'; 
-import { fetchFromStrapi } from '../api';
+import { fetchFromStrapi } from '../context/api';
 
 const API_BASE_URL = `/api/inmuebles`;
 const RECIENTES_QUERY = '?sort=publishedAt:desc&pagination[limit]=2';

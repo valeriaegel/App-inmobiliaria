@@ -9,9 +9,11 @@ import Contacto from './Contacto/Contacto.jsx';
 import Footer from './Footer.jsx';
 import DetallePropiedad from './DetallePropiedad/DetallePropiedad.jsx';
 import PropContainer from './Propiedades/PropContainer.jsx';
+import { PropertyProvider } from './context/PropertyProvider.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    <PropertyProvider>
     {/* Paso Clave 1: Envuelve toda la aplicación con Router */}
     <Router>
       {/* El Encabezado se mantiene FUERA de Routes para que se muestre en todas las páginas */}
@@ -33,5 +35,6 @@ createRoot(document.getElementById('root')).render(
       </Routes>
     <Footer />
     </Router>
+    </PropertyProvider>
   </StrictMode>,
 );

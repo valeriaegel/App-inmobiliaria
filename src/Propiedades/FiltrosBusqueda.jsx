@@ -1,20 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useContext } from 'react'; // Agregado useContext
 import { FaFilter, FaHome, FaTag, FaCity, FaSearch } from 'react-icons/fa';
-import { fetchFromStrapi } from '../api';
-
-// URLS DE LAS COLECCIONES DINÁMICAS
-const API_URL_CIUDADES = `/api/ciudads`; 
-const API_URL_TIPO_INMUEBLE = `/api/tipo-inmuebles`; 
+import { PropertyContext } from '../context/PropertyContext'; // Importación del contexto
 
 /**
  * Componente de filtros avanzados para la lista de propiedades.
  * @param {function} onFiltrosAplicados - Función que recibe la cadena de query final.
  */
 function FiltrosBusqueda({ onFiltrosAplicados }) {
-    // --- ESTADOS LOCALES ---
-    const [opcionesCiudades, setOpcionesCiudades] = useState([]);
-    const [opcionesTipos, setOpcionesTipos] = useState([]);
-    const [cargandoOpciones, setCargandoOpciones] = useState(true);
+    // --- DATOS DEL CONTEXTO ---
+    // Extraemos las opciones ya cargadas y el estado de carga global
+    const { opcionesCiudades, opcionesTipos, loading } = useContext(PropertyContext);
 
     const [filtros, setFiltros] = useState({
         ciudad: '',
@@ -25,62 +20,30 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
     // Opciones estáticas para Ambientes
     const opcionesAmbientes = ['Cualquiera', 1, 2, 3, 4, '5+']; 
 
-    // --- EFECTO: Carga de Opciones Dinámicas (Ciudades y Tipos) ---
-    useEffect(() => {
-        const fetchOpciones = async () => {
-            setCargandoOpciones(true);
-            try {
-                // Fetch de Ciudades
-                const resCiudades = await fetchFromStrapi(`${API_URL_CIUDADES}?fields=Ciudad`);
-              
-                const datosCiudades = await resCiudades.json();
-                // Fetch de Tipos de Inmueble
-                const resTipos = await fetchFromStrapi(`${API_URL_TIPO_INMUEBLE}?fields=Tipo`);
-                const datosTipos = await resTipos.json();
-
-                // Mapeamos el ID y el Nombre para usar el ID en la query de filtro
-                setOpcionesCiudades(datosCiudades.data.map(item => ({ id: item.id, nombre: item.Ciudad })));
-                setOpcionesTipos(datosTipos.data.map(item => ({ id: item.id, nombre: item.Tipo })));
-            } catch (error) {    
-                console.error("Error al cargar opciones de filtro:", error);
-            } finally {
-                setCargandoOpciones(false);
-            }
-        };
-        fetchOpciones();
-    }, []);
-
     // --- FUNCIÓN DE CONSTRUCCIÓN Y APLICACIÓN DE FILTROS ---
     const construirQuery = useCallback(() => {
         const queryParts = []; 
-        // --- Filtro por CIUDAD 
+        
         if (filtros.ciudad) {
-            // Filtra por el ID de la relación Many-to-One
             queryParts.push(`filters[ciudad][id][$eq]=${filtros.ciudad}`);
         }
-        // Filtra por TIPO DE PROPIEDAD 
+        
         if (filtros.tipoInmueble) {
-            // Filtra por el ID de la relación Many-to-One
             queryParts.push(`filters[tipo_inmueble][id][$eq]=${filtros.tipoInmueble}`);
         }
         
-        // Filtra AMBIENTES (Número/Enumeration) 
         if (filtros.ambientes && filtros.ambientes !== 'Cualquiera') {
              if (filtros.ambientes.includes('+')) {
-                // Si es '5+', usamos mayor o igual ($gte)
                 const valor = parseInt(filtros.ambientes.replace('+', ''), 10);
                 queryParts.push(`filters[Ambientes][$gte]=${valor}`);
             } else {
-                // Si es un número exacto, usamos igual ($eq)
                 queryParts.push(`filters[Ambientes][$eq]=${filtros.ambientes}`);
             }
         }
-        // Devuelve la cadena completa con los filtros
         return queryParts.join('&');
     }, [filtros]);
 
     const handleFilterChange = (campo, valor) => {
-        // Establece el valor o una cadena vacía si es una opción "neutral"
         const valorLimpio = valor === 'Todas' || valor === 'Todos' || valor === 'Cualquiera' || valor === '' ? '' : valor;
         setFiltros(prev => ({
             ...prev,
@@ -102,7 +65,6 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
         onFiltrosAplicados(query); 
     };
     
-    
     return (
         <div className="bg-[#C6CFCC] p-6 rounded-xl shadow-lg mb-8 border border-gray-100">
             <div className="flex justify-between items-center mb-4 border-b pb-4">
@@ -117,57 +79,64 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                 </button>
             </div>
 
-            {cargandoOpciones ? (
-                <div className="text-center text-sm text-gray-500">Cargando opciones de filtro...</div>
+            {/* Usamos el loading del Contexto */}
+            {loading ? (
+                <div className="text-center text-sm text-gray-500">Preparando opciones de búsqueda...</div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    {/* 1. CIUDAD  */}
+                    {/* 1. CIUDAD */}
                     <div className="col-span-1">
-                        <label className="text-sm font-medium text-gray-700 mb-1 items-center"><FaCity className="mr-1" /> Ciudad</label>
+                        <label className="text-sm font-medium text-gray-700 mb-1 flex items-center"><FaCity className="mr-1" /> Ciudad</label>
                         <select 
                             value={filtros.ciudad}
                             onChange={(e) => handleFilterChange('ciudad', e.target.value)}
                             className="w-full p-2 border border-gray-400 rounded-md focus:ring-primary-blue focus:border-primary-blue"
                         >
                             <option value="">Todas</option>
-                            {opcionesCiudades.map(op => <option key={op.id} value={op.id}>{op.nombre}</option>)}
+                            {opcionesCiudades.map(op => (
+                                <option key={op.id} value={op.id}>{op.nombre}</option>
+                            ))}
                         </select>
                     </div>
 
-                    {/* 2. TIPO DE PROPIEDAD*/}
+                    {/* 2. TIPO DE PROPIEDAD */}
                     <div className="col-span-1">
-                        <label className="text-sm font-medium text-gray-700 mb-1 items-center"><FaTag className="mr-1" /> Tipo de Propiedad</label>
+                        <label className="text-sm font-medium text-gray-700 mb-1 flex items-center"><FaTag className="mr-1" /> Tipo de Propiedad</label>
                         <select 
                             value={filtros.tipoInmueble}
                             onChange={(e) => handleFilterChange('tipoInmueble', e.target.value)}
                             className="w-full p-2 border border-gray-400 rounded-md focus:ring-primary-blue focus:border-primary-blue"
                         >
                             <option value="">Todos</option>
-                            {opcionesTipos.map(op => <option key={op.id} value={op.id}>{op.nombre}</option>)}
+                            {opcionesTipos.map(op => (
+                                <option key={op.id} value={op.id}>{op.nombre}</option>
+                            ))}
                         </select>
                     </div>
 
                     {/* 3. AMBIENTES */}
                     <div className="col-span-1">
-                        <label className="text-sm font-medium text-gray-700 mb-1 items-center"><FaHome className="mr-1" /> Ambientes</label>
+                        <label className="text-sm font-medium text-gray-700 mb-1 flex items-center"><FaHome className="mr-1" /> Ambientes</label>
                         <select 
                             value={filtros.ambientes}
                             onChange={(e) => handleFilterChange('ambientes', e.target.value)}
-                            className="w-full p-2 border border-gray-400 rounded-md focus:ring-gray-500 focus:border-gray-300 "
+                            className="w-full p-2 border border-gray-400 rounded-md focus:ring-gray-500 focus:border-gray-300"
                         >
                             {opcionesAmbientes.map(op => <option key={op} value={op}>{op}</option>)}
                         </select>
                     </div>
+
+                    {/* BOTÓN BUSCAR */}
                     <div className="col-span-1 md:col-span-1 flex md:items-end mt-4 md:mt-0">
-                    <button
-                        onClick={handleBuscarClick}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 flex items-center justify-center space-x-2 mt-6 md:mt-0"
-                    >
-                        <FaSearch />
-                        <span>Buscar</span>
-                    </button>
+                        <button
+                            onClick={handleBuscarClick}
+                            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 flex items-center justify-center space-x-2"
+                        >
+                            <FaSearch />
+                            <span>Buscar</span>
+                        </button>
+                    </div>
                 </div>
-         </div>
             )}
         </div>
     );
