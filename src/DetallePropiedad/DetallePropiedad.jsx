@@ -1,17 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react'; // Agregado useContext
 import { useParams } from 'react-router-dom';
 import { FaMapMarkerAlt, FaCheckCircle } from 'react-icons/fa';
-import { Carousel } from 'react-responsive-carousel'; // Importación del Carrusel y sus estilos
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // Estilos base del carrusel
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import FichaTecnica from './FichaTecnica';
 import DatosPropiedad from './DatosPropiedad';
-import { fetchFromStrapi } from '../api';
-
-/*
-    * Componente para mostrar el detalle de una propiedad inmobiliaria.
-*/
-const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_BASE_URL;
-const DEEP_POPULATE = 'populate=*';
+import { fetchFromStrapi } from '../context/api';
+import { PropertyContext } from '../context/PropertyContext';
 
 function DetallePropiedad() {
     const { documentId } = useParams();
@@ -19,76 +14,84 @@ function DetallePropiedad() {
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const API_URL = `/api/inmuebles/${documentId}?${DEEP_POPULATE}`;
-        console.log("Fetching from URL:", API_URL);
+    // 1. Consumimos los datos globales
+    const { allInmuebles } = useContext(PropertyContext);
 
+    useEffect(() => {
         const obtenerDetalle = async () => {
-            setCargando(true);
-          
+            // 2. BUSQUEDA INSTANTÁNEA: Primero revisamos si ya lo tenemos en el contexto
+            const propiedadCache = allInmuebles.find(p => p.documentId === documentId);
+            
+            if (propiedadCache) {
+                setInmueble(propiedadCache);
+                setCargando(false);
+                // No retornamos aquí para permitir que el fetch actualice por si hubo cambios
+            }
+
+            const API_URL = `/api/inmuebles/${documentId}?populate=*`;
+            
             try {
-               const respuesta = await fetchFromStrapi(API_URL);
-                if (!respuesta.ok) {
-                    throw new Error(`Error HTTP: ${respuesta.status}`);
-                }
+                const respuesta = await fetchFromStrapi(API_URL);
+                if (!respuesta.ok) throw new Error(`Error HTTP: ${respuesta.status}`);
+                
                 const datos = await respuesta.json();   
-                const objetoInmueble = datos.data;
-                setInmueble(objetoInmueble);
+                setInmueble(datos.data);
             } catch (err) {
                 console.error("Error al obtener el detalle:", err);
-                setError("No se pudo cargar el detalle de la propiedad.");
+                // Solo mostramos error si no logramos cargar nada de la caché
+                if (!propiedadCache) setError("No se pudo cargar el detalle.");
             } finally {
                 setCargando(false);
             }
         };
+
         obtenerDetalle();
-    }, [documentId]);
+    }, [documentId, allInmuebles]);
           
-    // Manejo de estados
-    if (cargando) return <div className="text-center p-20 text-xl">Cargando detalles de la propiedad...</div>;
+    if (cargando && !inmueble) return <div className="text-center p-20 text-xl">Cargando detalles...</div>;
     if (error) return <div className="text-center p-20 text-xl font-bold text-red-600">{error}</div>;
     if (!inmueble) return <div className="text-center p-20 text-xl">Propiedad no encontrada.</div>;
 
     const atributos = inmueble; 
-    const servicios = atributos.servicios || []; // Mapeo de servicios
-    const ciudad = atributos.ciudad; // Nombre ciudad relacionada
-    const tipoInmueble = atributos.tipo_inmueble.Tipo; // Tipo de inmueble
-    const imagenes = atributos.Imagenes || []; // Array de imágenes
+    const servicios = atributos.servicios || [];
+    const ciudad = atributos.ciudad; 
+    const tipoInmueble = atributos.tipo_inmueble?.Tipo; // Corregido acceso opcional
+    const imagenes = atributos.Imagenes || [];
 
     const moneda = atributos.Moneda === 'Peso' ? '$' : 'U$D';
   
     return (
-        <div className=" mx-auto p-4 md:p-12 bg-[#F0F2ED]">
+        <div className="mx-auto p-4 md:p-12 bg-[#F0F2ED]">
             <h1 className="text-4xl font-extrabold text-gray-900 mb-2">{atributos.Titulo}</h1>
             <p className="text-xl text-gray-600 mb-6 flex items-center space-x-2">
                 <FaMapMarkerAlt />
                 <span>{atributos.Ubicacion} {ciudad ? `— ${ciudad.Ciudad}` : ''}</span>
             </p>
             
-                <p className="text-xl text-gray-600 mb-6 flex items-center space-x-2">
-                <span>{tipoInmueble.Tipo} </span>
-            </p>
+            {tipoInmueble && (
+                <p className="text-xl text-gray-600 mb-6">
+                    <span>{tipoInmueble}</span>
+                </p>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Columna Izquierda: Carrusel de Imágenes y Descripción */}
                 <div className="lg:col-span-2">
-                    {/* IMPLEMENTACIÓN DEL CARRUSEL 🎠 */}
                     <div className="rounded-lg shadow-xl overflow-hidden mb-6">
                         {imagenes.length > 0 ? (
                             <Carousel 
-                                showArrows={true} // Mostrar flechas de navegación
-                                showThumbs={false} // Mostrar miniaturas
-                                showStatus={false} // Ocultar el estado (ej: "1 de 5")
-                                infiniteLoop={true} // Bucle infinito
-                                autoPlay={false} // No autoejecutar
-                                thumbWidth={100}
+                                showArrows={true} 
+                                showThumbs={false} 
+                                showStatus={false} 
+                                infiniteLoop={true} 
+                                autoPlay={true}
                             >
                                 {imagenes.map((img) => (
                                     <div key={img.id}>
                                         <img 
-                                            src={`${img.url}`}                                             
+                                            // 3. OPTIMIZACIÓN DE IMAGEN: Usar formato 'large' o 'medium' en lugar del original de 2MB
+                                            src={img.formats?.large?.url || img.url} 
                                             alt={atributos.Titulo} 
-                                            className="w-full h-[500px] object-cover" 
+                                            className="w-full h-[500px] object-contain" 
                                         />
                                     </div>
                                 ))}
@@ -98,12 +101,10 @@ function DetallePropiedad() {
                         )}
                     </div>       
                     <h2 className="text-3xl font-bold mb-4 text-gray-800 border-b pb-2">Descripción</h2>
-                    <p className="text-gray-700 leading-relaxed mb-8">{atributos.Descipcion}</p>
+                    <p className="text-gray-700 leading-relaxed mb-8">{atributos.Descipcion || atributos.Descripcion}</p>
                 </div>
 
-                {/* Columna Derecha: Datos Clave y Comodidades*/}
                 <div className="lg:col-span-1 space-y-6">
-                    {/* PRECIO Y OPERACIÓN */}
                     <DatosPropiedad
                         disponible={atributos.Disponible}
                         valor={atributos.Valor}
@@ -111,7 +112,6 @@ function DetallePropiedad() {
                         tipoOperacion={atributos.TipoOperacion}
                         Ubicacion={atributos.Ubicacion}
                     />
-                    {/* FICHA TÉCNICA */}
                     <FichaTecnica
                         superficieTotal={atributos.SuperficieTotal}
                         superficieConstruida={atributos.SuperficieConstruida}
@@ -120,8 +120,7 @@ function DetallePropiedad() {
                         banos={atributos.Banos}
                     />
                    
-                    {/* COMODIDADES/SERVICIOS */}
-                    {atributos.servicios && atributos.servicios.length > 0 &&(
+                    {servicios.length > 0 && (
                     <div className="bg-gray-50 p-6 rounded-lg shadow-md ">
                         <h3 className="text-2xl font-semibold mb-4 text-gray-800">Servicios</h3>
                         <div className="grid grid-cols-2 gap-3 text-sm">
@@ -133,7 +132,6 @@ function DetallePropiedad() {
                         </div>
                     </div>
                     )}
-
                 </div>
             </div>
         </div>
@@ -141,6 +139,3 @@ function DetallePropiedad() {
 }
 
 export default DetallePropiedad;
-
-
-
