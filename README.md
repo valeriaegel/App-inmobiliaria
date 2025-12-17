@@ -1,16 +1,61 @@
-# React + Vite
+# 🏡 Pagina Web Inmobiliaria
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto tiene como objetivo es mostrar las propiedades disponibles en alquiler y venta, los servicios de la empresa y ofrecer formularios de contacto.
 
-Currently, two official plugins are available:
+Forma parte de una arquitectura de microservicios, donde se comunica con el API Backend (NestJS) para obtener toda la información dinámica.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Tecnologías Utilizadas
 
-## React Compiler
+| Tecnología | Versión / Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Framework Principal** | React v18+ | Biblioteca para construir la interfaz de usuario. |
+| **Bundler / Build** | Vite | Herramienta de construcción rápida y servidor de desarrollo. |
+| **Lenguaje** | JavaScript (ES6+) | Lenguaje principal de desarrollo. |
+| **Estilos** | Tailwind CSS | Framework de CSS *utility-first* para un diseño rápido y responsive. |
+| **API** | Fetch / Axios | Gestión de peticiones HTTP al backend. |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ⚙️ Primeros Pasos
 
-## Expanding the ESLint configuration
+Sigue estos pasos para poner en marcha el proyecto en tu entorno de desarrollo local.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 1. Clonación del Repositorio
+
+Asegúrate de clonar este repositorio (si aún no lo has hecho)
+
+```bash
+git clone [URL_DE_TU_REPOSITORIO]
+```
+
+### 2. Instalación de Dependencias
+Ejecuta el siguiente comando para instalar todos los paquetes necesarios definidos en package.json:
+```bash
+npm install
+```
+
+### 3. Configuración de Variables de Entorno
+
+Este proyecto requiere que el API Backend esté corriendo y acceso a los servicios de Google Maps. Debes configurar las siguientes variables de entorno en el archivo `.env` de la raíz.
+
+Crea un archivo llamado **`.env`** en la carpeta principal (`frontend/`) y añade las siguientes variables:
+
+```dotenv
+# 1. URL base de tu API NestJS y clave token (API restringida)
+VITE_STRAPI_BASE_URL="http://localhost:3000/api"
+
+VITE_STRAPI_API_TOKEN="TU_CLAVE_TOKEN"
+
+# 2. Clave de la API de Google Maps Platform (necesaria para servicios de ubicación)
+VITE_GOOGLE_MAPS_API_KEY="TU_CLAVE_AQUI"
+```
+**Nota:** Las variables de entorno en Vite deben comenzar con VITE_.
+
+### 4. Ejecución del Servidor de Desarrollo
+Una vez instaladas las dependencias y configurada la variable de entorno, puedes iniciar el servidor de desarrollo: 
+```bash
+npm run dev
+# o
+yarn dev
+```
+La pagina web estará disponible típicamente en http://localhost:5173.
+
+---
