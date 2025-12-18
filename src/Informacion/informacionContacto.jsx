@@ -36,7 +36,7 @@ function InformacionContacto() {
                             +54 9 3442-666333
                         </>
                     }
-                    enlace={`tel:+5493442666333`}
+                    enlace={ `https://wa.me/+5493442666333?text=¡Hola%20Cristina!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20realizar%20una%20consulta.%20Mi%20nombre%20es...`}
                 />
                 
                 {/* Ítem: Email */}

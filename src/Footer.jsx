@@ -36,7 +36,7 @@ function Footer() {
                         {/* Teléfono */}         
                             <li className="flex items-center space-x-2 text-[#253E57]">
                                 <FaPhone className={colorAzul} />
-                                <a href={`tel:${telefono}`} className="hover:text-primary-blue">{telefono}</a>
+                                <a href={`https://wa.me/+5493442666333?text=¡Hola%20Cristina!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20realizar%20una%20consulta.%20Mi%20nombre%20es...`} className="hover:text-primary-blue">{telefono}</a>
                             </li>
                         {/* Email */}
                             <li className="flex items-center space-x-2 text-[#253E57]">
