@@ -24,7 +24,7 @@ function Encabezado() {
             <Link to="/propiedades/Alquiler" className="block md:inline-block px-4 py-2 hover:bg-gray-100 md:hover:bg-transparent hover:text-primary-blue transition duration-200" onClick={toggleMenu}>
                  Alquileres
             </Link>
-            <Link to="/Servicios" className="block md:inline-block px-4 py-2 hover:bg-gray-100 md:hover:bg-transparent hover:text-primary-blue transition duration-200" onClick={toggleMenu}>
+            <Link to="/servicios" className="block md:inline-block px-4 py-2 hover:bg-gray-100 md:hover:bg-transparent hover:text-primary-blue transition duration-200" onClick={toggleMenu}>
                  Servicios
             </Link>
         </>
@@ -49,7 +49,7 @@ function Encabezado() {
                     {/* 3. Contenedor del Botón Consultar y Menú Hamburguesa */}
                     <div className="flex items-center space-x-4">
                         {/* Botón Consultar */}
-                        <Link to="/Contacto">
+                        <Link to="/contacto">
                             <button className="bg-[#253E57] hover:bg-[#AAAAA8] text-[#A3C4C9] hover:text-[#253E57] font-semibold py-2 px-6 rounded-md transition duration-200 shadow-md">
                                 Consultar 
                             </button>
