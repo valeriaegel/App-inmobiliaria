@@ -58,7 +58,7 @@ function DetallePropiedad() {
     const tipoInmueble = atributos.tipo_inmueble?.Tipo; // Corregido acceso opcional
     const imagenes = atributos.Imagenes || [];
 
-    const moneda = atributos.Moneda === 'Peso' ? '$' : 'U$D';
+    const moneda = atributos.Moneda === 'Peso' ? '$' : 'U$S';
   
     return (
         <div className="mx-auto p-4 md:p-12 bg-[#F0F2ED]">
