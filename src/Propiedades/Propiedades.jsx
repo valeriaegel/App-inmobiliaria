@@ -39,7 +39,7 @@ function Propiedades({inmuebles, cargando, error, tipoOperacion}) {
                         if (atributos.Moneda === 'Peso') {
                             moneda='$';
                         } else {
-                            moneda='U$D';
+                            moneda='U$S';
                         }
                             
                         
