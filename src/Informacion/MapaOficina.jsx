@@ -12,7 +12,8 @@ function MapaOficina() {
     const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY; 
 
     return (
-      <div className='h-full w-full min-h-[300px] md:min-h-[400px] rounded-lg overflow-hidden shadow-md'>
+    <div className='h-full w-full min-h-[300px] md:min-h-[400px] rounded-2xl overflow-hidden shadow-lg border border-gray-200'>
+          
            <APIProvider apiKey={API_KEY}>
               <Map style={{ width: '100%', height: '100%' }} defaultCenter={position} defaultZoom={15} mapId="UBICACION_OFICINA">
                 <AdvancedMarker position={position} />

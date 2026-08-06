@@ -2,6 +2,8 @@ import { useContext } from 'react'; // Cambiamos useEffect por useContext
 import PorOperaciones from './PorOperaciones';
 import PropRecientes from './PropRecientes';
 import { PropertyContext } from '../context/PropertyContext'; // Importamos el contexto
+import MapaPropiedades from './MapaPropiedades';
+
 
 function ContenedorPP() {
     // Obtenemos datos globales
@@ -32,9 +34,10 @@ function ContenedorPP() {
                         error={error}
                     />
                 </div>
+            <MapaPropiedades />
             </div>
         </section>
     );
 }
-
+            
 export default ContenedorPP;

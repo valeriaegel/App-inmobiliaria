@@ -1,12 +1,20 @@
-import { Link } from 'react-router-dom'
-import { FaBed, FaBath, FaHome } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaBed, FaBath, FaHome, FaMapMarkerAlt } from 'react-icons/fa';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
-/*
-  * Componente para mostrar una lista de propiedades inmobiliarias (FILTRADAS POR OPRACION).
-*/
+// Solución para que los pines de Leaflet se vean correctamente en Vite/React
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+let DefaultIcon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow,
+    iconAnchor: [12, 41]
+});
+L.Marker.prototype.options.icon = DefaultIcon;
 
-function Propiedades({inmuebles, cargando, error, tipoOperacion}) {
-    //recibe como props el tipo de operacion para filtrar las propiedades
+function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
     if (cargando) {
         return <div className="text-center p-12 text-xl font-semibold text-gray-600">Cargando Propiedades...</div>;
     }
@@ -17,76 +25,98 @@ function Propiedades({inmuebles, cargando, error, tipoOperacion}) {
     const titulo = tipoOperacion 
         ? `Propiedades en ${tipoOperacion.toLowerCase()}` 
         : 'Todas las Propiedades Disponibles';
-       // Color del tag según el tipo disponibilidad  
-         var tagColor = '';
-         var Disponible = true;
-         var moneda = '';
-                    
+
+    // Coordenadas centrales para el mapa (Concepción del Uruguay)
+    const centerPosition = [-32.4825, -58.2372];
+
     return (
-        <div className="container mx-auto p-4 md:p-8 bg-[#F0F2ED]">
-        <h2 className="text-3xl font-semibold mb-8 text-gray-800 border-b pb-2 text-center">
+        <div className="container mx-auto p-4 md:p-8 bg-gray-50 rounded-xl">
+            <h2 className="text-3xl font-bold mb-8 text-[#253E57] border-b-2 border-gray-200 pb-4 text-center">
                 {titulo} 
             </h2>
-            
-         {inmuebles.length === 0 ? (
+
+            {inmuebles.length === 0 ? (
                 <p className="text-center text-gray-500 mt-10">No hay inmuebles cargados que coincidan con la búsqueda.</p>
             ) : (
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 bg-[#F0F2ED]">
-                    {inmuebles.map(inmueble => {
-                        const atributos = inmueble;
-                        const imagenURL =  `${atributos.Imagenes?.[0]?.url}`;
-                        
-                        if (atributos.Moneda === 'Peso') {
-                            moneda='$';
-                        } else {
-                            moneda='U$S';
-                        }
-                            
-                        
-                            if (inmueble.Disponible) {
-                        tagColor = 'bg-green-500';  
-                        Disponible= true;
-                    }
-                        else{
-                        tagColor = 'bg-red-500';
-                        Disponible= false;
-                    };
-                    const documentId = inmueble.documentId;
-                        return (
-                            <div key={inmueble.id} className="bg-[#F0F2ED] rounded-xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden">
-                                <img src={imagenURL} alt={atributos.Titulo || 'Inmueble'} className="w-full h-48 object-cover" />
-                                <div className="p-4">
-                                        <span className={`inline-block text-sm font-semibold px-3 py-1 rounded-full text-white mb-3 ${tagColor}`}>
-                                         {Disponible ? 'Disponible' : 'No Disponible'}
-                                        </span>
-                                        <h3 className="text-xl font-semibold text-gray-900 mb-2 truncate">{atributos.Titulo || atributos.Descripcion}</h3>
-                                        <p className="text-2xl font-bold text-primary-blue mb-3">
-                                            {moneda}{atributos.Valor}</p>
-                                        {/* Características- Chequea que no sean nulas */}
-                                        <div className="flex justify-between text-gray-600 text-sm mt-3 border-t pt-3">
-                                        {atributos.Ambientes==! null&& (
-                                            <p className="flex items-center space-x-1">
-                                                <FaHome /> <span>{atributos.Ambientes} Amb.</span> </p>)}
-                                        {atributos.Dormitorios ==! null && (
-                                            <p className="flex items-center space-x-1">
-                                                <FaBed /> <span>{atributos.Dormitorios} Dor.</span>  </p>)}
-                                        {atributos.Banos ==! null && (
-                                        <p className="flex items-center space-x-1">
-                                            <FaBath /> <span>{atributos.Banos} Baños</span></p>)}
+                <div className="flex flex-col gap-8">
+                    
+
+                    {/* GRILLA DE TARJETAS REDISEÑADA */}
+                    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {inmuebles.map(inmueble => {
+                            const atributos = inmueble;
+                            const imagenURL = `${atributos.Imagenes?.[0]?.url}`;
+                            const moneda = atributos.Moneda === 'Peso' ? '$' : 'U$S';
+                            const Disponible = inmueble.Disponible;
+                            const documentId = inmueble.documentId;
+
+                            return (
+                                <div key={inmueble.id} className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col group">
+                                    
+                                    {/* Contenedor de Imagen con Tag superpuesto */}
+                                    <div className="relative overflow-hidden h-56">
+                                        <img 
+                                            src={imagenURL} 
+                                            alt={atributos.Titulo || 'Inmueble'} 
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                                        />
+                                        <div className="absolute top-3 left-3 flex gap-2">
+                                            <span className={`px-3 py-1 text-xs font-bold rounded-md shadow-sm text-white ${Disponible ? 'bg-green-600' : 'bg-red-500'}`}>
+                                                {Disponible ? 'Disponible' : 'No Disponible'}
+                                            </span>
+                                            {atributos.TipoOperacion && (
+                                                <span className="px-3 py-1 text-xs font-bold rounded-md shadow-sm bg-[#253E57] text-white">
+                                                    {atributos.TipoOperacion}
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
 
-                                    <Link 
-                                      to={`/propiedades/detalle/${documentId}`} // <-- Usamos el ID del inmueble
-                                      className="mt-4 w-full bg-[#253E57] hover:bg-[#AAAAA8] text-gray-100 hover:text-[#253E57] font-bold py-2 px-4 rounded transition duration-200 block text-center" >
-                                        Ver Detalles
-                                    </Link>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                                    {/* Cuerpo de la Tarjeta */}
+                                    <div className="p-5 flex flex-col flex-grow">
+                                        <h3 className="text-lg font-bold text-gray-800 mb-1 truncate" title={atributos.Titulo || atributos.Descripcion}>
+                                            {atributos.Titulo || atributos.Descripcion}
+                                        </h3>
+                                        
+                                        {/* Precio destacado */}
+                                        <p className="text-2xl font-extrabold text-[#253E57] mb-4">
+                                            {moneda} {atributos.Valor}
+                                        </p>
 
-                
+                                        {/* Amenities */}
+                                        <div className="flex justify-between items-center text-gray-500 text-sm mt-auto border-t border-gray-100 pt-4 mb-4">
+                                            {atributos.Ambientes != null && (
+                                                <div className="flex flex-col items-center" title="Ambientes">
+                                                    <FaHome className="text-gray-400 mb-1 text-lg" />
+                                                    <span className="font-semibold">{atributos.Ambientes} Amb.</span>
+                                                </div>
+                                            )}
+                                            {atributos.Dormitorios != null && (
+                                                <div className="flex flex-col items-center" title="Dormitorios">
+                                                    <FaBed className="text-gray-400 mb-1 text-lg" />
+                                                    <span className="font-semibold">{atributos.Dormitorios} Dor.</span>
+                                                </div>
+                                            )}
+                                            {atributos.Banos != null && (
+                                                <div className="flex flex-col items-center" title="Baños">
+                                                    <FaBath className="text-gray-400 mb-1 text-lg" />
+                                                    <span className="font-semibold">{atributos.Banos} Baños</span>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <Link 
+                                            to={`/propiedades/detalle/${documentId}`} 
+                                            className="w-full bg-[#253E57] hover:bg-[#1a2d40] text-white font-bold py-3 px-4 rounded-lg transition duration-200 block text-center shadow-sm"
+                                        >
+                                            Ver Detalles
+                                        </Link>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
             )}
         </div>
     );
