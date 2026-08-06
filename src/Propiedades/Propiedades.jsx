@@ -1,121 +1,156 @@
 import { Link } from 'react-router-dom';
-import { FaBed, FaBath, FaHome, FaMapMarkerAlt } from 'react-icons/fa';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-
-// Solución para que los pines de Leaflet se vean correctamente en Vite/React
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
+import { FaBed, FaBath, FaHome, FaArrowRight, FaSearchLocation } from 'react-icons/fa';
 
 function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
     if (cargando) {
-        return <div className="text-center p-12 text-xl font-semibold text-gray-600">Cargando Propiedades...</div>;
+        return (
+            <div className="container mx-auto px-4 py-16 text-center">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#0F766E] mb-4"></div>
+                <p className="text-slate-500 font-medium">Cargando propiedades disponibles...</p>
+            </div>
+        );
     }
+
     if (error) {
-        return <div className="text-center p-12 text-xl font-bold text-red-600">{error}</div>;
+        return (
+            <div className="container mx-auto px-4 py-16 text-center">
+                <div className="bg-rose-50 border border-rose-200 text-rose-600 p-6 rounded-3xl max-w-md mx-auto font-bold">
+                    {error}
+                </div>
+            </div>
+        );
     }
 
     const titulo = tipoOperacion 
-        ? `Propiedades en ${tipoOperacion.toLowerCase()}` 
-        : 'Todas las Propiedades Disponibles';
-
-    // Coordenadas centrales para el mapa (Concepción del Uruguay)
-    const centerPosition = [-32.4825, -58.2372];
+        ? `Propiedades en ${tipoOperacion}` 
+        : 'Catálogo Completo de Propiedades';
 
     return (
-        <div className="container mx-auto p-4 md:p-8 bg-gray-50 rounded-xl">
-            <h2 className="text-3xl font-bold mb-8 text-[#253E57] border-b-2 border-gray-200 pb-4 text-center">
-                {titulo} 
-            </h2>
+        <div className="container mx-auto px-4 md:px-8 py-8">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 border-b border-slate-200 pb-4">
+                <h2 className="text-3xl font-extrabold text-[#1E293B] tracking-tight">
+                    {titulo} 
+                </h2>
+                <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-[#0F766E]/10 text-[#0F766E]">
+                    {inmuebles.length} {inmuebles.length === 1 ? 'propiedad encontrada' : 'propiedades encontradas'}
+                </span>
+            </div>
 
             {inmuebles.length === 0 ? (
-                <p className="text-center text-gray-500 mt-10">No hay inmuebles cargados que coincidan con la búsqueda.</p>
+                <div className="bg-white p-12 rounded-3xl shadow-sm border border-slate-100 text-center max-w-lg mx-auto my-8">
+                    <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
+                        <FaSearchLocation />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">Sin resultados disponibles</h3>
+                    <p className="text-slate-500 text-sm">
+                        No se encontraron inmuebles que coincidan con los filtros seleccionados. Prueba modificar la búsqueda.
+                    </p>
+                </div>
             ) : (
-                <div className="flex flex-col gap-8">
-                    
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    {inmuebles.map(inmueble => {
+                        const atributos = inmueble;
+                        const imagenURL = atributos.Imagenes?.[0]?.url;
+                        const moneda = atributos.Moneda === 'Peso' ? '$' : 'U$S';
+                        const Disponible = inmueble.Disponible;
+                        const documentId = inmueble.documentId;
+                        const isVenta = atributos.TipoOperacion?.toLowerCase() === 'venta';
 
-                    {/* GRILLA DE TARJETAS REDISEÑADA */}
-                    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        {inmuebles.map(inmueble => {
-                            const atributos = inmueble;
-                            const imagenURL = `${atributos.Imagenes?.[0]?.url}`;
-                            const moneda = atributos.Moneda === 'Peso' ? '$' : 'U$S';
-                            const Disponible = inmueble.Disponible;
-                            const documentId = inmueble.documentId;
-
-                            return (
-                                <div key={inmueble.id} className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col group">
-                                    
-                                    {/* Contenedor de Imagen con Tag superpuesto */}
-                                    <div className="relative overflow-hidden h-56">
+                        return (
+                            <div 
+                                key={inmueble.id} 
+                                className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col justify-between group transform hover:-translate-y-1.5"
+                            >
+                                {/* Imagen con badges superpuestos */}
+                                <div className="relative overflow-hidden h-60 bg-slate-100">
+                                    {imagenURL ? (
                                         <img 
                                             src={imagenURL} 
-                                            alt={atributos.Titulo || 'Inmueble'} 
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                                            alt={atributos.Titulo || 'Propiedad'} 
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                         />
-                                        <div className="absolute top-3 left-3 flex gap-2">
-                                            <span className={`px-3 py-1 text-xs font-bold rounded-md shadow-sm text-white ${Disponible ? 'bg-green-600' : 'bg-red-500'}`}>
-                                                {Disponible ? 'Disponible' : 'No Disponible'}
-                                            </span>
-                                            {atributos.TipoOperacion && (
-                                                <span className="px-3 py-1 text-xs font-bold rounded-md shadow-sm bg-[#253E57] text-white">
-                                                    {atributos.TipoOperacion}
-                                                </span>
-                                            )}
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-slate-400">
+                                            <FaHome className="text-5xl opacity-30" />
                                         </div>
+                                    )}
+
+                                    {/* Badges Flotantes */}
+                                    <div className="absolute top-3 left-3 flex flex-wrap gap-2 z-10">
+                                        <span className={`px-3 py-1 text-xs font-extrabold rounded-full shadow-md text-white ${
+                                            Disponible ? 'bg-emerald-600' : 'bg-slate-500'
+                                        }`}>
+                                            {Disponible ? 'Disponible' : 'Reservado'}
+                                        </span>
+                                        {atributos.TipoOperacion && (
+                                            <span className={`px-3 py-1 text-xs font-extrabold rounded-full shadow-md text-white ${
+                                                isVenta ? 'bg-[#1E293B]' : 'bg-[#0F766E]'
+                                            }`}>
+                                                {atributos.TipoOperacion}
+                                            </span>
+                                        )}
                                     </div>
 
-                                    {/* Cuerpo de la Tarjeta */}
-                                    <div className="p-5 flex flex-col flex-grow">
-                                        <h3 className="text-lg font-bold text-gray-800 mb-1 truncate" title={atributos.Titulo || atributos.Descripcion}>
-                                            {atributos.Titulo || atributos.Descripcion}
-                                        </h3>
-                                        
-                                        {/* Precio destacado */}
-                                        <p className="text-2xl font-extrabold text-[#253E57] mb-4">
-                                            {moneda} {atributos.Valor}
-                                        </p>
+                                    {/* Precio Flotante */}
+                                    <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-2xl shadow-xl border border-white/60 text-[#1E293B] font-extrabold text-xs sm:text-sm">
+                                        {(atributos.Valor != null && atributos.Valor > 0 && atributos.Valor !== '') 
+                                            ? `${moneda} ${atributos.Valor}` 
+                                            : 'Consultar valor'}
+                                    </div>
+                                </div>
 
-                                        {/* Amenities */}
-                                        <div className="flex justify-between items-center text-gray-500 text-sm mt-auto border-t border-gray-100 pt-4 mb-4">
+                                {/* Cuerpo de la Tarjeta */}
+                                <div className="p-6 flex flex-col flex-grow justify-between">
+                                    <div>
+                                        <h3 
+                                            className="text-lg font-bold text-slate-800 mb-2 line-clamp-1 group-hover:text-[#0F766E] transition-colors" 
+                                            title={atributos.Titulo || atributos.Descripcion}
+                                        >
+                                            {atributos.Titulo || atributos.Descripcion || 'Propiedad Inmobiliaria'}
+                                        </h3>
+
+                                        {atributos.Descripcion && (
+                                            <p className="text-slate-500 text-xs line-clamp-2 mb-4 leading-relaxed">
+                                                {atributos.Descripcion}
+                                            </p>
+                                        )}
+                                    </div>
+                                    
+                                    <div>
+                                        {/* Ficha de amenities */}
+                                        <div className="flex justify-around items-center text-slate-500 text-xs border-t border-slate-100 pt-4 mb-5">
                                             {atributos.Ambientes != null && (
-                                                <div className="flex flex-col items-center" title="Ambientes">
-                                                    <FaHome className="text-gray-400 mb-1 text-lg" />
-                                                    <span className="font-semibold">{atributos.Ambientes} Amb.</span>
+                                                <div className="flex flex-col items-center gap-1" title="Ambientes">
+                                                    <FaHome className="text-[#0F766E] text-base" />
+                                                    <span className="font-semibold text-slate-700">{atributos.Ambientes} Amb.</span>
                                                 </div>
                                             )}
                                             {atributos.Dormitorios != null && (
-                                                <div className="flex flex-col items-center" title="Dormitorios">
-                                                    <FaBed className="text-gray-400 mb-1 text-lg" />
-                                                    <span className="font-semibold">{atributos.Dormitorios} Dor.</span>
+                                                <div className="flex flex-col items-center gap-1" title="Dormitorios">
+                                                    <FaBed className="text-[#0F766E] text-base" />
+                                                    <span className="font-semibold text-slate-700">{atributos.Dormitorios} Dor.</span>
                                                 </div>
                                             )}
                                             {atributos.Banos != null && (
-                                                <div className="flex flex-col items-center" title="Baños">
-                                                    <FaBath className="text-gray-400 mb-1 text-lg" />
-                                                    <span className="font-semibold">{atributos.Banos} Baños</span>
+                                                <div className="flex flex-col items-center gap-1" title="Baños">
+                                                    <FaBath className="text-[#0F766E] text-base" />
+                                                    <span className="font-semibold text-slate-700">{atributos.Banos} Baños</span>
                                                 </div>
                                             )}
                                         </div>
 
                                         <Link 
                                             to={`/propiedades/detalle/${documentId}`} 
-                                            className="w-full bg-[#253E57] hover:bg-[#1a2d40] text-white font-bold py-3 px-4 rounded-lg transition duration-200 block text-center shadow-sm"
+                                            className="w-full bg-[#1E293B] hover:bg-[#0F766E] text-white font-bold py-3 px-4 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-xs shadow-md group-hover:shadow-lg"
                                         >
-                                            Ver Detalles
+                                            <span>Ver más detalles</span>
+                                            <FaArrowRight className="text-xs group-hover:translate-x-1 transition-transform" />
                                         </Link>
                                     </div>
                                 </div>
-                            );
-                        })}
-                    </div>
+                            </div>
+                        );
+                    })}
                 </div>
             )}
         </div>
