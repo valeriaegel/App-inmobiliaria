@@ -10,6 +10,7 @@ import Footer from './Footer.jsx';
 import DetallePropiedad from './DetallePropiedad/DetallePropiedad.jsx';
 import PropContainer from './Propiedades/PropContainer.jsx';
 import { PropertyProvider } from './context/PropertyProvider.jsx';
+import 'leaflet/dist/leaflet.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

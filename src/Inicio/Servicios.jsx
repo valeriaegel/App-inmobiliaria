@@ -1,81 +1,90 @@
 import ServiceCard from './ServiceCard';
 import ServicioContable from './ServicioContable';
-
-/*
-  * Componente que muestra la sección de servicios ofrecidos por la inmobiliaria.
-*/
+import { FaCertificate, FaBuilding, FaHandshake, FaChartLine } from 'react-icons/fa';
 
 const Servicios = () => {
     return (
-        // Contenedor principal de la sección
-        <section className="py-16 md:py-24 bg-[#F0F2ED]">
+        <section className="py-16 md:py-24 bg-slate-50/80">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+                
                 {/* Encabezado de la Sección */}
-                <div className="text-center mb-12 bg-[#C6CFCC] p-8 md:p-10 rounded-xl shadow-lg  transition duration-300 hover:shadow-xl">
-                    <h2 className="text-4xl font-extrabold text-gray-900">
-                        Nuestros Servicios
-                    </h2>
-                    <p className="mt-2 text-3xl font-bold text-gray-600">
-                       Corredora: Maria Cristina Eckerdt
+                <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                    <div className="inline-flex items-center gap-2 bg-[#0F766E]/10 text-[#0F766E] px-4 py-1.5 rounded-full text-xs font-bold border border-[#0F766E]/20">
+                        <FaCertificate /> Corredora Inmobiliaria Matriculada
+                    </div>
+
+                    <h1 className="text-4xl sm:text-5xl font-extrabold text-[#1E293B] tracking-tight">
+                        Nuestros Servicios Profesionales
+                    </h1>
+
+                    <p className="text-slate-600 text-lg font-medium">
+                        María Cristina Eckerdt — <span className="text-[#0F766E] font-bold">Matrícula 856 C.I.E.R</span>
                     </p>
-                    <p className="mt-2 text-xl font-bold text-gray-600">
-                        Matricula 856 <a href="https://colegiocorredoreser.org.ar/" className='hover:text-gray-800'>C.I.E.R</a>
+
+                    <p className="text-slate-500 text-sm max-w-xl mx-auto">
+                        Brindamos soluciones integrales respaldadas por el{' '}
+                        <a 
+                            href="https://colegiocorredoreser.org.ar/" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-[#0F766E] underline hover:text-[#1E293B] font-semibold transition-colors"
+                        >
+                            Colegio de Corredores Públicos Inmobiliarios de Entre Ríos
+                        </a>.
                     </p>
                 </div>
 
-                {/* Contenedor de las Tarjetas */}
+                {/* Grid de Tarjetas de Servicio */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Tarjeta 1: Administración de Alquileres */}
                     <ServiceCard
-                        icon="🗝️" 
+                        icon={<FaBuilding />} 
                         title="Administración de Alquileres"
-                        description="Gestión completa de tus propiedades en alquiler."
+                        description="Gestión integral y despreocupada para propietarios e inquilinos."
                         items={[
                             "Selección de inquilinos",
-                            "Cobro de alquileres",
-                            "Mantenimiento preventivo",
+                            "Cobro puntual y liquidaciones",
+                            "Supervisión y mantenimiento",
                         ]}
-                        bgColor="bg-[#C6CFCC]" 
-                        textColor="text-indigo-800"
-                        Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20administracion%20de%20alquileres.%20Mi%20nombre%20es..."
+                        Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20administracion%20de%20alquileres."
                     />
 
                     {/* Tarjeta 2: Compra y Venta */}
                     <ServiceCard
-                        icon="🏠"
-                        title="Compra y Venta"
-                        description="Asesoramiento profesional en todas las etapas de compra o venta."
+                        icon={<FaHandshake />}
+                        title="Compra y Venta Inmobiliaria"
+                        description="Acompañamiento en cada etapa de negociación con máxima transparencia."
                         items={[
-                            "Asesoría legal completa",
-                            "Marketing digital",
+                            "Asesoría legal y documental",
+                            "Promoción en portales inmobiliarios",
                             "Negociación profesional",
                         ]}
-                        bgColor="bg-[#C6CFCC]" 
-                        textColor="text-indigo-800"
-                        Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20compra%20y%20venta.%20Mi%20nombre%20es..."
+                        Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20compra%20y%20venta."
                     />
 
                     {/* Tarjeta 3: Tasaciones */}
                     <ServiceCard
-                        icon="📈"
-                        title="Tasaciones"
-                        description="Valuaciones precisas y certificadas por profesionales matriculados. Informes detallados basados en análisis de mercado actualizado."
+                        icon={<FaChartLine />}
+                        title="Tasaciones Profesionales"
+                        description="Valuaciones precisas respaldadas por análisis comparativo de mercado."
                         items={[
-                            "Análisis de mercado",
+                            "Informes técnicos y detallados",
+                            "Valor de mercado actual",
+                            "Asesoramiento estratégico",
                         ]}
-                        bgColor="bg-[#C6CFCC]" 
-                        textColor="text-indigo-800"
-                        Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20tasaciones.%20Mi%20nombre%20es..."              
+                        Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20tasaciones."              
                     />
-             </div>
-         </div>
-        
-         <ServicioContable/>
+                </div>
+            </div>
+
+            {/* Servicio Contable Complementario */}
+            <ServicioContable />
 
         </section>
     );
 }
 
 export default Servicios;
+
 
 

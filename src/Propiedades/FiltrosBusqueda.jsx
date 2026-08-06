@@ -1,14 +1,8 @@
-import { useState, useCallback, useContext } from 'react'; // Agregado useContext
-import { FaFilter, FaHome, FaTag, FaCity, FaSearch } from 'react-icons/fa';
-import { PropertyContext } from '../context/PropertyContext'; // Importación del contexto
+import { useState, useCallback, useContext } from 'react';
+import { FaFilter, FaHome, FaTag, FaCity, FaSearch, FaRedo } from 'react-icons/fa';
+import { PropertyContext } from '../context/PropertyContext';
 
-/**
- * Componente de filtros avanzados para la lista de propiedades.
- * @param {function} onFiltrosAplicados - Función que recibe la cadena de query final.
- */
 function FiltrosBusqueda({ onFiltrosAplicados }) {
-    // --- DATOS DEL CONTEXTO ---
-    // Extraemos las opciones ya cargadas y el estado de carga global
     const { opcionesCiudades, opcionesTipos, loading } = useContext(PropertyContext);
 
     const [filtros, setFiltros] = useState({
@@ -17,10 +11,8 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
         ambientes: '',
     });
     
-    // Opciones estáticas para Ambientes
     const opcionesAmbientes = ['Cualquiera', 1, 2, 3, 4, '5+']; 
 
-    // --- FUNCIÓN DE CONSTRUCCIÓN Y APLICACIÓN DE FILTROS ---
     const construirQuery = useCallback(() => {
         const queryParts = []; 
         
@@ -66,33 +58,42 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
     };
     
     return (
-        <div className="bg-[#C6CFCC] p-6 rounded-xl shadow-lg mb-8 border border-gray-100">
-            <div className="flex justify-between items-center mb-4 border-b pb-4">
-                <h3 className="text-xl font-bold text-primary-blue flex items-center">
-                    <FaFilter className="mr-2"/> Filtros de Búsqueda
-                </h3>
+        <div className="bg-white p-6 rounded-3xl shadow-xl border border-slate-100 mb-10">
+            <div className="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
+                <div className="flex items-center gap-2.5">
+                    <div className="p-2 bg-[#0F766E]/10 rounded-xl text-[#0F766E]">
+                        <FaFilter className="text-[#0F766E]" />
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-800">
+                        Filtrar Catálogo
+                    </h3>
+                </div>
+
                 <button 
                     onClick={handleLimpiarFiltros} 
-                    className="text-sm text-gray-500 hover:text-primary-blue transition duration-200"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors"
                 >
-                    Limpiar Filtros
+                    <FaRedo className="text-[10px]" /> Restablecer
                 </button>
             </div>
 
-            {/* Usamos el loading del Contexto */}
             {loading ? (
-                <div className="text-center text-sm text-gray-500">Preparando opciones de búsqueda...</div>
+                <div className="text-center py-4 text-xs font-medium text-slate-400">
+                    Cargando opciones...
+                </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                     {/* 1. CIUDAD */}
-                    <div className="col-span-1">
-                        <label className="text-sm font-medium text-gray-700 mb-1 flex items-center"><FaCity className="mr-1" /> Ciudad</label>
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
+                            <FaCity className="text-[#0F766E]" /> Ciudad
+                        </label>
                         <select 
                             value={filtros.ciudad}
                             onChange={(e) => handleFilterChange('ciudad', e.target.value)}
-                            className="w-full p-2 border border-gray-400 rounded-md focus:ring-primary-blue focus:border-primary-blue"
+                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 text-sm font-medium focus:ring-2 focus:ring-[#0F766E] focus:bg-white outline-none transition-all"
                         >
-                            <option value="">Todas</option>
+                            <option value="">Todas las ciudades</option>
                             {opcionesCiudades.map(op => (
                                 <option key={op.id} value={op.id}>{op.nombre}</option>
                             ))}
@@ -100,14 +101,16 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                     </div>
 
                     {/* 2. TIPO DE PROPIEDAD */}
-                    <div className="col-span-1">
-                        <label className="text-sm font-medium text-gray-700 mb-1 flex items-center"><FaTag className="mr-1" /> Tipo de Propiedad</label>
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
+                            <FaTag className="text-[#0F766E]" /> Tipo de Inmueble
+                        </label>
                         <select 
                             value={filtros.tipoInmueble}
                             onChange={(e) => handleFilterChange('tipoInmueble', e.target.value)}
-                            className="w-full p-2 border border-gray-400 rounded-md focus:ring-primary-blue focus:border-primary-blue"
+                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 text-sm font-medium focus:ring-2 focus:ring-[#0F766E] focus:bg-white outline-none transition-all"
                         >
-                            <option value="">Todos</option>
+                            <option value="">Todos los tipos</option>
                             {opcionesTipos.map(op => (
                                 <option key={op.id} value={op.id}>{op.nombre}</option>
                             ))}
@@ -115,25 +118,27 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                     </div>
 
                     {/* 3. AMBIENTES */}
-                    <div className="col-span-1">
-                        <label className="text-sm font-medium text-gray-700 mb-1 flex items-center"><FaHome className="mr-1" /> Ambientes</label>
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
+                            <FaHome className="text-[#0F766E]" /> Ambientes
+                        </label>
                         <select 
                             value={filtros.ambientes}
                             onChange={(e) => handleFilterChange('ambientes', e.target.value)}
-                            className="w-full p-2 border border-gray-400 rounded-md focus:ring-gray-500 focus:border-gray-300"
+                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 text-sm font-medium focus:ring-2 focus:ring-[#0F766E] focus:bg-white outline-none transition-all"
                         >
                             {opcionesAmbientes.map(op => <option key={op} value={op}>{op}</option>)}
                         </select>
                     </div>
 
                     {/* BOTÓN BUSCAR */}
-                    <div className="col-span-1 md:col-span-1 flex md:items-end mt-4 md:mt-0">
+                    <div>
                         <button
                             onClick={handleBuscarClick}
-                            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 flex items-center justify-center space-x-2"
+                            className="w-full bg-gradient-to-r from-[#0F766E] to-[#0D9488] hover:from-[#0D9488] hover:to-[#0F766E] text-white font-bold p-3.5 rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm"
                         >
                             <FaSearch />
-                            <span>Buscar</span>
+                            <span>Aplicar Filtros</span>
                         </button>
                     </div>
                 </div>
@@ -142,4 +147,4 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
     );
 }
 
-export default FiltrosBusqueda;
+export default FiltrosBusqueda;
