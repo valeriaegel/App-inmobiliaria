@@ -45,7 +45,7 @@ function InformacionContacto() {
                     <ContactItem 
                         icon={<FaClock />} 
                         title="Horario de Atención"
-                        content="Lunes a Viernes: 8:00 a 13:00 hs — 16:00 a 18:00 hs"
+                        content="Lunes a Viernes: 8:00 a 14:00 hs"
                     />
                 </div>
             </div>
@@ -94,4 +94,4 @@ function ContactItem({ icon, title, content, enlace }) {
             </div>
         </div>
     );
-}
+}

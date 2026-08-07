@@ -94,7 +94,7 @@ function Footer() {
           {/* Columna 4: Redes Sociales & Horario */}
           <div>
             <h4 className="text-white font-bold text-base mb-4 border-b border-slate-800 pb-2">Síguenos</h4>
-            <p className="text-slate-400 text-xs mb-4">Seguinos en redes sociales para ver las últimas novedades inmobiliarias.</p>
+            <p className="text-slate-400 text-xs mb-4">Seguinos en redes sociales para ver las últimas novedades.</p>
             <div className="flex space-x-3 mb-6">
               <a 
                 href={url_Facebook} 
