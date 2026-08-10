@@ -1,11 +1,10 @@
-import { useContext } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { useContext, useState, useEffect } from 'react';
+import { APIProvider, Map, AdvancedMarker, InfoWindow, Pin, useMap } from '@vis.gl/react-google-maps';
 import { Link } from 'react-router-dom';
-import L from 'leaflet';
 import { PropertyContext } from '../context/PropertyContext';
 import { FaMapMarkedAlt } from 'react-icons/fa';
 
-const center = [-32.4837462, -58.2315257]; // Concepción del Uruguay
+const center = { lat: -32.4837462, lng: -58.2315257 }; // Concepción del Uruguay
 
 const obtenerColorOperacion = (tipoOperacion) => {
     if (!tipoOperacion) return '#0F766E';
@@ -22,40 +21,45 @@ const obtenerColorOperacion = (tipoOperacion) => {
     return '#0F766E';
 };
 
-// Pin de marca, con color distinto según el tipo de operación (Venta vs Alquiler)
-const crearPin = (tipoOperacion) => {
-    const colorFill = obtenerColorOperacion(tipoOperacion);
-    return L.divIcon({
-        className: '',
-        html: `
-            <div style="filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.35));">
-                <svg width="34" height="44" viewBox="0 0 36 46" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18 0C8 0 0 8 0 18c0 13 18 28 18 28s18-15 18-28C36 8 28 0 18 0z" fill="${colorFill}"/>
-                    <circle cx="18" cy="18" r="7" fill="#FFFFFF"/>
-                </svg>
-            </div>
-        `,
-        iconSize: [34, 44],
-        iconAnchor: [17, 44],
-        popupAnchor: [0, -38],
-    });
-};
-
-function AjustarVista({ puntos }) {
+function AjustarVistaGoogle({ puntos }) {
     const map = useMap();
-    if (puntos.length > 0) {
-        const bounds = L.latLngBounds(puntos.map(p => [p.latitud, p.longitud]));
-        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
-    }
+    const [ajustado, setAjustado] = useState(false);
+
+    useEffect(() => {
+        if (!map || puntos.length === 0 || ajustado) return;
+        if (typeof window.google === 'undefined' || !window.google.maps) return;
+
+        const bounds = new window.google.maps.LatLngBounds();
+        let validPoints = 0;
+
+        puntos.forEach(p => {
+            const lat = parseFloat(p.latitud);
+            const lng = parseFloat(p.longitud);
+            if (!isNaN(lat) && !isNaN(lng)) {
+                bounds.extend({ lat, lng });
+                validPoints++;
+            }
+        });
+
+        if (validPoints > 0) {
+            map.fitBounds(bounds, { top: 40, right: 40, bottom: 40, left: 40 });
+            setAjustado(true);
+        }
+    }, [map, puntos, ajustado]);
+
     return null;
 }
 
 function MapaPropiedades() {
     const { allInmuebles, loading } = useContext(PropertyContext);
+    const [selectedInmueble, setSelectedInmueble] = useState(null);
+    const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-    // Filtramos ÚNICAMENTE los inmuebles DISPONIBLES y que tengan coordenadas
+    // Filtramos ÚNICAMENTE los inmuebles DISPONIBLES y que tengan coordenadas válidas
     const conCoordenadas = (allInmuebles || []).filter(
-        i => i.Disponible === true && i.latitud != null && i.longitud != null
+        i => i.Disponible === true &&
+             i.latitud != null && !isNaN(parseFloat(i.latitud)) &&
+             i.longitud != null && !isNaN(parseFloat(i.longitud))
     );
 
     if (loading) {
@@ -96,60 +100,81 @@ function MapaPropiedades() {
                 </div>
             </div>
 
-            <div className="relative h-[400px] w-full rounded-2xl overflow-hidden shadow-inner border border-slate-200 z-0 isolate">
-                <MapContainer
-                    center={center}
-                    zoom={13}
-                    scrollWheelZoom={false}
-                    style={{ height: '100%', width: '100%' }}
-                >
-                    <TileLayer
-                        attribution='&copy; <a href="https://carto.com/attributions">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                    />
+            <div className="relative h-[420px] w-full rounded-2xl overflow-hidden shadow-inner border border-slate-200 z-0 isolate">
+                <APIProvider apiKey={API_KEY}>
+                    <Map
+                        style={{ width: '100%', height: '100%' }}
+                        defaultCenter={center}
+                        defaultZoom={14}
+                        mapId="MAPA_PROPIEDADES_PRINCIPAL"
+                        gestureHandling="greedy"
+                        reuseMaps={true}
+                        zoomControl={true}
+                        mapTypeControl={true}
+                        streetViewControl={true}
+                    >
+                        <AjustarVistaGoogle puntos={conCoordenadas} />
 
-                    {conCoordenadas.length > 0 && <AjustarVista puntos={conCoordenadas} />}
+                        {conCoordenadas.map(inmueble => {
+                            const lat = parseFloat(inmueble.latitud);
+                            const lng = parseFloat(inmueble.longitud);
+                            const colorFill = obtenerColorOperacion(inmueble.TipoOperacion);
 
-                    {conCoordenadas.map(inmueble => {
-                        const moneda = inmueble.Moneda === 'Peso' ? '$' : 'U$S';
-                        return (
-                            <Marker
-                                key={inmueble.id}
-                                position={[inmueble.latitud, inmueble.longitud]}
-                                icon={crearPin(inmueble.TipoOperacion)}
+                            return (
+                                <AdvancedMarker
+                                    key={inmueble.id}
+                                    position={{ lat, lng }}
+                                    title={inmueble.Titulo}
+                                    onClick={() => setSelectedInmueble(inmueble)}
+                                >
+                                    <Pin
+                                        background={colorFill}
+                                        borderColor="#FFFFFF"
+                                        glyphColor="#FFFFFF"
+                                        scale={1.1}
+                                    />
+                                </AdvancedMarker>
+                            );
+                        })}
+
+                        {selectedInmueble && (
+                            <InfoWindow
+                                position={{
+                                    lat: parseFloat(selectedInmueble.latitud),
+                                    lng: parseFloat(selectedInmueble.longitud)
+                                }}
+                                onCloseClick={() => setSelectedInmueble(null)}
                             >
-                                <Popup>
-                                    <div className="w-48 p-1">
-                                        {inmueble.Imagenes?.[0]?.url && (
-                                            <img
-                                                src={inmueble.Imagenes[0].url}
-                                                alt={inmueble.Titulo}
-                                                className="w-full h-24 object-cover rounded-xl mb-2"
-                                            />
-                                        )}
-                                        <div className="mb-1 flex items-center justify-between">
-                                            <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded text-white bg-slate-800">
-                                                {inmueble.TipoOperacion || 'Inmueble'}
-                                            </span>
-                                        </div>
-                                        <p className="font-bold text-sm text-slate-800 leading-tight mb-1">{inmueble.Titulo}</p>
-                                        <p className="text-sm font-extrabold text-[#0F766E] mb-2">
-                                            {(inmueble.Valor != null && inmueble.Valor > 0 && inmueble.Valor !== '') 
-                                                ? `${moneda} ${inmueble.Valor}` 
-                                                : 'Consultar valor'}
-                                        </p>
-                                        <Link
-                                            to={`/propiedades/detalle/${inmueble.documentId}`}
-                                            className="block text-center bg-[#1E293B] text-white text-xs font-bold py-1.5 px-3 rounded-lg hover:bg-[#0F766E] transition-colors"
-                                        >
-                                            Ver detalle →
-                                        </Link>
+                                <div className="w-48 p-1">
+                                    {selectedInmueble.Imagenes?.[0]?.url && (
+                                        <img
+                                            src={selectedInmueble.Imagenes[0].url}
+                                            alt={selectedInmueble.Titulo}
+                                            className="w-full h-24 object-cover rounded-xl mb-2"
+                                        />
+                                    )}
+                                    <div className="mb-1 flex items-center justify-between">
+                                        <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded text-white bg-slate-800">
+                                            {selectedInmueble.TipoOperacion || 'Inmueble'}
+                                        </span>
                                     </div>
-                                </Popup>
-                            </Marker>
-                        );
-                    })}
-                </MapContainer>
+                                    <p className="font-bold text-sm text-slate-800 leading-tight mb-1">{selectedInmueble.Titulo}</p>
+                                    <p className="text-sm font-extrabold text-[#0F766E] mb-2">
+                                        {(selectedInmueble.Valor != null && selectedInmueble.Valor > 0 && selectedInmueble.Valor !== '') 
+                                            ? `${selectedInmueble.Moneda === 'Peso' ? '$' : 'U$S'} ${selectedInmueble.Valor}` 
+                                            : 'Consultar valor'}
+                                    </p>
+                                    <Link
+                                        to={`/propiedades/detalle/${selectedInmueble.documentId}`}
+                                        className="block text-center bg-[#1E293B] text-white text-xs font-bold py-1.5 px-3 rounded-lg hover:bg-[#0F766E] transition-colors"
+                                    >
+                                        Ver detalle →
+                                    </Link>
+                                </div>
+                            </InfoWindow>
+                        )}
+                    </Map>
+                </APIProvider>
             </div>
         </div>
     );
