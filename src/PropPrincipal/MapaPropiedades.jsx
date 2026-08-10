@@ -3,6 +3,7 @@ import { APIProvider, Map, AdvancedMarker, InfoWindow, Pin, useMap } from '@vis.
 import { Link } from 'react-router-dom';
 import { PropertyContext } from '../context/PropertyContext';
 import { FaMapMarkedAlt } from 'react-icons/fa';
+import { formatearPrecio } from '../utils/formatearPrecio';
 
 const center = { lat: -32.4837462, lng: -58.2315257 }; // Concepción del Uruguay
 
@@ -160,9 +161,7 @@ function MapaPropiedades() {
                                     </div>
                                     <p className="font-bold text-sm text-slate-800 leading-tight mb-1">{selectedInmueble.Titulo}</p>
                                     <p className="text-sm font-extrabold text-[#0F766E] mb-2">
-                                        {(selectedInmueble.Valor != null && selectedInmueble.Valor > 0 && selectedInmueble.Valor !== '') 
-                                            ? `${selectedInmueble.Moneda === 'Peso' ? '$' : 'U$S'} ${selectedInmueble.Valor}` 
-                                            : 'Consultar valor'}
+                                        {formatearPrecio(selectedInmueble.Valor, selectedInmueble.Moneda)}
                                     </p>
                                     <Link
                                         to={`/propiedades/detalle/${selectedInmueble.documentId}`}

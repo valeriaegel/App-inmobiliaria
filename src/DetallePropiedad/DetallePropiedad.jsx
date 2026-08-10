@@ -6,8 +6,8 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import FichaTecnica from './FichaTecnica';
 import DatosPropiedad from './DatosPropiedad';
 import MapaUbicacionPropiedad from './MapaUbicacionPropiedad';
-import { fetchFromStrapi } from '../context/api';
 import { PropertyContext } from '../context/PropertyContext';
+import { propertyService } from '../services/propertyService';
 
 function DetallePropiedad() {
     const { documentId } = useParams();
@@ -18,31 +18,28 @@ function DetallePropiedad() {
     const { allInmuebles } = useContext(PropertyContext);
 
     useEffect(() => {
+        let isMounted = true;
         const obtenerDetalle = async () => {
             const propiedadCache = (allInmuebles || []).find(p => p.documentId === documentId);
 
-            if (propiedadCache) {
+            if (propiedadCache && isMounted) {
                 setInmueble(propiedadCache);
                 setCargando(false);
             }
 
-            const API_URL = `/api/inmuebles/${documentId}?populate=*`;
-
             try {
-                const respuesta = await fetchFromStrapi(API_URL);
-                if (!respuesta.ok) throw new Error(`Error HTTP: ${respuesta.status}`);
-
-                const datos = await respuesta.json();
-                setInmueble(datos.data);
+                const data = await propertyService.fetchDetalleInmueble(documentId);
+                if (isMounted) setInmueble(data);
             } catch (err) {
                 console.error("Error al obtener el detalle:", err);
-                if (!propiedadCache) setError("No se pudo cargar la propiedad solicitada.");
+                if (isMounted && !propiedadCache) setError("No se pudo cargar la propiedad solicitada.");
             } finally {
-                setCargando(false);
+                if (isMounted) setCargando(false);
             }
         };
 
         obtenerDetalle();
+        return () => { isMounted = false; };
     }, [documentId, allInmuebles]);
 
     if (cargando && !inmueble) {

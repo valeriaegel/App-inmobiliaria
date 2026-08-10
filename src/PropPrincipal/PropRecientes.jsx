@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaHome, FaArrowRight } from 'react-icons/fa';
+import { formatearPrecio } from '../utils/formatearPrecio';
 
 function PropRecientes({ propiedades, cargando, error }) {  
     if (cargando) {
@@ -58,9 +59,7 @@ function PropRecientes({ propiedades, cargando, error }) {
                             </div>
 
                             <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md px-3 py-1 rounded-xl shadow-lg border border-white/50 text-[#1E293B] font-extrabold text-xs sm:text-sm">
-                                {(atributos.Valor != null && atributos.Valor > 0 && atributos.Valor !== '') 
-                                    ? `${moneda} ${atributos.Valor}` 
-                                    : 'Consultar valor'}
+                                {formatearPrecio(atributos.Valor, atributos.Moneda)}
                             </div>
                         </div>
                         

@@ -1,21 +1,42 @@
 import { Link } from 'react-router-dom';
-import { FaBed, FaBath, FaHome, FaArrowRight, FaSearchLocation } from 'react-icons/fa';
+import { FaBed, FaBath, FaHome, FaArrowRight, FaSearchLocation, FaRedo } from 'react-icons/fa';
+import { formatearPrecio } from '../utils/formatearPrecio';
+
+function PropiedadesSkeleton() {
+    return (
+        <div className="container mx-auto px-4 md:px-8 py-8 animate-pulse">
+            <div className="h-8 bg-slate-200 rounded-xl w-64 mb-8"></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                    <div key={i} className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md h-[420px] flex flex-col justify-between p-4">
+                        <div className="h-52 bg-slate-200 rounded-2xl mb-4 w-full"></div>
+                        <div className="h-5 bg-slate-200 rounded-lg w-3/4 mb-3"></div>
+                        <div className="h-4 bg-slate-100 rounded-lg w-full mb-2"></div>
+                        <div className="h-4 bg-slate-100 rounded-lg w-2/3 mb-4"></div>
+                        <div className="h-10 bg-slate-200 rounded-2xl w-full mt-auto"></div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
 
 function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
     if (cargando) {
-        return (
-            <div className="container mx-auto px-4 py-16 text-center">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#0F766E] mb-4"></div>
-                <p className="text-slate-500 font-medium">Cargando propiedades disponibles...</p>
-            </div>
-        );
+        return <PropiedadesSkeleton />;
     }
 
     if (error) {
         return (
             <div className="container mx-auto px-4 py-16 text-center">
-                <div className="bg-rose-50 border border-rose-200 text-rose-600 p-6 rounded-3xl max-w-md mx-auto font-bold">
-                    {error}
+                <div className="bg-rose-50 border border-rose-200 text-rose-600 p-8 rounded-3xl max-w-md mx-auto font-bold space-y-4 shadow-sm">
+                    <p>{error}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="inline-flex items-center gap-2 bg-rose-600 text-white px-5 py-2.5 rounded-2xl text-xs font-bold hover:bg-rose-700 transition-colors shadow-md"
+                    >
+                        <FaRedo /> Reintentar conexión
+                    </button>
                 </div>
             </div>
         );
@@ -67,6 +88,8 @@ function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
                                         <img 
                                             src={imagenURL} 
                                             alt={atributos.Titulo || 'Propiedad'} 
+                                            loading="lazy"
+                                            decoding="async"
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                         />
                                     ) : (
@@ -93,9 +116,7 @@ function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
 
                                     {/* Precio Flotante */}
                                     <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-2xl shadow-xl border border-white/60 text-[#1E293B] font-extrabold text-xs sm:text-sm">
-                                        {(atributos.Valor != null && atributos.Valor > 0 && atributos.Valor !== '') 
-                                            ? `${moneda} ${atributos.Valor}` 
-                                            : 'Consultar valor'}
+                                        {formatearPrecio(atributos.Valor, atributos.Moneda)}
                                     </div>
                                 </div>
 

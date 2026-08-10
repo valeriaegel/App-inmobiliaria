@@ -1,10 +1,11 @@
 import FunContacto from "./FunContacto";
 import { FaCheckCircle, FaTimesCircle, FaWhatsapp, FaShieldAlt } from "react-icons/fa";
+import { formatearPrecio } from "../utils/formatearPrecio";
 
 const DatosPropiedad = ({disponible, valor, moneda, tipoOperacion, Ubicacion}) => {
   const whatsappLink = FunContacto(Ubicacion);
   const tienePrecio = valor != null && valor > 0 && valor !== '';
-  const textoPrecio = tienePrecio ? `${moneda} ${valor}` : 'Consultar valor';
+  const textoPrecio = formatearPrecio(valor, moneda);
 
   return (
     <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-100 space-y-6">
