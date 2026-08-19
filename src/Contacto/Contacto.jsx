@@ -19,7 +19,7 @@ function Contacto() {
                         </h1>
 
                         <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
-                            Completa el formulario y se generará automáticamente tu consulta por <strong className="text-[#0F766E]">WhatsApp</strong> para darte una respuesta inmediata.
+                            Completa el formulario y se generará automáticamente tu consulta por <strong className="text-[#0F766E]">WhatsApp</strong>.
                         </p>
 
                         <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm text-xs text-slate-500 inline-block">

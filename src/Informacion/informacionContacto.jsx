@@ -25,12 +25,20 @@ function InformacionContacto() {
                         enlace="https://www.google.com/maps?q=inmobiliaria+cristina+eckerdt"
                     />
                     
-                    {/* Teléfono */}
+                    {/* Teléfono Generales y Ventas */}
                     <ContactItem 
                         icon={<FaPhoneAlt />} 
-                        title="Teléfono & WhatsApp"
+                        title="Consultas Generales & Ventas"
                         content="+54 9 3442-666333"
-                        enlace="https://wa.me/+5493442666333?text=¡Hola%20Cristina!%20Quisiera%20realizar%20una%20consulta."
+                        enlace="https://wa.me/5493442666333?text=¡Hola%20Cristina!%20Quisiera%20realizar%20una%20consulta."
+                    />
+
+                    {/* Teléfono Alquileres */}
+                    <ContactItem 
+                        icon={<FaPhoneAlt />} 
+                        title="Alquileres"
+                        content="+54 9 3442-640929"
+                        enlace="https://wa.me/5493442640929?text=¡Hola!%20Quisiera%20realizar%20una%20consulta%20sobre%20alquileres."
                     />
                     
                     {/* Email */}

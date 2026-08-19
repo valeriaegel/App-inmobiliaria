@@ -22,7 +22,7 @@ const Servicios = () => {
                     </p>
 
                     <p className="text-slate-500 text-sm max-w-xl mx-auto">
-                        Brindamos soluciones integrales respaldadas por el{' '}
+                        Brindamos soluciones respaldadas por el{' '}
                         <a 
                             href="https://colegiocorredoreser.org.ar/" 
                             target="_blank" 
@@ -40,10 +40,10 @@ const Servicios = () => {
                     <ServiceCard
                         icon={<FaBuilding />} 
                         title="Administración de Alquileres"
-                        description="Gestión integral y despreocupada para propietarios e inquilinos."
+                        description="Gestión integral para propietarios e inquilinos."
                         items={[
                             "Selección de inquilinos",
-                            "Cobro puntual y liquidaciones",
+                            "Cobro y liquidaciones",
                             "Supervisión y mantenimiento",
                         ]}
                         Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20administracion%20de%20alquileres."
@@ -53,11 +53,11 @@ const Servicios = () => {
                     <ServiceCard
                         icon={<FaHandshake />}
                         title="Compra y Venta Inmobiliaria"
-                        description="Acompañamiento en cada etapa de negociación con máxima transparencia."
+                        description="Acompañamiento en cada etapa de negociación."
                         items={[
                             "Asesoría legal y documental",
                             "Promoción en portales inmobiliarios",
-                            "Negociación profesional",
+                            "Trato profesional",
                         ]}
                         Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20compra%20y%20venta."
                     />
@@ -66,7 +66,7 @@ const Servicios = () => {
                     <ServiceCard
                         icon={<FaChartLine />}
                         title="Tasaciones Profesionales"
-                        description="Valuaciones precisas respaldadas por análisis comparativo de mercado."
+                        description="Valuaciones precisas."
                         items={[
                             "Informes técnicos y detallados",
                             "Valor de mercado actual",

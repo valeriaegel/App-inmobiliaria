@@ -1,7 +1,8 @@
 import { FaHome, FaFacebook, FaInstagram, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaExternalLinkAlt } from 'react-icons/fa'; 
 import { Link } from 'react-router-dom';
 
-const telefono = '+54 9 3442 666333';
+const telefonoGeneral = '+54 9 3442 666333';
+const telefonoAlquileres = '+54 9 3442 640929';
 const email = 'inmobiliariaeckerdt@gmail.com';
 const url_Facebook = 'https://www.facebook.com/InmobiliariaCristinaEckerdt';
 const url_Instagram = 'https://www.instagram.com/inmobiliariacristinaeckerdt/';
@@ -68,16 +69,32 @@ function Footer() {
                 <FaMapMarkerAlt className="text-[#0F766E] text-lg shrink-0 mt-0.5" />
                 <span className="text-slate-400">Concepción del Uruguay, Entre Ríos, Argentina</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <FaPhoneAlt className="text-[#0F766E] shrink-0" />
-                <a 
-                  href="https://wa.me/+5493442666333?text=¡Hola%20Cristina!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20realizar%20una%20consulta." 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-300 hover:text-emerald-400 transition-colors font-medium"
-                >
-                  {telefono}
-                </a>
+              <li className="flex items-start space-x-3">
+                <FaPhoneAlt className="text-[#0F766E] shrink-0 mt-1" />
+                <div className="space-y-1 text-xs">
+                  <div>
+                    <span className="text-slate-400 block">Consultas Generales:</span>
+                    <a 
+                      href="https://wa.me/5493442666333?text=¡Hola%20Cristina!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20realizar%20una%20consulta." 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-300 hover:text-emerald-400 transition-colors font-medium text-sm"
+                    >
+                      {telefonoGeneral}
+                    </a>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block">Alquileres:</span>
+                    <a 
+                      href="https://wa.me/5493442640929?text=¡Hola!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20consultar%20por%20alquileres." 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-300 hover:text-emerald-400 transition-colors font-medium text-sm"
+                    >
+                      {telefonoAlquileres}
+                    </a>
+                  </div>
+                </div>
               </li>
               <li className="flex items-center space-x-3">
                 <FaEnvelope className="text-[#0F766E] shrink-0" />

@@ -1,7 +1,7 @@
 
 import { FaCheckCircle, FaArrowRight } from 'react-icons/fa';
 
-function ServiceCard({ icon, title, description, items, Link }) {
+function ServiceCard({ icon, title, description, items, Link, phone = '5493442666333' }) {
     return (
         <div className="bg-white p-8 rounded-3xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between group">
             <div>
@@ -31,7 +31,7 @@ function ServiceCard({ icon, title, description, items, Link }) {
 
             {/* Enlace WhatsApp */}
             <a 
-                href={`https://wa.me/5493442666333?text=${Link}`} 
+                href={`https://wa.me/${phone}?text=${Link}`} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="inline-flex items-center justify-between w-full py-3 px-5 rounded-2xl bg-slate-50 hover:bg-[#1E293B] text-[#1E293B] hover:text-white font-bold text-xs transition-all duration-300 shadow-sm"

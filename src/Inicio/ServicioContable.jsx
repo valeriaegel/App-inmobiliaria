@@ -15,7 +15,7 @@ const ServicioContable = () => {
                     </div>
 
                     <h2 className="text-3xl font-extrabold text-white tracking-tight">
-                        Asesoramiento Contable e Impositivo
+                        Asesoramiento Contable
                     </h2>
 
                     <p className="text-slate-300 text-sm leading-relaxed max-w-xl">

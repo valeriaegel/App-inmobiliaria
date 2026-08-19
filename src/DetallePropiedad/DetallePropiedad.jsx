@@ -1,13 +1,16 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FaMapMarkerAlt, FaCheckCircle, FaChevronLeft, FaInfoCircle, FaCheckDouble } from 'react-icons/fa';
+import {   FaMapMarkerAlt, FaCheckCircle, FaChevronLeft, 
+  FaInfoCircle, FaCheckDouble, FaRulerCombined, FaBed, FaBath,  FaHome, FaArrowRight} from 'react-icons/fa';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import FichaTecnica from './FichaTecnica';
-import DatosPropiedad from './DatosPropiedad';
-import MapaUbicacionPropiedad from './MapaUbicacionPropiedad';
 import { PropertyContext } from '../context/PropertyContext';
 import { propertyService } from '../services/propertyService';
+
+// Componentes modulares internos
+import TarjetaPrecioContacto from './TarjetaPrecioContacto';
+import FichaTecnica from './FichaTecnica';
+import MapaPropiedad from './MapaPropiedad';
 
 function DetallePropiedad() {
     const { documentId } = useParams();
@@ -74,25 +77,35 @@ function DetallePropiedad() {
     const ciudad = atributos.ciudad;
     const tipoInmueble = atributos.tipo_inmueble?.Tipo;
     const imagenes = atributos.Imagenes || [];
-
-    const moneda = atributos.Moneda === 'Peso' ? '$' : 'U$S';
+    const operacionUrl = atributos.TipoOperacion ? `/propiedades/${atributos.TipoOperacion}` : '/propiedades/Venta';
 
     return (
-        <div className="bg-slate-50/60 min-h-screen py-8 md:py-12">
+        <div className="bg-slate-50/60 min-h-screen py-8 md:py-12 animate-in fade-in duration-300">
             <div className="container mx-auto px-4 md:px-8 max-w-7xl space-y-8">
                 
                 {/* Botón de Retorno & Breadcrumbs */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-4">
                     <Link 
-                        to="/propiedades/Venta" 
-                        className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-[#0F766E] transition-colors bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm"
+                        to={operacionUrl}
+                        className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-[#0F766E] transition-colors bg-white px-4 py-2.5 rounded-full border border-slate-200 shadow-sm hover:shadow-md"
                     >
-                        <FaChevronLeft className="text-[10px]" /> Volver al catálogo
+                        <FaChevronLeft className="text-[10px]" /> Volver a {atributos.TipoOperacion ? `Propiedades en ${atributos.TipoOperacion}` : 'Catálogo'}
                     </Link>
+
+                    {/* Breadcrumbs */}
+                    <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-slate-400">
+                        <Link to="/" className="hover:text-[#0F766E] transition-colors">Inicio</Link>
+                        <span>/</span>
+                        <Link to={operacionUrl} className="hover:text-[#0F766E] transition-colors">
+                            {atributos.TipoOperacion ? `En ${atributos.TipoOperacion}` : 'Propiedades'}
+                        </Link>
+                        <span>/</span>
+                        <span className="text-slate-700 truncate max-w-[200px]">{atributos.Titulo}</span>
+                    </div>
                 </div>
 
                 {/* Header de la Propiedad */}
-                <div className="space-y-3">
+                <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-100 space-y-4">
                     <div className="flex flex-wrap gap-2 items-center">
                         {tipoInmueble && (
                             <span className="text-xs font-bold uppercase tracking-wider text-white bg-[#0F766E] px-3.5 py-1 rounded-full shadow-sm">
@@ -114,6 +127,34 @@ function DetallePropiedad() {
                         <FaMapMarkerAlt className="text-[#0F766E] shrink-0" />
                         <span>{atributos.Ubicacion || 'Ubicación no especificada'} {ciudad ? `— ${ciudad.Ciudad}` : ''}</span>
                     </p>
+
+                    {/* Barra de Atributos Rápidos */}
+                    <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-4 sm:gap-6 text-xs sm:text-sm font-semibold text-slate-700">
+                        {atributos.SuperficieTotal > 0 && (
+                            <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                                <FaRulerCombined className="text-[#0F766E]" />
+                                <span>{atributos.SuperficieTotal} m² Totales</span>
+                            </div>
+                        )}
+                        {atributos.Dormitorios > 0 && (
+                            <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                                <FaBed className="text-[#0F766E]" />
+                                <span>{atributos.Dormitorios} {atributos.Dormitorios === 1 ? 'Dormitorio' : 'Dormitorios'}</span>
+                            </div>
+                        )}
+                        {atributos.Banos > 0 && (
+                            <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                                <FaBath className="text-[#0F766E]" />
+                                <span>{atributos.Banos} {atributos.Banos === 1 ? 'Baño' : 'Baños'}</span>
+                            </div>
+                        )}
+                        {atributos.Ambientes > 0 && (
+                            <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                                <FaHome className="text-[#0F766E]" />
+                                <span>{atributos.Ambientes} Amb.</span>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Layout Principal (2 Columnas: Galería + Ficha / Sidebar) */}
@@ -123,12 +164,12 @@ function DetallePropiedad() {
                     <div className="lg:col-span-2 space-y-8">
                         
                         {/* Carrusel de Fotos */}
-                        <div className="bg-white p-3 rounded-3xl shadow-xl border border-slate-100 overflow-hidden z-0">
+                        <div className="bg-white p-3 rounded-3xl shadow-xl border border-slate-100 overflow-hidden relative">
                             {imagenes.length > 0 ? (
                                 <Carousel
                                     showArrows={true}
                                     showThumbs={imagenes.length > 1}
-                                    showStatus={false}
+                                    showStatus={true}
                                     infiniteLoop={true}
                                     autoPlay={true}
                                     interval={5000}
@@ -151,25 +192,13 @@ function DetallePropiedad() {
                             )}
                         </div>
 
-                        {/* Precio & CTA WhatsApp (Visibilidad exclusiva para móvil para tener acceso directo al precio y contacto) */}
+                        {/* Precio & CTA WhatsApp (Visibilidad exclusiva para móvil) */}
                         <div className="lg:hidden">
-                            <DatosPropiedad
-                                disponible={atributos.Disponible}
-                                valor={atributos.Valor}
-                                moneda={moneda}
-                                tipoOperacion={atributos.TipoOperacion}
-                                Ubicacion={atributos.Ubicacion}
-                            />
+                            <TarjetaPrecioContacto inmueble={inmueble} />
                         </div>
 
-                        {/* Ficha Técnica (Superficies, Ambientes, etc.) */}
-                        <FichaTecnica
-                            superficieTotal={atributos.SuperficieTotal}
-                            superficieConstruida={atributos.SuperficieConstruida}
-                            ambientes={atributos.Ambientes}
-                            dormitorios={atributos.Dormitorios}
-                            banos={atributos.Banos}
-                        />
+                        {/* Ficha Técnica */}
+                        <FichaTecnica inmueble={inmueble} />
 
                         {/* Descripción */}
                         <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-100 space-y-4">
@@ -216,7 +245,7 @@ function DetallePropiedad() {
                                     <h2 className="text-xl font-bold text-slate-800">Ubicación Geográfica</h2>
                                 </div>
 
-                                <MapaUbicacionPropiedad
+                                <MapaPropiedad
                                     lat={atributos.latitud}
                                     lng={atributos.longitud}
                                     titulo={atributos.Titulo}
@@ -228,13 +257,18 @@ function DetallePropiedad() {
 
                     {/* Columna Derecha (Precio & WhatsApp CTA - Visibilidad en Escritorio) */}
                     <div className="hidden lg:block lg:col-span-1 space-y-6 lg:sticky lg:top-24">
-                        <DatosPropiedad
-                            disponible={atributos.Disponible}
-                            valor={atributos.Valor}
-                            moneda={moneda}
-                            tipoOperacion={atributos.TipoOperacion}
-                            Ubicacion={atributos.Ubicacion}
-                        />
+                        <TarjetaPrecioContacto inmueble={inmueble} />
+
+                        <div className="bg-gradient-to-br from-[#1E293B] to-[#0F172A] p-6 rounded-3xl text-white space-y-3 shadow-lg">
+                            <h4 className="font-bold text-base">¿Quieres ver más opciones?</h4>
+                            <Link 
+                                to={operacionUrl}
+                                className="inline-flex items-center justify-between w-full py-3 px-4 rounded-2xl bg-[#0F766E] hover:bg-[#0D9488] text-white font-bold text-xs transition-all duration-300"
+                            >
+                                <span>Ver catálogo completo</span>
+                                <FaArrowRight />
+                            </Link>
+                        </div>
                     </div>
 
                 </div>
@@ -244,4 +278,4 @@ function DetallePropiedad() {
     );
 }
 
-export default DetallePropiedad;
+export default DetallePropiedad;

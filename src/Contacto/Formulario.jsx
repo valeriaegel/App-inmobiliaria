@@ -7,6 +7,7 @@ const Formulario = () => {
         name: '',
         email: '',
         phone: '',
+        tipoConsulta: 'general',
         message: ''
     });
 
@@ -20,9 +21,12 @@ const Formulario = () => {
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        const { name, email, phone, message } = formData;
+        const { name, email, phone, tipoConsulta, message } = formData;
         
-        const subject = `Consulta Inmobiliaria de ${name}`;
+        const isAlquiler = tipoConsulta === 'alquiler';
+        const whatsappNumber = isAlquiler ? '5493442640929' : '5493442666333';
+        const subject = isAlquiler ? `Consulta sobre Alquileres - ${name}` : `Consulta Inmobiliaria de ${name}`;
+        
         const body = `
 Hola, mi nombre es ${name}.
 Email: ${email}
@@ -31,12 +35,11 @@ Mi consulta es la siguiente:
 ${message}
         `.trim(); 
 
-        const whatsappNumber = '5493442666333'; 
         const whatsappBody = `*${subject}*%0A${encodeURIComponent(body)}`;
         const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappBody}`;
         
         window.open(whatsappLink, '_blank');
-        setFormData({ name: '', email: '', phone: '', message: '' });
+        setFormData({ name: '', email: '', phone: '', tipoConsulta: 'general', message: '' });
     };
 
     return (
@@ -60,14 +63,31 @@ ${message}
                 />
             </div>
 
-            <InputField
-                label="Número de Teléfono"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Ingrese su número de teléfono con código de área"
-                type="tel"
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <InputField
+                    label="Número de Teléfono"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Ingrese su número de teléfono"
+                    type="tel"
+                />
+                <div>
+                    <label htmlFor="tipoConsulta" className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                        Tipo de Consulta
+                    </label>
+                    <select
+                        id="tipoConsulta"
+                        name="tipoConsulta"
+                        value={formData.tipoConsulta}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 text-sm focus:ring-2 focus:ring-[#0F766E] focus:bg-white outline-none transition-all cursor-pointer"
+                    >
+                        <option value="general">Consultas Generales y Ventas</option>
+                        <option value="alquiler">Alquileres</option>
+                    </select>
+                </div>
+            </div>
 
             <div>
                 <label htmlFor="message" className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">

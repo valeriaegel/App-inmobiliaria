@@ -27,8 +27,6 @@ function PropContainer() {
         // Extraemos los IDs y valores (coincidiendo con las keys de FiltrosBusqueda)
         const ciudadId = params.get('filters[ciudad][id][$eq]');
         const tipoId = params.get('filters[tipo_inmueble][id][$eq]');
-        const ambientesEq = params.get('filters[Ambientes][$eq]');
-        const ambientesGte = params.get('filters[Ambientes][$gte]');
 
         return allInmuebles.filter(inmueble => {
             // A. Filtro por Operación (Venta / Alquiler desde la URL)
@@ -40,16 +38,9 @@ function PropContainer() {
             // C. Filtro por Tipo de Inmueble (Compara IDs)
             const coincideTipo = !tipoId || inmueble.tipo_inmueble?.id?.toString() === tipoId;
 
-            // D. Filtro por Ambientes (Lógica para número exacto o "5+")
-            let coincideAmbientes = true;
-            if (ambientesEq) {
-                coincideAmbientes = inmueble.Ambientes?.toString() === ambientesEq;
-            } else if (ambientesGte) {
-                coincideAmbientes = inmueble.Ambientes >= parseInt(ambientesGte, 10);
-            }
 
             // La propiedad debe cumplir todas las condiciones
-            return coincideOperacion && coincideCiudad && coincideTipo && coincideAmbientes;
+            return coincideOperacion && coincideCiudad && coincideTipo;
         });
     }, [allInmuebles, tipoOperacion, filtroAvanzadoQuery]);
 

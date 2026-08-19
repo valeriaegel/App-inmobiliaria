@@ -10,6 +10,7 @@ import Footer from './Footer.jsx';
 import DetallePropiedad from './DetallePropiedad/DetallePropiedad.jsx';
 import PropContainer from './Propiedades/PropContainer.jsx';
 import { PropertyProvider } from './context/PropertyProvider.jsx';
+import ScrollToTop from './utils/ScrollToTop.jsx';
 import 'leaflet/dist/leaflet.css';
 
 createRoot(document.getElementById('root')).render(
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')).render(
     <PropertyProvider>
     {/* Paso Clave 1: Envuelve toda la aplicación con Router */}
     <Router>
+      <ScrollToTop />
       {/* El Encabezado se mantiene FUERA de Routes para que se muestre en todas las páginas */}
       <Encabezado />
       
