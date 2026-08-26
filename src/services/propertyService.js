@@ -40,12 +40,12 @@ export const propertyService = {
 
     // 3. Consultar datos globales en paralelo desde Strapi con payload optimizado
     async fetchGlobalData() {
-        const endpointInmuebles = "/api/inmuebles?populate[0]=ciudad&populate[1]=tipo_inmueble&populate[2]=Imagenes&populate[3]=servicios&sort[0]=createdAt:desc";
+        const endpointInmuebles = "/api/inmuebles?populate[0]=ciudad&populate[1]=tipo_inmueble&populate[2]=Imagenes&populate[3]=servicios&sort[0]=createdAt:desc&pagination[pageSize]=100";
 
         const [resInm, resCiu, resTip] = await Promise.all([
             fetchFromStrapi(endpointInmuebles),
-            fetchFromStrapi("/api/ciudads?fields[0]=Ciudad"),
-            fetchFromStrapi("/api/tipo-inmuebles?fields[0]=Tipo")
+            fetchFromStrapi("/api/ciudads?fields[0]=Ciudad&pagination[pageSize]=100"),
+            fetchFromStrapi("/api/tipo-inmuebles?fields[0]=Tipo&pagination[pageSize]=100")
         ]);
 
         if (!resInm.ok || !resCiu.ok || !resTip.ok) {
