@@ -47,7 +47,7 @@ function Encabezado() {
             <div className="container mx-auto px-4 md:px-8 py-3.5">
                 <div className="flex justify-between items-center">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center space-x-3 group">
+                    <Link to="/" className="flex items-center space-x-3 group btn-press">
                         <div className="p-1.5 bg-white rounded-xl shadow-sm border border-slate-100 group-hover:scale-105 transition-transform duration-300">
                             <img 
                                 src={logoImage} 
@@ -63,7 +63,7 @@ function Encabezado() {
                             <Link 
                                 key={link.path}
                                 to={link.path} 
-                                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 btn-press ${
                                     isActive(link.path)
                                         ? 'bg-[#1E293B] text-white shadow-md'
                                         : 'text-slate-700 hover:text-[#0F766E] hover:bg-white/60'
@@ -77,14 +77,14 @@ function Encabezado() {
                     {/* Botón CTA + Hamburguesa */}
                     <div className="flex items-center space-x-3">
                         <Link to="/contacto">
-                            <button className="bg-gradient-to-r from-[#0F766E] to-[#0D9488] hover:from-[#0D9488] hover:to-[#0F766E] text-white font-bold py-2.5 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 text-sm">
+                            <button className="bg-gradient-to-r from-[#0F766E] to-[#0D9488] hover:from-[#0D9488] hover:to-[#0F766E] text-white font-bold py-2.5 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg text-sm btn-press cursor-pointer">
                                 Consultar
                             </button>
                         </Link>
 
                         {/* Botón Hamburguesa Móvil */}
                         <button 
-                            className="p-2.5 text-slate-700 hover:bg-slate-100 rounded-xl md:hidden transition-colors" 
+                            className="p-2.5 text-slate-700 hover:bg-slate-100 rounded-xl md:hidden transition-colors btn-press" 
                             onClick={toggleMenu}
                             aria-label="Toggle Menu"
                         >

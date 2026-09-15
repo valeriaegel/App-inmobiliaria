@@ -1,4 +1,4 @@
-import { FaHome, FaFacebook, FaInstagram, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaExternalLinkAlt } from 'react-icons/fa'; 
+import { FaHome, FaFacebook, FaInstagram, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaExternalLinkAlt } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const telefonoGeneral = '+54 9 3442 666333';
@@ -12,7 +12,7 @@ function Footer() {
     <footer className="bg-[#0F172A] text-slate-300 pt-16 pb-8 border-t-4 border-[#0F766E]">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-          
+
           {/* Columna 1: Branding */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
@@ -74,8 +74,8 @@ function Footer() {
                 <div className="space-y-1 text-xs">
                   <div>
                     <span className="text-slate-400 block">Consultas Generales:</span>
-                    <a 
-                      href="https://wa.me/5493442666333?text=¡Hola%20Cristina!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20realizar%20una%20consulta." 
+                    <a
+                      href="https://wa.me/5493442666333?text=¡Hola%20Cristina!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20realizar%20una%20consulta."
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-slate-300 hover:text-emerald-400 transition-colors font-medium text-sm"
@@ -85,8 +85,8 @@ function Footer() {
                   </div>
                   <div>
                     <span className="text-slate-400 block">Alquileres:</span>
-                    <a 
-                      href="https://wa.me/5493442640929?text=¡Hola!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20consultar%20por%20alquileres." 
+                    <a
+                      href="https://wa.me/5493442640929?text=¡Hola!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20consultar%20por%20alquileres."
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-slate-300 hover:text-emerald-400 transition-colors font-medium text-sm"
@@ -98,8 +98,8 @@ function Footer() {
               </li>
               <li className="flex items-center space-x-3">
                 <FaEnvelope className="text-[#0F766E] shrink-0" />
-                <a 
-                  href={`mailto:${email}`} 
+                <a
+                  href={`mailto:${email}`}
                   className="text-slate-300 hover:text-emerald-400 transition-colors break-all"
                 >
                   {email}
@@ -110,22 +110,22 @@ function Footer() {
 
           {/* Columna 4: Redes Sociales & Horario */}
           <div>
-            <h4 className="text-white font-bold text-base mb-4 border-b border-slate-800 pb-2">Síguenos</h4>
+            <h4 className="text-white font-bold text-base mb-4 border-b border-slate-800 pb-2">Redes sociales</h4>
             <p className="text-slate-400 text-xs mb-4">Seguinos en redes sociales para ver las últimas novedades.</p>
             <div className="flex space-x-3 mb-6">
-              <a 
-                href={url_Facebook} 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                href={url_Facebook}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-3 bg-slate-800 hover:bg-[#0F766E] text-slate-300 hover:text-white rounded-xl transition-all duration-300 shadow-md"
                 aria-label="Facebook"
               >
                 <FaFacebook className="text-xl" />
               </a>
-              <a 
-                href={url_Instagram} 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                href={url_Instagram}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-3 bg-slate-800 hover:bg-[#0F766E] text-slate-300 hover:text-white rounded-xl transition-all duration-300 shadow-md"
                 aria-label="Instagram"
               >
@@ -145,10 +145,10 @@ function Footer() {
           <p>&copy; {new Date().getFullYear()} Inmobiliaria Cristina Eckerdt. Todos los derechos reservados.</p>
           <p className="mt-2 sm:mt-0 flex items-center justify-center gap-1">
             Desarrollado por{' '}
-            <a 
-              href="https://www.linkedin.com/in/valeria-egel-abb685155/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://www.linkedin.com/in/valeria-egel-abb685155/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-slate-300 hover:text-emerald-400 font-medium inline-flex items-center gap-1 transition-colors"
             >
               Valeria Egel <FaExternalLinkAlt className="text-[10px]" />

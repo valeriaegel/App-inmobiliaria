@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { PropertyContext } from '../context/PropertyContext';
 import { FaMapMarkedAlt } from 'react-icons/fa';
 import { formatearPrecio } from '../utils/formatearPrecio';
+import { capitalizarTitulo } from '../utils/formatearTexto';
 
 const center = { lat: -32.4837462, lng: -58.2315257 }; // Concepción del Uruguay
 
@@ -121,11 +122,13 @@ function MapaPropiedades() {
                             const lng = parseFloat(inmueble.longitud);
                             const colorFill = obtenerColorOperacion(inmueble.TipoOperacion);
 
+                            const tituloFormateado = capitalizarTitulo(inmueble.Titulo) || 'Propiedad';
+
                             return (
                                 <AdvancedMarker
                                     key={inmueble.id}
                                     position={{ lat, lng }}
-                                    title={inmueble.Titulo}
+                                    title={tituloFormateado}
                                     onClick={() => setSelectedInmueble(inmueble)}
                                 >
                                     <Pin
@@ -150,7 +153,7 @@ function MapaPropiedades() {
                                     {selectedInmueble.Imagenes?.[0]?.url && (
                                         <img
                                             src={selectedInmueble.Imagenes[0].url}
-                                            alt={selectedInmueble.Titulo}
+                                            alt={capitalizarTitulo(selectedInmueble.Titulo) || 'Propiedad'}
                                             className="w-full h-24 object-cover rounded-xl mb-2"
                                         />
                                     )}
@@ -159,7 +162,7 @@ function MapaPropiedades() {
                                             {selectedInmueble.TipoOperacion || 'Inmueble'}
                                         </span>
                                     </div>
-                                    <p className="font-bold text-sm text-slate-800 leading-tight mb-1">{selectedInmueble.Titulo}</p>
+                                    <p className="font-bold text-sm text-slate-800 leading-tight mb-1">{capitalizarTitulo(selectedInmueble.Titulo)}</p>
                                     <p className="text-sm font-extrabold text-[#0F766E] mb-2">
                                         {formatearPrecio(selectedInmueble.Valor, selectedInmueble.Moneda)}
                                     </p>

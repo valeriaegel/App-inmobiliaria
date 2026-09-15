@@ -1,8 +1,8 @@
 
- function InputField({ label, name, value, onChange, placeholder, type = 'text' }) {
+function InputField({ label, name, value, onChange, placeholder, type = 'text', required = true }) {
     return (
-        <div>
-            <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="space-y-1.5">
+            <label htmlFor={name} className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
                 {label}
             </label>
             <input
@@ -12,8 +12,8 @@
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                className="mt-1 block w-full px-4 py-3 border border-gray-500 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-                required
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 text-sm focus:ring-2 focus:ring-[#0F766E] focus:bg-white outline-none transition-all placeholder-slate-400 input-focus-glow"
+                required={required}
             />
         </div>
     );

@@ -32,7 +32,11 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
         }));
     };
     
+    const [resetting, setResetting] = useState(false);
+
     const handleLimpiarFiltros = () => {
+        setResetting(true);
+        setTimeout(() => setResetting(false), 500);
         setFiltros({
             ciudad: '',
             tipoInmueble: '',
@@ -59,9 +63,9 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
 
                 <button 
                     onClick={handleLimpiarFiltros} 
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors btn-press cursor-pointer"
                 >
-                    <FaRedo className="text-[10px]" /> Restablecer
+                    <FaRedo className={`text-[10px] ${resetting ? 'animate-spin' : ''}`} /> Restablecer
                 </button>
             </div>
 
@@ -79,7 +83,7 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                         <select 
                             value={filtros.ciudad}
                             onChange={(e) => handleFilterChange('ciudad', e.target.value)}
-                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 text-sm font-medium focus:ring-2 focus:ring-[#0F766E] focus:bg-white outline-none transition-all cursor-pointer"
+                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 text-sm font-medium focus:ring-2 focus:ring-[#0F766E] focus:bg-white outline-none transition-all cursor-pointer input-focus-glow"
                         >
                             <option value="">Todas las ciudades</option>
                             {opcionesCiudades.map(op => (
@@ -96,7 +100,7 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                         <select 
                             value={filtros.tipoInmueble}
                             onChange={(e) => handleFilterChange('tipoInmueble', e.target.value)}
-                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 text-sm font-medium focus:ring-2 focus:ring-[#0F766E] focus:bg-white outline-none transition-all cursor-pointer"
+                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 text-sm font-medium focus:ring-2 focus:ring-[#0F766E] focus:bg-white outline-none transition-all cursor-pointer input-focus-glow"
                         >
                             <option value="">Todos los tipos</option>
                             {opcionesTipos.map(op => (
@@ -109,7 +113,7 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                     <div>
                         <button
                             onClick={handleBuscarClick}
-                            className="w-full bg-gradient-to-r from-[#0F766E] to-[#0D9488] hover:from-[#0D9488] hover:to-[#0F766E] text-white font-bold p-3.5 rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm"
+                            className="w-full bg-gradient-to-r from-[#0F766E] to-[#0D9488] hover:from-[#0D9488] hover:to-[#0F766E] text-white font-bold p-3.5 rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm btn-press cursor-pointer"
                         >
                             <FaSearch />
                             <span>Aplicar Filtros</span>

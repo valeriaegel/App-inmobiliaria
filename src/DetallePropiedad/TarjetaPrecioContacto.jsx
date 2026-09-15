@@ -1,23 +1,39 @@
 import { useState } from "react";
-import { FaCheckCircle, FaTimesCircle, FaWhatsapp, FaShareAlt, FaCheck, FaUserTie } from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle, FaWhatsapp, FaShareAlt, FaCheck } from "react-icons/fa";
 import { formatearPrecio } from "../utils/formatearPrecio";
 import { generarLinkWhatsApp } from "../utils/funContacto";
+import { useToast } from "../context/ToastContext";
 
 function TarjetaPrecioContacto({ inmueble }) {
     const [copiado, setCopiado] = useState(false);
+    const { mostrarToast } = useToast();
 
     if (!inmueble) return null;
 
     const { Disponible, Valor, Moneda, TipoOperacion, Ubicacion, Titulo } = inmueble;
+
     const monedaSimbolo = Moneda === 'Peso' ? '$' : 'U$S';
     const whatsappLink = generarLinkWhatsApp(Ubicacion, TipoOperacion, Titulo);
     const tienePrecio = Valor != null && Valor > 0 && Valor !== '';
     const textoPrecio = formatearPrecio(Valor, monedaSimbolo);
 
-    const handleCopiarEnlace = () => {
-        if (navigator.clipboard) {
+    const handleCompartir = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: Titulo || 'Propiedad en Inmobiliaria',
+                    text: `Mirá esta propiedad en ${TipoOperacion || 'inmobiliaria'}: ${Titulo}`,
+                    url: window.location.href,
+                });
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('Error al compartir:', err);
+                }
+            }
+        } else if (navigator.clipboard) {
             navigator.clipboard.writeText(window.location.href);
             setCopiado(true);
+            mostrarToast('¡Enlace copiado al portapapeles!', 'success');
             setTimeout(() => setCopiado(false), 2500);
         }
     };
@@ -56,23 +72,25 @@ function TarjetaPrecioContacto({ inmueble }) {
 
             {/* Botones de Acción */}
             <div className="space-y-3 pt-2">
+                {/* Botón WhatsApp */}
                 <a 
                     href={whatsappLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-3 text-sm transform hover:-translate-y-0.5"
+                    className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-3 text-sm btn-press"
                 >
                     <FaWhatsapp className="text-xl" />
                     <span>Consultar por WhatsApp</span>
                 </a>
 
+                {/* Botón Copiar / Compartir Enlace */}
                 <button
-                    onClick={handleCopiarEnlace}
-                    className="w-full bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold py-3 px-5 rounded-2xl transition-all duration-200 border border-slate-200 flex items-center justify-center gap-2 text-xs cursor-pointer"
+                    onClick={handleCompartir}
+                    className="w-full bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold py-3.5 px-5 rounded-2xl transition-all duration-200 border border-slate-200 flex items-center justify-center gap-2 text-xs cursor-pointer btn-press"
                 >
                     {copiado ? (
                         <>
-                            <FaCheck className="text-emerald-600 text-sm" />
+                            <FaCheck className="text-emerald-600 text-sm animate-badge-pop" />
                             <span className="text-emerald-700 font-bold">¡Enlace copiado al portapapeles!</span>
                         </>
                     ) : (

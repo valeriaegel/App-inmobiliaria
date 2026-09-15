@@ -1,5 +1,5 @@
 import Formulario from './Formulario.jsx';
-import { FaComments } from 'react-icons/fa';
+
 
 function Contacto() {
     return (
@@ -10,12 +10,9 @@ function Contacto() {
 
                     {/* Columna Izquierda: Mensaje Directo */}
                     <div className="lg:col-span-5 space-y-6 text-center lg:text-left">
-                        <div className="inline-flex items-center gap-2 bg-[#0F766E]/10 text-[#0F766E] px-4 py-1.5 rounded-full text-xs font-bold border border-[#0F766E]/20">
-                            <FaComments /> Contacto Directo
-                        </div>
 
                         <h1 className="text-4xl sm:text-5xl font-extrabold text-[#1E293B] tracking-tight leading-tight">
-                            ¿Tienes alguna consulta o propuesta?
+                            ¿Tiene alguna consulta?
                         </h1>
 
                         <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
@@ -26,10 +23,10 @@ function Contacto() {
                             💡 Te responderemos a la brevedad dentro del horario de atención.
                         </div>
                     </div>
-                    
+
                     {/* Columna Derecha: Formulario */}
                     <div className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-100">
-                       <Formulario />
+                        <Formulario />
                     </div>
 
                 </div>

@@ -1,19 +1,20 @@
 import { Link } from 'react-router-dom';
 import { FaBed, FaBath, FaHome, FaArrowRight, FaSearchLocation, FaRedo } from 'react-icons/fa';
 import { formatearPrecio } from '../utils/formatearPrecio';
+import { capitalizarTitulo } from '../utils/formatearTexto';
 
 function PropiedadesSkeleton() {
     return (
-        <div className="container mx-auto px-4 md:px-8 py-8 animate-pulse">
-            <div className="h-8 bg-slate-200 rounded-xl w-64 mb-8"></div>
+        <div className="container mx-auto px-4 md:px-8 py-8">
+            <div className="h-8 skeleton-shimmer rounded-xl w-64 mb-8"></div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                     <div key={i} className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md h-[420px] flex flex-col justify-between p-4">
-                        <div className="h-52 bg-slate-200 rounded-2xl mb-4 w-full"></div>
-                        <div className="h-5 bg-slate-200 rounded-lg w-3/4 mb-3"></div>
-                        <div className="h-4 bg-slate-100 rounded-lg w-full mb-2"></div>
-                        <div className="h-4 bg-slate-100 rounded-lg w-2/3 mb-4"></div>
-                        <div className="h-10 bg-slate-200 rounded-2xl w-full mt-auto"></div>
+                        <div className="h-52 skeleton-shimmer rounded-2xl mb-4 w-full"></div>
+                        <div className="h-5 skeleton-shimmer rounded-lg w-3/4 mb-3"></div>
+                        <div className="h-4 skeleton-shimmer rounded-lg w-full mb-2"></div>
+                        <div className="h-4 skeleton-shimmer rounded-lg w-2/3 mb-4"></div>
+                        <div className="h-10 skeleton-shimmer rounded-2xl w-full mt-auto"></div>
                     </div>
                 ))}
             </div>
@@ -76,6 +77,7 @@ function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
                         const Disponible = inmueble.Disponible;
                         const documentId = inmueble.documentId;
                         const isVenta = atributos.TipoOperacion?.toLowerCase() === 'venta';
+                        const tituloFormateado = capitalizarTitulo(atributos.Titulo || atributos.Descripcion) || 'Propiedad Inmobiliaria';
 
                         return (
                             <div 
@@ -87,7 +89,7 @@ function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
                                     {imagenURL ? (
                                         <img 
                                             src={imagenURL} 
-                                            alt={atributos.Titulo || 'Propiedad'} 
+                                            alt={tituloFormateado} 
                                             loading="lazy"
                                             decoding="async"
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
@@ -125,9 +127,9 @@ function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
                                     <div>
                                         <h3 
                                             className="text-lg font-bold text-slate-800 mb-2 line-clamp-1 group-hover:text-[#0F766E] transition-colors" 
-                                            title={atributos.Titulo || atributos.Descripcion}
+                                            title={tituloFormateado}
                                         >
-                                            {atributos.Titulo || atributos.Descripcion || 'Propiedad Inmobiliaria'}
+                                            {tituloFormateado}
                                         </h3>
 
                                         {atributos.Descripcion && (
@@ -162,7 +164,7 @@ function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
 
                                         <Link 
                                             to={`/propiedades/detalle/${documentId}`} 
-                                            className="w-full bg-[#1E293B] hover:bg-[#0F766E] text-white font-bold py-3 px-4 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-xs shadow-md group-hover:shadow-lg"
+                                            className="w-full bg-[#1E293B] hover:bg-[#0F766E] text-white font-bold py-3 px-4 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-xs shadow-md group-hover:shadow-lg btn-press cursor-pointer"
                                         >
                                             <span>Ver más detalles</span>
                                             <FaArrowRight className="text-xs group-hover:translate-x-1 transition-transform" />
