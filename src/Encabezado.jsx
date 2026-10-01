@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import logoImage from './assets/Logo.png'; 
+import logoImage from './assets/Logo.png';
 import { FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 
 function Encabezado() {
@@ -34,11 +34,8 @@ function Encabezado() {
                             <FaPhoneAlt className="text-[#0F766E]" /> Concepción del Uruguay, Entre Ríos
                         </span>
                         <span className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
-                            <FaEnvelope className="text-[#0F766E]" /> Asesoramiento Inmobiliario 
+                            <FaEnvelope className="text-[#0F766E]" /> Asesoramiento Inmobiliario
                         </span>
-                    </div>
-                    <div className="font-medium text-emerald-400">
-                        Atención Personalizada
                     </div>
                 </div>
             </div>
@@ -49,25 +46,24 @@ function Encabezado() {
                     {/* Logo */}
                     <Link to="/" className="flex items-center space-x-3 group btn-press">
                         <div className="p-1.5 bg-white rounded-xl shadow-sm border border-slate-100 group-hover:scale-105 transition-transform duration-300">
-                            <img 
-                                src={logoImage} 
-                                alt="Logo Cristina Eckerdt" 
-                                className="h-10 sm:h-12 w-auto object-contain" 
+                            <img
+                                src={logoImage}
+                                alt="Logo Cristina Eckerdt"
+                                className="h-10 sm:h-12 w-auto object-contain"
                             />
                         </div>
                     </Link>
-                    
+
                     {/* Navegación Desktop */}
                     <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 bg-slate-100/80 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
                         {links.map((link) => (
-                            <Link 
+                            <Link
                                 key={link.path}
-                                to={link.path} 
-                                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 btn-press ${
-                                    isActive(link.path)
+                                to={link.path}
+                                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 btn-press ${isActive(link.path)
                                         ? 'bg-[#1E293B] text-white shadow-md'
                                         : 'text-slate-700 hover:text-[#0F766E] hover:bg-white/60'
-                                }`}
+                                    }`}
                             >
                                 {link.label}
                             </Link>
@@ -83,8 +79,8 @@ function Encabezado() {
                         </Link>
 
                         {/* Botón Hamburguesa Móvil */}
-                        <button 
-                            className="p-2.5 text-slate-700 hover:bg-slate-100 rounded-xl md:hidden transition-colors btn-press" 
+                        <button
+                            className="p-2.5 text-slate-700 hover:bg-slate-100 rounded-xl md:hidden transition-colors btn-press"
                             onClick={toggleMenu}
                             aria-label="Toggle Menu"
                         >
@@ -107,15 +103,14 @@ function Encabezado() {
                 <div className="md:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200 px-6 py-4 animate-in slide-in-from-top duration-300 shadow-xl">
                     <nav className="flex flex-col space-y-2">
                         {links.map((link) => (
-                            <Link 
+                            <Link
                                 key={link.path}
-                                to={link.path} 
+                                to={link.path}
                                 onClick={toggleMenu}
-                                className={`px-4 py-3 rounded-xl font-medium transition-all ${
-                                    isActive(link.path)
+                                className={`px-4 py-3 rounded-xl font-medium transition-all ${isActive(link.path)
                                         ? 'bg-[#1E293B] text-white font-semibold'
                                         : 'text-slate-700 hover:bg-slate-100'
-                                }`}
+                                    }`}
                             >
                                 {link.label}
                             </Link>

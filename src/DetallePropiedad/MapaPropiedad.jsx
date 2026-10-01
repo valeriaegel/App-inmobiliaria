@@ -1,15 +1,16 @@
 import { APIProvider, Map, AdvancedMarker, InfoWindow } from '@vis.gl/react-google-maps';
 import { useState } from 'react';
 import { FaHome, FaExternalLinkAlt } from 'react-icons/fa';
+import { normalizarCoordenada } from '../utils/coordenadas';
 
 function MapaPropiedad({ lat, lng, titulo }) {
     const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
     const [openInfo, setOpenInfo] = useState(false);
 
-    const numericLat = parseFloat(lat);
-    const numericLng = parseFloat(lng);
+    const numericLat = normalizarCoordenada(lat, true);
+    const numericLng = normalizarCoordenada(lng, false);
 
-    if (isNaN(numericLat) || isNaN(numericLng)) return null;
+    if (numericLat === null || numericLng === null) return null;
 
     const position = { lat: numericLat, lng: numericLng };
     const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${numericLat},${numericLng}`;

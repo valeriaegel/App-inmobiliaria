@@ -5,6 +5,7 @@ import { PropertyContext } from '../context/PropertyContext';
 import { FaMapMarkedAlt } from 'react-icons/fa';
 import { formatearPrecio } from '../utils/formatearPrecio';
 import { capitalizarTitulo } from '../utils/formatearTexto';
+import { normalizarCoordenada } from '../utils/coordenadas';
 
 const center = { lat: -32.4837462, lng: -58.2315257 }; // Concepción del Uruguay
 
@@ -35,9 +36,9 @@ function AjustarVistaGoogle({ puntos }) {
         let validPoints = 0;
 
         puntos.forEach(p => {
-            const lat = parseFloat(p.latitud);
-            const lng = parseFloat(p.longitud);
-            if (!isNaN(lat) && !isNaN(lng)) {
+            const lat = p.latitudNormalizada;
+            const lng = p.longitudNormalizada;
+            if (typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng)) {
                 bounds.extend({ lat, lng });
                 validPoints++;
             }
@@ -45,6 +46,12 @@ function AjustarVistaGoogle({ puntos }) {
 
         if (validPoints > 0) {
             map.fitBounds(bounds, { top: 40, right: 40, bottom: 40, left: 40 });
+            // Evitar que el zoom se acerque en exceso si los puntos son muy cercanos
+            const listener = window.google.maps.event.addListenerOnce(map, 'idle', () => {
+                if (map.getZoom() > 17) {
+                    map.setZoom(17);
+                }
+            });
             setAjustado(true);
         }
     }, [map, puntos, ajustado]);
@@ -58,11 +65,17 @@ function MapaPropiedades() {
     const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
     // Filtramos ÚNICAMENTE los inmuebles DISPONIBLES y que tengan coordenadas válidas
-    const conCoordenadas = (allInmuebles || []).filter(
-        i => i.Disponible === true &&
-             i.latitud != null && !isNaN(parseFloat(i.latitud)) &&
-             i.longitud != null && !isNaN(parseFloat(i.longitud))
-    );
+    const conCoordenadas = (allInmuebles || [])
+        .map(i => ({
+            ...i,
+            latitudNormalizada: normalizarCoordenada(i.latitud, true),
+            longitudNormalizada: normalizarCoordenada(i.longitud, false)
+        }))
+        .filter(
+            i => i.Disponible === true &&
+                 i.latitudNormalizada !== null &&
+                 i.longitudNormalizada !== null
+        );
 
     if (loading) {
         return (
@@ -118,8 +131,8 @@ function MapaPropiedades() {
                         <AjustarVistaGoogle puntos={conCoordenadas} />
 
                         {conCoordenadas.map(inmueble => {
-                            const lat = parseFloat(inmueble.latitud);
-                            const lng = parseFloat(inmueble.longitud);
+                            const lat = inmueble.latitudNormalizada;
+                            const lng = inmueble.longitudNormalizada;
                             const colorFill = obtenerColorOperacion(inmueble.TipoOperacion);
 
                             const tituloFormateado = capitalizarTitulo(inmueble.Titulo) || 'Propiedad';
@@ -141,11 +154,11 @@ function MapaPropiedades() {
                             );
                         })}
 
-                        {selectedInmueble && (
+                        {selectedInmueble && selectedInmueble.latitudNormalizada != null && selectedInmueble.longitudNormalizada != null && (
                             <InfoWindow
                                 position={{
-                                    lat: parseFloat(selectedInmueble.latitud),
-                                    lng: parseFloat(selectedInmueble.longitud)
+                                    lat: selectedInmueble.latitudNormalizada,
+                                    lng: selectedInmueble.longitudNormalizada
                                 }}
                                 onCloseClick={() => setSelectedInmueble(null)}
                             >
