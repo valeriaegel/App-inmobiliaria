@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FaHome, FaArrowRight, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaHome, FaArrowRight, FaMapMarkerAlt, FaTimesCircle } from 'react-icons/fa';
 import { formatearPrecio } from '../utils/formatearPrecio';
 import { capitalizarTitulo } from '../utils/formatearTexto';
 
@@ -62,11 +62,16 @@ function PropRecientes({ propiedades, cargando, error }) {
                             )}
 
                             {/* Badges superpuestos */}
-                            <div className="absolute top-3 left-3 flex gap-2 z-10">
+                            <div className="absolute top-3 left-3 flex flex-wrap gap-2 z-10">
                                 <span className={`text-[10px] font-extrabold tracking-wider px-3 py-1 rounded-full shadow-md text-white uppercase ${isVenta ? 'bg-[#1E293B]' : 'bg-[#0F766E]'
                                     }`}>
                                     {tagText}
                                 </span>
+                                {atributos.Disponible === false && (
+                                    <span className="text-[10px] font-extrabold tracking-wider px-3 py-1 rounded-full shadow-md text-white uppercase bg-rose-600 inline-flex items-center gap-1">
+                                        <FaTimesCircle className="text-[10px]" /> No disponible
+                                    </span>
+                                )}
                             </div>
 
                             {/* Precio superpuesto */}

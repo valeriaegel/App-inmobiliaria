@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FaBed, FaBath, FaHome, FaArrowRight, FaSearchLocation, FaRedo } from 'react-icons/fa';
+import { FaBed, FaBath, FaHome, FaArrowRight, FaSearchLocation, FaRedo, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { formatearPrecio } from '../utils/formatearPrecio';
 import { capitalizarTitulo } from '../utils/formatearTexto';
 
@@ -74,7 +74,7 @@ function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
                         const atributos = inmueble;
                         const imagenURL = atributos.Imagenes?.[0]?.url;
                         const moneda = atributos.Moneda === 'Peso' ? '$' : 'U$S';
-                        const Disponible = inmueble.Disponible;
+                        const Disponible = inmueble.Disponible !== false;
                         const documentId = inmueble.documentId;
                         const isVenta = atributos.TipoOperacion?.toLowerCase() === 'venta';
                         const tituloFormateado = capitalizarTitulo(atributos.Titulo || atributos.Descripcion) || 'Propiedad Inmobiliaria';
@@ -82,7 +82,9 @@ function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
                         return (
                             <div 
                                 key={inmueble.id} 
-                                className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col justify-between group transform hover:-translate-y-1.5"
+                                className={`bg-white rounded-3xl overflow-hidden border shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col justify-between group transform hover:-translate-y-1.5 ${
+                                    !Disponible ? 'border-rose-200 ring-1 ring-rose-100' : 'border-slate-100'
+                                }`}
                             >
                                 {/* Imagen con badges superpuestos */}
                                 <div className="relative overflow-hidden h-60 bg-slate-100">
@@ -102,10 +104,11 @@ function Propiedades({ inmuebles, cargando, error, tipoOperacion }) {
 
                                     {/* Badges Flotantes */}
                                     <div className="absolute top-3 left-3 flex flex-wrap gap-2 z-10">
-                                        <span className={`px-3 py-1 text-xs font-extrabold rounded-full shadow-md text-white ${
-                                            Disponible ? 'bg-emerald-600' : 'bg-slate-500'
+                                        <span className={`px-3 py-1 text-xs font-extrabold rounded-full shadow-md text-white inline-flex items-center gap-1.5 ${
+                                            Disponible ? 'bg-emerald-600' : 'bg-rose-600'
                                         }`}>
-                                            {Disponible ? 'Disponible' : 'Reservado'}
+                                            {Disponible ? <FaCheckCircle className="text-[11px]" /> : <FaTimesCircle className="text-[11px]" />}
+                                            {Disponible ? 'Disponible' : 'No disponible'}
                                         </span>
                                         {atributos.TipoOperacion && (
                                             <span className={`px-3 py-1 text-xs font-extrabold rounded-full shadow-md text-white ${

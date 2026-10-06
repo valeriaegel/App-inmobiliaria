@@ -59,13 +59,13 @@ function TarjetaPrecioContacto({ inmueble }) {
             {/* Estado del inmueble */}
             <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <span className="text-xs font-semibold text-slate-500">Estado de la propiedad</span>
-                {Disponible ? (
+                {Disponible !== false ? (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-sm">
                         <FaCheckCircle className="text-emerald-500" /> Disponible
                     </span>
                 ) : (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-600 border border-rose-200 shadow-sm">
-                        <FaTimesCircle className="text-rose-500" /> Reservado
+                        <FaTimesCircle className="text-rose-500" /> No disponible
                     </span>
                 )}
             </div>

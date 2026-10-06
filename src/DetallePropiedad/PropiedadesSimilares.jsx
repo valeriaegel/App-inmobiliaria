@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FaHome, FaArrowRight, FaMapMarkerAlt, FaBed, FaRulerCombined } from 'react-icons/fa';
+import { FaHome, FaArrowRight, FaMapMarkerAlt, FaBed, FaRulerCombined, FaTimesCircle } from 'react-icons/fa';
 import { formatearPrecio } from '../utils/formatearPrecio';
 import { capitalizarTitulo } from '../utils/formatearTexto';
 
@@ -81,11 +81,16 @@ function PropiedadesSimilares({ propiedadActual, todasLasPropiedades = [] }) {
                                     </div>
                                 )}
 
-                                <div className="absolute top-3 left-3 flex gap-2">
+                                <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                                     <span className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full text-white shadow-sm ${isVenta ? 'bg-slate-800' : 'bg-[#0F766E]'
                                         }`}>
                                         En {prop.TipoOperacion}
                                     </span>
+                                    {prop.Disponible === false && (
+                                        <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full text-white shadow-sm bg-rose-600 inline-flex items-center gap-1">
+                                            <FaTimesCircle className="text-[10px]" /> No disponible
+                                        </span>
+                                    )}
                                 </div>
                             </div>
 

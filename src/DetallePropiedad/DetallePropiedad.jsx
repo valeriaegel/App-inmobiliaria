@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import {   
     FaMapMarkerAlt, FaChevronLeft, 
     FaInfoCircle, FaCheckDouble, FaRulerCombined, FaBed, FaBath, FaHome, FaArrowRight,
-    FaWhatsapp, FaShareAlt, FaCheck, FaCheckCircle
+    FaWhatsapp, FaShareAlt, FaCheck, FaCheckCircle, FaTimesCircle
 } from 'react-icons/fa';
 import { PropertyContext } from '../context/PropertyContext';
 import { propertyService } from '../services/propertyService';
@@ -153,6 +153,14 @@ function DetallePropiedad() {
                     </div>
                 </div>
 
+                {/* Banner de alerta si la propiedad no está disponible */}
+                {atributos.Disponible === false && (
+                    <div className="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-3.5 rounded-3xl flex items-center gap-3 shadow-sm">
+                        <FaTimesCircle className="text-rose-500 text-lg shrink-0" />
+                        <p className="font-bold text-sm text-rose-900">Esta propiedad no se encuentra disponible</p>
+                    </div>
+                )}
+
                 {/* Header de la Propiedad (con Valor y Contacto rediseñados de alta gama) */}
                 <div className="bg-white p-6 sm:p-8 md:p-10 rounded-3xl shadow-lg border border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                     
@@ -169,10 +177,22 @@ function DetallePropiedad() {
                                     En {atributos.TipoOperacion}
                                 </span>
                             )}
-                            <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-                                atributos.Disponible ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+                            <span className={`text-xs font-bold px-3 py-1 rounded-full inline-flex items-center gap-1.5 shadow-sm ${
+                                atributos.Disponible !== false 
+                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                                    : 'bg-rose-50 text-rose-700 border border-rose-200'
                             }`}>
-                                {atributos.Disponible ? 'Disponible' : 'Reservado'}
+                                {atributos.Disponible !== false ? (
+                                    <>
+                                        <FaCheckCircle className="text-emerald-500 text-[11px]" />
+                                        <span>Disponible</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaTimesCircle className="text-rose-500 text-[11px]" />
+                                        <span>No disponible</span>
+                                    </>
+                                )}
                             </span>
                         </div>
 
