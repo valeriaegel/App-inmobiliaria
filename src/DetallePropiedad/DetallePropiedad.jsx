@@ -33,6 +33,7 @@ const datosRapidosDe = (inmueble) => {
             valor: `${inmueble.SuperficieTotal} m²`,
             etiqueta: 'm² totales',
             etiquetaCorta: 'm² tot.',
+            etiquetaMinima: 'tot.',
             visible: inmueble.SuperficieTotal > 0,
         },
         {
@@ -40,6 +41,7 @@ const datosRapidosDe = (inmueble) => {
             valor: `${inmueble.SuperficieConstruida} m²`,
             etiqueta: 'm² cubiertos',
             etiquetaCorta: 'm² cub.',
+            etiquetaMinima: 'cub.',
             visible: inmueble.SuperficieConstruida > 0,
         },
         {
@@ -78,14 +80,16 @@ function DatosRapidos({ inmueble }) {
             className="grid gap-2 sm:gap-2.5"
             style={{ gridTemplateColumns: `repeat(${datos.length}, minmax(0, 1fr))` }}
         >
-            {datos.map(({ icono, valor, etiqueta, etiquetaCorta = etiqueta }) => (
+            {datos.map(({ icono, valor, etiqueta, etiquetaCorta = etiqueta, etiquetaMinima = etiquetaCorta }) => (
                 <div
                     key={etiqueta}
                     className="flex min-h-[76px] min-w-0 flex-col items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 px-1 py-3 text-center sm:px-1.5"
                 >
                     {icono}
                     <span className="text-sm font-extrabold leading-tight text-[#1E293B]">{valor}</span>
-                    <span className="mt-0.5 w-full truncate text-xs font-medium text-[#475569] sm:hidden">{etiquetaCorta}</span>
+                    {/* Rótulo según ancho: <360px mínimo, 360-639px corto, ≥640px completo */}
+                    <span className="mt-0.5 w-full truncate text-xs font-medium text-[#475569] min-[360px]:hidden">{etiquetaMinima}</span>
+                    <span className="mt-0.5 hidden w-full truncate text-xs font-medium text-[#475569] min-[360px]:block sm:hidden">{etiquetaCorta}</span>
                     <span className="mt-0.5 hidden w-full truncate text-xs font-medium text-[#475569] sm:block">{etiqueta}</span>
                 </div>
             ))}
