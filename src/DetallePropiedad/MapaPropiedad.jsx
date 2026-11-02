@@ -1,11 +1,21 @@
 import { APIProvider, Map, AdvancedMarker, InfoWindow } from '@vis.gl/react-google-maps';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaHome, FaExternalLinkAlt } from 'react-icons/fa';
 import { normalizarCoordenada } from '../utils/coordenadas';
 
 function MapaPropiedad({ lat, lng, titulo }) {
     const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
     const [openInfo, setOpenInfo] = useState(false);
+    const [esAngosto, setEsAngosto] = useState(
+        () => typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches
+    );
+
+    useEffect(() => {
+        const consulta = window.matchMedia('(max-width: 1023px)');
+        const actualizar = (evento) => setEsAngosto(evento.matches);
+        consulta.addEventListener('change', actualizar);
+        return () => consulta.removeEventListener('change', actualizar);
+    }, []);
 
     const numericLat = normalizarCoordenada(lat, true);
     const numericLng = normalizarCoordenada(lng, false);
@@ -16,7 +26,7 @@ function MapaPropiedad({ lat, lng, titulo }) {
     const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${numericLat},${numericLng}`;
 
     return (
-        <div className="relative h-[320px] w-full overflow-hidden rounded-3xl border border-slate-200 shadow-xl sm:h-[420px] z-0 isolate group">
+        <div className="relative h-[220px] w-full overflow-hidden rounded-3xl border border-slate-200 shadow-xl lg:h-[300px] z-0 isolate group">
             {/* Botón flotante para abrir ruta directa en Google Maps */}
             <a
                 href={googleMapsUrl}
@@ -34,11 +44,12 @@ function MapaPropiedad({ lat, lng, titulo }) {
                     defaultCenter={position}
                     defaultZoom={16}
                     mapId="DETALLE_PROPIEDAD_MAP"
-                    gestureHandling="greedy"
+                    gestureHandling={esAngosto ? 'cooperative' : 'greedy'}
                     reuseMaps={true}
                     zoomControl={true}
-                    mapTypeControl={true}
-                    streetViewControl={true}
+                    mapTypeControl={!esAngosto}
+                    streetViewControl={!esAngosto}
+                    fullscreenControl={!esAngosto}
                 >
                     <AdvancedMarker
                         position={position}
