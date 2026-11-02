@@ -13,7 +13,6 @@ import { PropertyProvider } from './context/PropertyProvider.jsx';
 import { ToastProvider } from './context/ToastContext.jsx';
 import Toast from './utils/Toast.jsx';
 import ScrollToTop from './utils/ScrollToTop.jsx';
-import 'leaflet/dist/leaflet.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
