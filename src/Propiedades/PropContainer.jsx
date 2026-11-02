@@ -1,67 +1,53 @@
 import FiltrosBusqueda from "./FiltrosBusqueda";
 import Propiedades from "./Propiedades";
-import { useParams } from "react-router-dom";
-import { useState, useContext, useMemo } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
+import { useContext, useMemo } from "react";
 import { PropertyContext } from "../context/PropertyContext";
 
 /*
- * Componente contenedor: Maneja el filtrado lógico en el cliente
- * para garantizar una respuesta instantánea.
+ * Componente contenedor: filtra en el cliente a partir de los parámetros
+ * de la URL (tipo y ciudad), por lo que los filtros se aplican al instante.
  */
 function PropContainer() {
     const { tipoOperacion } = useParams();
+    const [searchParams] = useSearchParams();
 
     // 1. Consumimos los datos globales y estados de carga del PropertyContext
     const { allInmuebles, loading, error } = useContext(PropertyContext);
 
-    // Estado que almacena la query de filtros generada por FiltrosBusqueda
-    const [filtroAvanzadoQuery, setFiltroAvanzadoQuery] = useState('');
+    const ciudadId = searchParams.get('ciudad') || '';
+    const tipoId = searchParams.get('tipo') || '';
 
-    // 2. Lógica de Filtrado Local (useMemo evita cálculos innecesarios)
+    // 2. Filtrado local (useMemo evita cálculos innecesarios)
     const inmueblesFiltrados = useMemo(() => {
         if (!allInmuebles) return [];
-
-        // Procesamos la query string para extraer los valores seleccionados
-        const params = new URLSearchParams(filtroAvanzadoQuery);
-        
-        // Extraemos los IDs y valores (coincidiendo con las keys de FiltrosBusqueda)
-        const ciudadId = params.get('filters[ciudad][id][$eq]');
-        const tipoId = params.get('filters[tipo_inmueble][id][$eq]');
 
         return allInmuebles.filter(inmueble => {
             // A. Filtro por Operación (Venta / Alquiler desde la URL)
             const coincideOperacion = inmueble.TipoOperacion?.toUpperCase() === tipoOperacion?.toUpperCase();
 
-            // B. Filtro por Ciudad (Compara IDs)
-            const coincideCiudad = !ciudadId || inmueble.ciudad?.id?.toString() === ciudadId;
+            // B. Filtro por Ciudad (compara IDs)
+            const coincideCiudad = !ciudadId || String(inmueble.ciudad?.id) === ciudadId;
 
-            // C. Filtro por Tipo de Inmueble (Compara IDs)
-            const coincideTipo = !tipoId || inmueble.tipo_inmueble?.id?.toString() === tipoId;
+            // C. Filtro por Tipo de Inmueble (compara IDs)
+            const coincideTipo = !tipoId || String(inmueble.tipo_inmueble?.id) === tipoId;
 
-
-            // La propiedad debe cumplir todas las condiciones
             return coincideOperacion && coincideCiudad && coincideTipo;
         });
-    }, [allInmuebles, tipoOperacion, filtroAvanzadoQuery]);
-
-    // 3. Función que recibe la actualización de filtros desde el hijo
-    const aplicarFiltrosAvanzados = (query) => {
-        setFiltroAvanzadoQuery(query);
-    };
+    }, [allInmuebles, tipoOperacion, ciudadId, tipoId]);
 
     return (
-        <div className="p-4 bg-[#F0F2ED]">
-            
-            {/* Componente de Filtros: actualiza el estado local*/}
-            <FiltrosBusqueda onFiltrosAplicados={aplicarFiltrosAvanzados} /> 
-            
-            {/* Listado de Propiedades: Recibe el array ya filtrado en milisegundos */}
-            <Propiedades 
+        <div className="bg-[#F0F2ED] px-4 py-8 md:px-8">
+            {/* Componente de Filtros: lee y actualiza los parámetros de la URL */}
+            <FiltrosBusqueda />
+
+            {/* Listado de Propiedades: recibe el array ya filtrado */}
+            <Propiedades
                 inmuebles={inmueblesFiltrados}
                 cargando={loading}
                 error={error}
                 tipoOperacion={tipoOperacion}
-            /> 
+            />
         </div>
     );
 }

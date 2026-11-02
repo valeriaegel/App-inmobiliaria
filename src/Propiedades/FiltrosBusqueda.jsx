@@ -1,106 +1,70 @@
-import { useState, useCallback, useContext } from 'react';
-import { FaFilter, FaTag, FaCity, FaSearch, FaRedo } from 'react-icons/fa';
+import { useContext, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { FaFilter, FaTag, FaCity, FaRedo } from 'react-icons/fa';
 import { PropertyContext } from '../context/PropertyContext';
 
-function FiltrosBusqueda({ onFiltrosAplicados }) {
+function FiltrosBusqueda() {
     const { opcionesCiudades, opcionesTipos, loading } = useContext(PropertyContext);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [resetting, setResetting] = useState(false);
 
-    const [filtros, setFiltros] = useState({
-        ciudad: '',
-        tipoInmueble: '',
-    });
-
-    const construirQuery = useCallback(() => {
-        const queryParts = []; 
-        
-        if (filtros.ciudad) {
-            queryParts.push(`filters[ciudad][id][$eq]=${filtros.ciudad}`);
-        }
-        
-        if (filtros.tipoInmueble) {
-            queryParts.push(`filters[tipo_inmueble][id][$eq]=${filtros.tipoInmueble}`);
-        }
-        
-        return queryParts.join('&');
-    }, [filtros]);
+    // La URL es la única fuente de verdad de los filtros.
+    const filtros = {
+        ciudad: searchParams.get('ciudad') || '',
+        tipoInmueble: searchParams.get('tipo') || '',
+    };
+    const hayFiltros = Boolean(filtros.ciudad || filtros.tipoInmueble);
 
     const handleFilterChange = (campo, valor) => {
-        const valorLimpio = valor === 'Todas' || valor === 'Todos' || valor === 'Cualquiera' || valor === '' ? '' : valor;
-        setFiltros(prev => ({
-            ...prev,
-            [campo]: valorLimpio,
-        }));
+        const nextParams = new URLSearchParams(searchParams);
+
+        if (valor) {
+            nextParams.set(campo, valor);
+        } else {
+            nextParams.delete(campo);
+        }
+
+        setSearchParams(nextParams, { replace: true });
     };
-    
-    const [resetting, setResetting] = useState(false);
 
     const handleLimpiarFiltros = () => {
         setResetting(true);
         setTimeout(() => setResetting(false), 500);
-        setFiltros({
-            ciudad: '',
-            tipoInmueble: '',
-        });
-        onFiltrosAplicados(''); 
+
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete('ciudad');
+        nextParams.delete('tipo');
+        setSearchParams(nextParams, { replace: true });
     };
 
-    const handleBuscarClick = () => {
-        const query = construirQuery();
-        onFiltrosAplicados(query); 
-    };
-    
     return (
-        <div className="bg-white p-6 rounded-3xl shadow-xl border border-slate-100 mb-10 max-w-4xl mx-auto">
-            <div className="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
-                <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-[#0F766E]/10 rounded-xl text-[#0F766E]">
-                        <FaFilter className="text-[#0F766E]" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-800">
-                        Filtrar Catálogo
-                    </h3>
+        <div className="mx-auto mb-8 max-w-4xl rounded-3xl border border-slate-100 bg-white p-5 shadow-xl sm:p-6">
+            <div className="mb-5 flex items-center gap-2.5 border-b border-slate-100 pb-4">
+                <div className="rounded-xl bg-[#0F766E]/10 p-2 text-[#0F766E]">
+                    <FaFilter aria-hidden="true" />
                 </div>
-
-                <button 
-                    onClick={handleLimpiarFiltros} 
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors btn-press cursor-pointer"
-                >
-                    <FaRedo className={`text-[10px] ${resetting ? 'animate-spin' : ''}`} /> Restablecer
-                </button>
+                <h2 className="text-lg font-bold text-[#1E293B]">Filtrar catálogo</h2>
             </div>
 
             {loading ? (
-                <div className="text-center py-4 text-xs font-medium text-slate-400">
+                <p className="py-4 text-center text-sm font-medium text-[#475569]">
                     Cargando opciones...
-                </div>
+                </p>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                    {/* 1. CIUDAD */}
+                <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-3">
+                    {/* 1. TIPO DE PROPIEDAD */}
                     <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
-                            <FaCity className="text-[#0F766E]" /> Ciudad
-                        </label>
-                        <select 
-                            value={filtros.ciudad}
-                            onChange={(e) => handleFilterChange('ciudad', e.target.value)}
-                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 text-sm font-medium focus:ring-2 focus:ring-[#0F766E] focus:bg-white outline-none transition-all cursor-pointer input-focus-glow"
+                        <label
+                            htmlFor="filtro-tipo"
+                            className="flex items-center gap-1.5 text-xs font-bold text-[#475569]"
                         >
-                            <option value="">Todas las ciudades</option>
-                            {opcionesCiudades.map(op => (
-                                <option key={op.id} value={op.id}>{op.nombre}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* 2. TIPO DE PROPIEDAD */}
-                    <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
-                            <FaTag className="text-[#0F766E]" /> Tipo de Inmueble
+                            <FaTag className="text-[#0F766E]" aria-hidden="true" /> Tipo de inmueble
                         </label>
-                        <select 
+                        <select
+                            id="filtro-tipo"
                             value={filtros.tipoInmueble}
-                            onChange={(e) => handleFilterChange('tipoInmueble', e.target.value)}
-                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 text-sm font-medium focus:ring-2 focus:ring-[#0F766E] focus:bg-white outline-none transition-all cursor-pointer input-focus-glow"
+                            onChange={(e) => handleFilterChange('tipo', e.target.value)}
+                            className="min-h-11 w-full cursor-pointer rounded-2xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-[#1E293B] outline-none transition-all focus:border-[#0F766E] focus:bg-white focus:ring-2 focus:ring-[#0F766E]/30"
                         >
                             <option value="">Todos los tipos</option>
                             {opcionesTipos.map(op => (
@@ -109,16 +73,37 @@ function FiltrosBusqueda({ onFiltrosAplicados }) {
                         </select>
                     </div>
 
-                    {/* BOTÓN BUSCAR */}
-                    <div>
-                        <button
-                            onClick={handleBuscarClick}
-                            className="w-full bg-gradient-to-r from-[#0F766E] to-[#0D9488] hover:from-[#0D9488] hover:to-[#0F766E] text-white font-bold p-3.5 rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm btn-press cursor-pointer"
+                    {/* 2. CIUDAD */}
+                    <div className="space-y-1.5">
+                        <label
+                            htmlFor="filtro-ciudad"
+                            className="flex items-center gap-1.5 text-xs font-bold text-[#475569]"
                         >
-                            <FaSearch />
-                            <span>Aplicar Filtros</span>
-                        </button>
+                            <FaCity className="text-[#0F766E]" aria-hidden="true" /> Ciudad
+                        </label>
+                        <select
+                            id="filtro-ciudad"
+                            value={filtros.ciudad}
+                            onChange={(e) => handleFilterChange('ciudad', e.target.value)}
+                            className="min-h-11 w-full cursor-pointer rounded-2xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-[#1E293B] outline-none transition-all focus:border-[#0F766E] focus:bg-white focus:ring-2 focus:ring-[#0F766E]/30"
+                        >
+                            <option value="">Todas las ciudades</option>
+                            {opcionesCiudades.map(op => (
+                                <option key={op.id} value={op.id}>{op.nombre}</option>
+                            ))}
+                        </select>
                     </div>
+
+                    {/* 3. RESTABLECER */}
+                    <button
+                        type="button"
+                        onClick={handleLimpiarFiltros}
+                        disabled={!hayFiltros}
+                        className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-bold text-[#1E293B] transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 btn-press cursor-pointer"
+                    >
+                        <FaRedo className={`text-xs ${resetting ? 'animate-spin' : ''}`} aria-hidden="true" />
+                        <span>Restablecer</span>
+                    </button>
                 </div>
             )}
         </div>

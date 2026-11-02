@@ -27,3 +27,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Capturas de auditoria responsiva
+docs/auditoria-responsive/
+
+# Cache de Vite
+.vite/

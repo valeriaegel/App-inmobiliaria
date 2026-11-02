@@ -204,4 +204,28 @@ a.btn-interactive {
 .animate-badge-pop {
   animation: badgePop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-
+
+/* ========================================================
+   AJUSTES RESPONSIVE
+   ======================================================== */
+
+/* Hero: tipografía fluida para que el H1 no se corte en 320px y ocupe 2 líneas en escritorio */
+.hero-titulo {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: normal;
+  text-wrap: balance;
+}
+
+/* Celular horizontal: el header deja de ser sticky y la galeria no tapa la pantalla */
+@media (max-height: 500px) and (max-width: 1023px) {
+  .site-header {
+    position: static;
+  }
+
+  .galeria-movil {
+    max-height: 70vh;
+  }
+}

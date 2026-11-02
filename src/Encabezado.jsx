@@ -1,125 +1,123 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { FaWhatsapp } from 'react-icons/fa';
 import logoImage from './assets/Logo.png';
-import { FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
+import { TELEFONOS } from './utils/funContacto';
+
+const WHATSAPP_URL =
+  `https://wa.me/${TELEFONOS.ventas.whatsapp}?text=` +
+  encodeURIComponent('¡Hola! Vi la web y quisiera hacer una consulta.');
+
+const links = [
+  { path: '/propiedades/Venta', label: 'Comprar' },
+  { path: '/propiedades/Alquiler', label: 'Alquilar' },
+  { path: '/servicios', label: 'Servicios' },
+];
 
 function Encabezado() {
-    const [menuAbierto, setMenuAbierto] = useState(false);
-    const location = useLocation();
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const location = useLocation();
+  const isActive = (path) => location.pathname.startsWith(path);
 
-    const toggleMenu = () => {
-        setMenuAbierto(!menuAbierto);
-    };
+  const linkBase =
+    'rounded-[10px] px-4 py-3 text-[15px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F766E]';
+  const linkEstado = (path) =>
+    isActive(path)
+      ? 'bg-[#F0F2ED] text-[#1E293B] font-bold'
+      : 'text-[#334155] font-semibold hover:bg-[#F0F2ED]';
 
-    const isActive = (path) => {
-        if (path === '/' && location.pathname === '/') return true;
-        if (path !== '/' && location.pathname.startsWith(path)) return true;
-        return false;
-    };
+  return (
+    <header className="site-header sticky top-0 z-50 bg-white border-b border-[#E2E8F0]">
+      <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-4 py-3 md:px-6 md:py-3.5">
+        <Link
+          to="/"
+          className="flex items-center gap-3 text-[#1E293B] rounded-[10px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F766E]"
+        >
+          <img
+            src={logoImage}
+            alt="Inmobiliaria Cristina Eckerdt"
+            className="h-10 w-10 rounded-lg md:h-12 md:w-12 md:rounded-[10px]"
+          />
+          <span className="flex flex-col leading-tight">
+            <span className="font-heading text-[17px] font-bold md:text-lg">Cristina Eckerdt</span>
+            <span className="hidden text-xs font-semibold text-[#475569] md:block">Inmobiliaria</span>
+          </span>
+        </Link>
 
-    const links = [
-        { path: '/', label: 'Inicio' },
-        { path: '/propiedades/Venta', label: 'Ventas' },
-        { path: '/propiedades/Alquiler', label: 'Alquileres' },
-        { path: '/servicios', label: 'Servicios' },
-    ];
+        <nav aria-label="Principal" className="hidden items-center gap-1 md:flex">
+          {links.map((l) => (
+            <Link key={l.path} to={l.path} className={`${linkBase} ${linkEstado(l.path)}`}>
+              {l.label}
+            </Link>
+          ))}
+        </nav>
 
-    return (
-        <header className="sticky top-0 z-50 glass-header transition-all duration-300">
-            {/* Topbar informativa sutil */}
-            <div className="bg-[#1E293B] text-slate-300 text-xs py-1.5 px-6 hidden sm:block">
-                <div className="container mx-auto flex justify-between items-center">
-                    <div className="flex items-center space-x-6">
-                        <span className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
-                            <FaPhoneAlt className="text-[#0F766E]" /> Concepción del Uruguay, Entre Ríos
-                        </span>
-                        <span className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
-                            <FaEnvelope className="text-[#0F766E]" /> Asesoramiento Inmobiliario
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Header Principal */}
-            <div className="container mx-auto px-4 md:px-8 py-3.5">
-                <div className="flex justify-between items-center">
-                    {/* Logo */}
-                    <Link to="/" className="flex items-center space-x-3 group btn-press">
-                        <div className="p-1.5 bg-white rounded-xl shadow-sm border border-slate-100 group-hover:scale-105 transition-transform duration-300">
-                            <img
-                                src={logoImage}
-                                alt="Logo Cristina Eckerdt"
-                                className="h-10 sm:h-12 w-auto object-contain"
-                            />
-                        </div>
-                    </Link>
-
-                    {/* Navegación Desktop */}
-                    <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 bg-slate-100/80 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
-                        {links.map((link) => (
-                            <Link
-                                key={link.path}
-                                to={link.path}
-                                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 btn-press ${isActive(link.path)
-                                        ? 'bg-[#1E293B] text-white shadow-md'
-                                        : 'text-slate-700 hover:text-[#0F766E] hover:bg-white/60'
-                                    }`}
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-                    </nav>
-
-                    {/* Botón CTA + Hamburguesa */}
-                    <div className="flex items-center space-x-3">
-                        <Link to="/contacto">
-                            <button className="bg-gradient-to-r from-[#0F766E] to-[#0D9488] hover:from-[#0D9488] hover:to-[#0F766E] text-white font-bold py-2.5 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg text-sm btn-press cursor-pointer">
-                                Consultar
-                            </button>
-                        </Link>
-
-                        {/* Botón Hamburguesa Móvil */}
-                        <button
-                            className="p-2.5 text-slate-700 hover:bg-slate-100 rounded-xl md:hidden transition-colors btn-press"
-                            onClick={toggleMenu}
-                            aria-label="Toggle Menu"
-                        >
-                            {menuAbierto ? (
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            ) : (
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Menú Desplegable Móvil */}
-            {menuAbierto && (
-                <div className="md:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200 px-6 py-4 animate-in slide-in-from-top duration-300 shadow-xl">
-                    <nav className="flex flex-col space-y-2">
-                        {links.map((link) => (
-                            <Link
-                                key={link.path}
-                                to={link.path}
-                                onClick={toggleMenu}
-                                className={`px-4 py-3 rounded-xl font-medium transition-all ${isActive(link.path)
-                                        ? 'bg-[#1E293B] text-white font-semibold'
-                                        : 'text-slate-700 hover:bg-slate-100'
-                                    }`}
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-                    </nav>
-                </div>
+        <div className="flex items-center gap-1">
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden items-center gap-2 rounded-xl bg-[#15803D] px-[18px] py-3 text-sm font-bold text-white transition-colors hover:bg-[#166534] md:flex focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F766E]"
+          >
+            <FaWhatsapp className="text-lg" aria-hidden="true" />
+            Escribinos
+          </a>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Escribir por WhatsApp"
+            className="flex h-11 w-11 items-center justify-center rounded-xl text-[#15803D] md:hidden"
+          >
+            <FaWhatsapp className="text-[22px]" aria-hidden="true" />
+          </a>
+          <button
+            type="button"
+            onClick={() => setMenuAbierto(!menuAbierto)}
+            aria-expanded={menuAbierto}
+            aria-label={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
+            className="flex h-11 w-11 items-center justify-center rounded-xl text-[#1E293B] md:hidden"
+          >
+            {menuAbierto ? (
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             )}
-        </header>
-    );
+          </button>
+        </div>
+      </div>
+
+      {menuAbierto && (
+        <nav aria-label="Principal móvil" className="border-t border-[#E2E8F0] bg-white px-4 pb-4 pt-2 md:hidden">
+          <div className="flex flex-col gap-1">
+            {links.map((l) => (
+              <Link
+                key={l.path}
+                to={l.path}
+                onClick={() => setMenuAbierto(false)}
+                className={`${linkBase} ${linkEstado(l.path)} min-h-12 flex items-center`}
+              >
+                {l.label}
+              </Link>
+            ))}
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#15803D] text-[15px] font-bold text-white"
+            >
+              <FaWhatsapp className="text-lg" aria-hidden="true" />
+              Escribinos
+            </a>
+          </div>
+        </nav>
+      )}
+    </header>
+  );
 }
 
 export default Encabezado;
