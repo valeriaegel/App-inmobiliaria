@@ -246,10 +246,10 @@ function DetallePropiedad() {
             </p>
 
             {!disponible && (
-                <div className="flex items-start gap-3 rounded-2xl bg-slate-50 px-4 py-3.5">
-                    <FaInfoCircle className="mt-0.5 shrink-0 text-lg text-[#475569]" aria-hidden="true" />
+                <div className="flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3.5">
+                    <FaInfoCircle className="mt-0.5 shrink-0 text-lg text-rose-600" aria-hidden="true" />
                     <div>
-                        <p className="text-sm font-bold text-[#1E293B]">Esta propiedad ya no está disponible</p>
+                        <p className="text-sm font-bold text-rose-800">Esta propiedad ya no está disponible</p>
                         <p className="mt-0.5 text-sm text-[#475569]">Consultanos por opciones similares.</p>
                     </div>
                 </div>
