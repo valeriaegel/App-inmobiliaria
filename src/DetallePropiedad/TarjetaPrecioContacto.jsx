@@ -46,7 +46,7 @@ function TarjetaPrecioContacto({ inmueble, layout = 'block', onConsultarSimilare
 
     if (layout === 'aside') {
         return (
-            <aside className="sticky top-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
+            <aside className="sticky top-[93px] rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
                 <div className="space-y-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#0F766E]">
                         {disponible ? `Valor en ${TipoOperacion || 'Venta / Alquiler'}` : 'Propiedad no disponible'}

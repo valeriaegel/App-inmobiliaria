@@ -283,7 +283,7 @@ function DetallePropiedad() {
                     </div>
                 </section>
 
-                <div className="mt-6 grid grid-cols-1 gap-6 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-8">
+                <div className="mt-6 grid grid-cols-1 gap-6 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
                     <div className="space-y-6">
                         {/* Título, ubicación y datos en escritorio */}
                         <section className="hidden rounded-3xl border border-slate-100 bg-white p-6 shadow-sm lg:block lg:p-8">
