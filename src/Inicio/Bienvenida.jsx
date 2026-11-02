@@ -77,7 +77,7 @@ const Bienvenida = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/70 via-transparent to-transparent" />
 
         <div className="relative z-10 container mx-auto max-w-7xl">
-          <div className="max-w-2xl">
+          <div className="max-w-[800px]">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-400">
               Inmobiliaria Cristina Eckerdt
             </p>
