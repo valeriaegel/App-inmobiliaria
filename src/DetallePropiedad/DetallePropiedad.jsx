@@ -22,7 +22,6 @@ import { useToast } from '../context/ToastContext';
 
 // Componentes modulares internos
 import GaleriaInmueble from './GaleriaInmueble';
-import FichaTecnica from './FichaTecnica';
 import MapaPropiedad from './MapaPropiedad';
 import PropiedadesSimilares from './PropiedadesSimilares';
 import TarjetaPrecioContacto from './TarjetaPrecioContacto';
@@ -33,12 +32,21 @@ const datosRapidosDe = (inmueble) => {
             icono: <FaRulerCombined className="mb-1 text-base text-[#0F766E]" aria-hidden="true" />,
             valor: `${inmueble.SuperficieTotal} m²`,
             etiqueta: 'm² totales',
+            etiquetaCorta: 'm² tot.',
             visible: inmueble.SuperficieTotal > 0,
+        },
+        {
+            icono: <FaRulerCombined className="mb-1 text-base text-[#0F766E]" aria-hidden="true" />,
+            valor: `${inmueble.SuperficieConstruida} m²`,
+            etiqueta: 'm² cubiertos',
+            etiquetaCorta: 'm² cub.',
+            visible: inmueble.SuperficieConstruida > 0,
         },
         {
             icono: <FaBed className="mb-1 text-base text-[#0F766E]" aria-hidden="true" />,
             valor: inmueble.Dormitorios,
             etiqueta: inmueble.Dormitorios === 1 ? 'dormitorio' : 'dormitorios',
+            etiquetaCorta: 'dorm.',
             visible: inmueble.Dormitorios > 0,
         },
         {
@@ -51,6 +59,7 @@ const datosRapidosDe = (inmueble) => {
             icono: <FaHome className="mb-1 text-base text-[#0F766E]" aria-hidden="true" />,
             valor: inmueble.Ambientes,
             etiqueta: inmueble.Ambientes === 1 ? 'ambiente' : 'ambientes',
+            etiquetaCorta: 'amb.',
             visible: inmueble.Ambientes > 0,
         },
     ];
@@ -63,16 +72,21 @@ function DatosRapidos({ inmueble }) {
 
     if (datos.length === 0) return null;
 
+    // Una columna por casilla visible (4 o 5): siempre una sola fila, sin huecos ni casillas huérfanas.
     return (
-        <div className="grid grid-cols-4 gap-2.5">
-            {datos.map(({ icono, valor, etiqueta }) => (
+        <div
+            className="grid gap-2 sm:gap-2.5"
+            style={{ gridTemplateColumns: `repeat(${datos.length}, minmax(0, 1fr))` }}
+        >
+            {datos.map(({ icono, valor, etiqueta, etiquetaCorta = etiqueta }) => (
                 <div
                     key={etiqueta}
-                    className="flex min-h-[76px] min-w-0 flex-col items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 px-1.5 py-3 text-center"
+                    className="flex min-h-[76px] min-w-0 flex-col items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 px-1 py-3 text-center sm:px-1.5"
                 >
                     {icono}
                     <span className="text-sm font-extrabold leading-tight text-[#1E293B]">{valor}</span>
-                    <span className="mt-0.5 w-full truncate text-xs font-medium text-[#475569]">{etiqueta}</span>
+                    <span className="mt-0.5 w-full truncate text-xs font-medium text-[#475569] sm:hidden">{etiquetaCorta}</span>
+                    <span className="mt-0.5 hidden w-full truncate text-xs font-medium text-[#475569] sm:block">{etiqueta}</span>
                 </div>
             ))}
         </div>
@@ -323,10 +337,6 @@ function DetallePropiedad() {
                                 </button>
                             )}
                         </section>
-
-                        <div id="seccion-caracteristicas">
-                            <FichaTecnica inmueble={inmueble} />
-                        </div>
 
                         {servicios.length > 0 && (
                             <section
