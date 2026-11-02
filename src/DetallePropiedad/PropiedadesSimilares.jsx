@@ -33,9 +33,9 @@ function PropiedadesSimilares({ propiedadActual, todasLasPropiedades = [] }) {
 
     return (
         <section className="space-y-5 border-t border-slate-200/80 pt-8">
-            <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
                 <h3 className="text-2xl font-bold tracking-tight text-[#1E293B] sm:text-3xl">
-                    Propiedades similares
+                    Otras propiedades que te pueden interesar
                 </h3>
 
                 <Link
@@ -48,7 +48,7 @@ function PropiedadesSimilares({ propiedadActual, todasLasPropiedades = [] }) {
                 </Link>
             </div>
 
-            <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-3 lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:px-0 lg:pb-0">
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6">
                 {seleccionadas.map((prop) => (
                     <TarjetaPropiedad
                         key={prop.documentId || prop.id}
