@@ -209,10 +209,14 @@ a.btn-interactive {
    AJUSTES RESPONSIVE
    ======================================================== */
 
-/* Hero: tipografía fluida para que el H1 no se corte en 320px */
+/* Hero: tipografía fluida para que el H1 no se corte en 320px y ocupe 2 líneas en escritorio */
 .hero-titulo {
-  font-size: clamp(2rem, calc(1.5rem + 2.5vw), 3.75rem);
-  line-height: 1.08;
+  max-width: 640px;
+  font-family: var(--font-heading);
+  font-size: clamp(2.25rem, 4.5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: normal;
 }
 
 /* Celular horizontal: el header deja de ser sticky y la galeria no tapa la pantalla */
