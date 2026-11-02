@@ -14,44 +14,44 @@ function FichaTecnica({ inmueble }) {
                 <h3 className="text-xl font-bold text-slate-800">Ficha Técnica</h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
                 {SuperficieTotal > 0 && (
-                    <div className="flex flex-col justify-center items-center p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-center hover:bg-slate-100/80 transition-colors">
-                        <FaRulerCombined className="text-[#0F766E] text-xl mb-1" />
-                        <span className="text-xs text-slate-500 font-medium">Sup. Total</span>
-                        <span className="font-extrabold text-slate-800 text-sm sm:text-base">{SuperficieTotal} m²</span>
+                    <div className="flex flex-col justify-center items-center rounded-2xl border border-slate-100 bg-slate-50 p-3.5 text-center">
+                        <FaRulerCombined className="mb-1 text-xl text-[#0F766E]" aria-hidden="true" />
+                        <span className="text-xs font-medium text-[#475569]">Sup. total</span>
+                        <span className="text-base font-extrabold text-[#1E293B]">{SuperficieTotal} m²</span>
                     </div>
                 )}
 
                 {SuperficieConstruida > 0 && (
-                    <div className="flex flex-col justify-center items-center p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-center hover:bg-slate-100/80 transition-colors">
-                        <FaRulerCombined className="text-[#0F766E] text-xl mb-1" />
-                        <span className="text-xs text-slate-500 font-medium">Sup. Construida</span>
-                        <span className="font-extrabold text-slate-800 text-sm sm:text-base">{SuperficieConstruida} m²</span>
+                    <div className="flex flex-col justify-center items-center rounded-2xl border border-slate-100 bg-slate-50 p-3.5 text-center">
+                        <FaRulerCombined className="mb-1 text-xl text-[#0F766E]" aria-hidden="true" />
+                        <span className="text-xs font-medium text-[#475569]">Sup. construida</span>
+                        <span className="text-base font-extrabold text-[#1E293B]">{SuperficieConstruida} m²</span>
                     </div>
                 )}
 
                 {Ambientes > 0 && (
-                    <div className="flex flex-col justify-center items-center p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-center hover:bg-slate-100/80 transition-colors">
-                        <FaHome className="text-[#0F766E] text-xl mb-1" />
-                        <span className="text-xs text-slate-500 font-medium">Ambientes</span>
-                        <span className="font-extrabold text-slate-800 text-sm sm:text-base">{Ambientes}</span>
+                    <div className="flex flex-col justify-center items-center rounded-2xl border border-slate-100 bg-slate-50 p-3.5 text-center">
+                        <FaHome className="mb-1 text-xl text-[#0F766E]" aria-hidden="true" />
+                        <span className="text-xs font-medium text-[#475569]">Ambientes</span>
+                        <span className="text-base font-extrabold text-[#1E293B]">{Ambientes}</span>
                     </div>
                 )}
 
                 {Dormitorios > 0 && (
-                    <div className="flex flex-col justify-center items-center p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-center hover:bg-slate-100/80 transition-colors">
-                        <FaBed className="text-[#0F766E] text-xl mb-1" />
-                        <span className="text-xs text-slate-500 font-medium">Dormitorios</span>
-                        <span className="font-extrabold text-slate-800 text-sm sm:text-base">{Dormitorios}</span>
+                    <div className="flex flex-col justify-center items-center rounded-2xl border border-slate-100 bg-slate-50 p-3.5 text-center">
+                        <FaBed className="mb-1 text-xl text-[#0F766E]" aria-hidden="true" />
+                        <span className="text-xs font-medium text-[#475569]">Dormitorios</span>
+                        <span className="text-base font-extrabold text-[#1E293B]">{Dormitorios}</span>
                     </div>
                 )}
 
                 {Banos > 0 && (
-                    <div className="flex flex-col justify-center items-center p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-center hover:bg-slate-100/80 transition-colors">
-                        <FaBath className="text-[#0F766E] text-xl mb-1" />
-                        <span className="text-xs text-slate-500 font-medium">Baños</span>
-                        <span className="font-extrabold text-slate-800 text-sm sm:text-base">{Banos}</span>
+                    <div className="flex flex-col justify-center items-center rounded-2xl border border-slate-100 bg-slate-50 p-3.5 text-center">
+                        <FaBath className="mb-1 text-xl text-[#0F766E]" aria-hidden="true" />
+                        <span className="text-xs font-medium text-[#475569]">Baños</span>
+                        <span className="text-base font-extrabold text-[#1E293B]">{Banos}</span>
                     </div>
                 )}
             </div>

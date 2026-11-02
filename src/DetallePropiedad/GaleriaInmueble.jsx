@@ -1,7 +1,26 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { FaChevronLeft, FaChevronRight, FaExpand, FaTimes, FaHome } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import {
+    FaChevronLeft,
+    FaChevronRight,
+    FaExpand,
+    FaTimes,
+    FaHome,
+    FaShareAlt,
+    FaCheck,
+} from 'react-icons/fa';
 
-function GaleriaInmueble({ imagenes = [], titulo = 'Propiedad' }) {
+const obtenerUrl = (imagen, tamano = 'large') =>
+    imagen?.formats?.[tamano]?.url || imagen?.formats?.large?.url || imagen?.url;
+
+function GaleriaInmueble({
+    imagenes = [],
+    titulo = 'Propiedad',
+    operacion = '',
+    volverUrl = '/propiedades/Venta',
+    onCompartir,
+    compartido = false,
+}) {
     const [indexActivo, setIndexActivo] = useState(0);
     const [modalAbierto, setModalAbierto] = useState(false);
 
@@ -10,6 +29,8 @@ function GaleriaInmueble({ imagenes = [], titulo = 'Propiedad' }) {
     const minSwipeDistance = 45;
 
     const total = imagenes.length;
+    const imagenActual = imagenes[indexActivo];
+    const urlActual = obtenerUrl(imagenActual);
 
     const anterior = useCallback(() => {
         if (total <= 1) return;
@@ -20,6 +41,11 @@ function GaleriaInmueble({ imagenes = [], titulo = 'Propiedad' }) {
         if (total <= 1) return;
         setIndexActivo((prev) => (prev === total - 1 ? 0 : prev + 1));
     }, [total]);
+
+    const abrirModal = (index = indexActivo) => {
+        setIndexActivo(index);
+        setModalAbierto(true);
+    };
 
     // Gestos táctiles de deslizamiento (swipe)
     const handleTouchStart = (e) => {
@@ -35,209 +61,219 @@ function GaleriaInmueble({ imagenes = [], titulo = 'Propiedad' }) {
         if (touchStartX.current === null || touchEndX.current === null) return;
         const distance = touchStartX.current - touchEndX.current;
         if (distance > minSwipeDistance) {
-            // Deslizó hacia la izquierda -> Siguiente foto
             siguiente();
         } else if (distance < -minSwipeDistance) {
-            // Deslizó hacia la derecha -> Foto anterior
             anterior();
         }
         touchStartX.current = null;
         touchEndX.current = null;
     };
 
-    // Referencias para auto-scrollear la miniatura activa en desktop y mobile
-    const desktopThumbRefs = useRef({});
-    const mobileThumbRefs = useRef({});
-
+    // Navegación con teclado dentro del lightbox
     useEffect(() => {
-        if (desktopThumbRefs.current[indexActivo]) {
-            desktopThumbRefs.current[indexActivo].scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-            });
-        }
-        if (mobileThumbRefs.current[indexActivo]) {
-            mobileThumbRefs.current[indexActivo].scrollIntoView({
-                behavior: 'smooth',
-                inline: 'nearest',
-                block: 'nearest'
-            });
-        }
-    }, [indexActivo]);
+        if (!modalAbierto) return undefined;
 
-    // Soporte para navegación con teclado (flechas y escape)
-    useEffect(() => {
         const handleKeyDown = (e) => {
-            if (modalAbierto) {
-                if (e.key === 'Escape') setModalAbierto(false);
-                if (e.key === 'ArrowLeft') anterior();
-                if (e.key === 'ArrowRight') siguiente();
-            }
+            if (e.key === 'Escape') setModalAbierto(false);
+            if (e.key === 'ArrowLeft') anterior();
+            if (e.key === 'ArrowRight') siguiente();
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [modalAbierto, anterior, siguiente]);
 
-    // Si no hay imágenes, mostrar contenedor de reserva limpio
-    if (!imagenes || total === 0) {
+    const botonCompartir = (
+        <button
+            type="button"
+            onClick={onCompartir}
+            title="Compartir propiedad"
+            aria-label={compartido ? 'Enlace copiado' : 'Compartir propiedad'}
+            className="absolute top-3 right-3 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/80 bg-white text-[#1E293B] shadow-lg transition-colors hover:bg-slate-50 btn-press cursor-pointer"
+        >
+            {compartido ? (
+                <FaCheck className="text-base text-emerald-600" />
+            ) : (
+                <FaShareAlt className="text-sm" />
+            )}
+        </button>
+    );
+
+    if (total === 0) {
         return (
-            <div className="h-80 sm:h-96 bg-slate-100 rounded-3xl flex flex-col items-center justify-center text-slate-400 gap-3 border border-slate-200">
-                <FaHome className="text-5xl opacity-40" />
-                <p className="font-semibold text-sm">No hay imágenes disponibles para esta propiedad.</p>
+            <div className="-mx-4 md:-mx-8 lg:mx-0">
+                <div className="relative flex aspect-[4/3] max-h-[60vh] w-full flex-col items-center justify-center gap-3 overflow-hidden bg-slate-100 text-[#475569] lg:hidden">
+                    <FaHome className="text-5xl opacity-30" />
+                    <p className="px-8 text-center text-sm font-semibold">
+                        No hay imágenes disponibles para esta propiedad.
+                    </p>
+                    <Link
+                        to={volverUrl}
+                        aria-label="Volver a propiedades"
+                        className="absolute top-3 left-3 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/80 bg-white text-[#1E293B] shadow-lg transition-colors hover:bg-slate-50 btn-press"
+                    >
+                        <FaChevronLeft className="text-sm" />
+                    </Link>
+                    {onCompartir && botonCompartir}
+                    {operacion && (
+                        <span className="absolute bottom-3 left-3 z-10 rounded-full bg-[#1E293B]/90 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white backdrop-blur-sm">
+                            {operacion}
+                        </span>
+                    )}
+                </div>
+
+                <div className="relative hidden aspect-[16/9] w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-3xl bg-slate-100 text-[#475569] lg:flex">
+                    <FaHome className="text-5xl opacity-30" />
+                    <p className="text-sm font-semibold">No hay imágenes disponibles para esta propiedad.</p>
+                </div>
             </div>
         );
     }
 
-    const imagenActual = imagenes[indexActivo];
-    const urlActual = imagenActual?.formats?.large?.url || imagenActual?.url;
-
     return (
-        <div className="space-y-3.5 select-none">
-            {/* Contenedor Principal: Visor + Miniaturas laterales en computadoras */}
-            <div className="flex flex-col lg:flex-row gap-4 items-stretch">
-                
-                {/* 1. VISOR PRINCIPAL (Sin fondo oscuro, la imagen llena el banner con elegancia) */}
+        <div className="select-none">
+            {/* Celular y tablet: galería a todo el ancho, 4:3 con altura máxima */}
+            <div className="-mx-4 md:-mx-8 lg:hidden">
                 <div
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
-                    className="relative flex-1 h-[360px] sm:h-[450px] lg:h-[500px] rounded-3xl overflow-hidden bg-slate-100 shadow-xl border border-slate-200/80 group"
+                    className="relative aspect-[4/3] max-h-[60vh] w-full overflow-hidden bg-slate-100"
                 >
-                    {/* Imagen Principal ajustada sin bandas negras */}
                     <img
                         src={urlActual}
                         alt={`${titulo} - Foto ${indexActivo + 1}`}
-                        onClick={() => setModalAbierto(true)}
-                        className="w-full h-full object-cover cursor-pointer transition-all duration-300 hover:scale-[1.01]"
+                        onClick={() => abrirModal()}
+                        className="h-full w-full cursor-pointer object-cover"
                     />
 
-                    {/* Flecha Izquierda */}
+                    <Link
+                        to={volverUrl}
+                        aria-label="Volver a propiedades"
+                        className="absolute top-3 left-3 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/80 bg-white text-[#1E293B] shadow-lg transition-colors hover:bg-slate-50 btn-press"
+                    >
+                        <FaChevronLeft className="text-sm" />
+                    </Link>
+
+                    {onCompartir && botonCompartir}
+
                     {total > 1 && (
-                        <button
-                            type="button"
-                            onClick={anterior}
-                            aria-label="Foto anterior"
-                            className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/40 hover:bg-black/75 text-white backdrop-blur-md flex items-center justify-center transition-all shadow-lg border border-white/20 hover:scale-110 btn-press cursor-pointer z-10"
-                        >
-                            <FaChevronLeft className="text-sm" />
-                        </button>
+                        <>
+                            <button
+                                type="button"
+                                onClick={anterior}
+                                aria-label="Foto anterior"
+                                className="absolute top-1/2 left-3 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200/80 bg-white/95 text-[#1E293B] shadow-lg backdrop-blur-sm transition-colors hover:bg-white btn-press cursor-pointer"
+                            >
+                                <FaChevronLeft className="text-sm" />
+                            </button>
+                            <button
+                                type="button"
+                                onClick={siguiente}
+                                aria-label="Foto siguiente"
+                                className="absolute top-1/2 right-3 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200/80 bg-white/95 text-[#1E293B] shadow-lg backdrop-blur-sm transition-colors hover:bg-white btn-press cursor-pointer"
+                            >
+                                <FaChevronRight className="text-sm" />
+                            </button>
+                        </>
                     )}
 
-                    {/* Flecha Derecha */}
-                    {total > 1 && (
-                        <button
-                            type="button"
-                            onClick={siguiente}
-                            aria-label="Foto siguiente"
-                            className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/40 hover:bg-black/75 text-white backdrop-blur-md flex items-center justify-center transition-all shadow-lg border border-white/20 hover:scale-110 btn-press cursor-pointer z-10"
-                        >
-                            <FaChevronRight className="text-sm" />
-                        </button>
-                    )}
-
-                    {/* Badge Inferior: Conteo + Botón Pantalla Completa */}
-                    <div className="absolute bottom-4 right-4 flex items-center gap-2 z-10">
-                        <span className="bg-black/60 backdrop-blur-md text-white px-3.5 py-1.5 rounded-full text-xs font-semibold border border-white/20 shadow-md">
-                            Foto {indexActivo + 1} de {total}
+                    {operacion && (
+                        <span className="absolute bottom-3 left-3 z-10 rounded-full bg-[#1E293B]/90 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white backdrop-blur-sm">
+                            {operacion}
                         </span>
+                    )}
 
-                        <button
-                            type="button"
-                            onClick={() => setModalAbierto(true)}
-                            title="Ver en pantalla completa"
-                            aria-label="Ver en pantalla completa"
-                            className="bg-black/60 hover:bg-black/90 text-white p-2 rounded-full backdrop-blur-md border border-white/20 shadow-md transition-all hover:scale-105 btn-press cursor-pointer"
-                        >
-                            <FaExpand className="text-xs" />
-                        </button>
-                    </div>
+                    <span className="absolute right-3 bottom-3 z-10 rounded-full bg-[#1E293B]/80 px-3 py-1.5 text-xs font-bold text-white backdrop-blur-sm">
+                        {indexActivo + 1} / {total}
+                    </span>
                 </div>
-
-                {/* 2. TIRA DE MINIATURAS VERTICAL (Solo en Computadoras / Pantallas grandes) */}
-                {total > 1 && (
-                    <div className="hidden lg:flex flex-col gap-3 w-60 xl:w-72 h-[500px] overflow-y-auto pr-1.5 scrollbar-thin shrink-0 select-none">
-                        {imagenes.map((img, index) => {
-                            const esActiva = index === indexActivo;
-                            const thumbUrl = img.formats?.small?.url || img.formats?.thumbnail?.url || img.url;
-
-                            return (
-                                <button
-                                    key={img.id || index}
-                                    ref={(el) => (desktopThumbRefs.current[index] = el)}
-                                    type="button"
-                                    onClick={() => setIndexActivo(index)}
-                                    aria-label={`Ir a foto ${index + 1}`}
-                                    className={`relative h-28 w-full rounded-2xl overflow-hidden shrink-0 transition-all duration-200 cursor-pointer btn-press ${
-                                        esActiva
-                                            ? 'ring-3 ring-[#0F766E] ring-offset-2 ring-offset-white scale-[1.02] shadow-lg opacity-100'
-                                            : 'opacity-70 hover:opacity-100 hover:scale-[1.01] border border-slate-200/80 shadow-sm'
-                                    }`}
-                                >
-                                    <img
-                                        src={thumbUrl}
-                                        alt={`Miniatura ${index + 1}`}
-                                        className="w-full h-full object-cover"
-                                    />
-                                    <span className="absolute bottom-1.5 left-1.5 bg-black/70 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-md leading-none">
-                                        Foto {index + 1}
-                                    </span>
-                                </button>
-                            );
-                        })}
-                    </div>
-                )}
-
             </div>
 
-            {/* 3. TIRA DE MINIATURAS HORIZONTAL (Solo en Móviles y Tablets menores a lg) */}
-            {total > 1 && (
-                <div className="flex lg:hidden items-center gap-2.5 overflow-x-auto py-2 px-1 scrollbar-thin">
-                    {imagenes.map((img, index) => {
-                        const esActiva = index === indexActivo;
-                        const thumbUrl = img.formats?.small?.url || img.formats?.thumbnail?.url || img.url;
+            {/* Escritorio: mosaico con foto principal y cuatro miniaturas */}
+            <div className="relative hidden lg:block">
+                <div
+                    className={`grid gap-3 overflow-hidden rounded-3xl bg-slate-100 ${
+                        total > 1 ? 'grid-cols-[1.9fr_1fr]' : 'grid-cols-1'
+                    }`}
+                >
+                    <button
+                        type="button"
+                        onClick={() => abrirModal(0)}
+                        aria-label="Abrir galería de fotos"
+                        className="group relative aspect-[4/3] max-h-[560px] cursor-pointer overflow-hidden"
+                    >
+                        <img
+                            src={obtenerUrl(imagenes[0])}
+                            alt={`${titulo} - Foto 1`}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                        />
+                        <span className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/25 via-transparent to-transparent" />
+                    </button>
 
-                        return (
-                            <button
-                                key={img.id || index}
-                                ref={(el) => (mobileThumbRefs.current[index] = el)}
-                                type="button"
-                                onClick={() => setIndexActivo(index)}
-                                aria-label={`Ir a foto ${index + 1}`}
-                                className={`relative w-20 h-16 sm:w-24 sm:h-18 rounded-2xl overflow-hidden shrink-0 transition-all duration-200 cursor-pointer btn-press ${
-                                    esActiva
-                                        ? 'ring-2 ring-[#0F766E] ring-offset-2 ring-offset-white scale-105 shadow-md opacity-100'
-                                        : 'opacity-60 hover:opacity-100 border border-slate-200'
-                                }`}
-                            >
-                                <img
-                                    src={thumbUrl}
-                                    alt={`Miniatura ${index + 1}`}
-                                    className="w-full h-full object-cover"
-                                />
-                                <span className="absolute bottom-1 left-1 bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md leading-none">
-                                    {index + 1}
-                                </span>
-                            </button>
-                        );
-                    })}
+                    {total > 1 && (
+                        <div className="grid grid-cols-2 grid-rows-2 gap-3">
+                            {Array.from({ length: 4 }).map((_, posicion) => {
+                                const index = posicion + 1;
+                                const imagen = imagenes[index];
+
+                                if (!imagen) {
+                                    return (
+                                        <div
+                                            key={`placeholder-${posicion}`}
+                                            className="flex aspect-square items-center justify-center bg-slate-100/80 text-slate-300"
+                                        >
+                                            <FaHome className="text-2xl opacity-40" />
+                                        </div>
+                                    );
+                                }
+
+                                return (
+                                    <button
+                                        key={imagen.id || index}
+                                        type="button"
+                                        onClick={() => abrirModal(index)}
+                                        aria-label={`Ver foto ${index + 1}`}
+                                        className="group relative aspect-square cursor-pointer overflow-hidden"
+                                    >
+                                        <img
+                                            src={obtenerUrl(imagen, 'small')}
+                                            alt={`${titulo} - Foto ${index + 1}`}
+                                            loading="lazy"
+                                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        />
+                                        <span className="absolute inset-0 bg-[#0F172A]/0 transition-colors group-hover:bg-[#0F172A]/15" />
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
-            )}
 
-            {/* 3. MODAL DE PANTALLA COMPLETA (LIGHTBOX) */}
+                <button
+                    type="button"
+                    onClick={() => abrirModal(0)}
+                    className="absolute right-4 bottom-4 z-10 inline-flex h-11 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-bold text-[#1E293B] shadow-xl transition-colors hover:bg-slate-50 btn-press cursor-pointer"
+                >
+                    <FaExpand className="text-sm text-[#0F766E]" />
+                    <span>Ver las {total} fotos</span>
+                </button>
+            </div>
+
+            {/* Lightbox existente, accesible desde ambos layouts */}
             {modalAbierto && (
                 <div
                     role="dialog"
                     aria-modal="true"
-                    className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex flex-col justify-between p-4 sm:p-6 animate-in fade-in duration-200"
+                    aria-label={`Galería de fotos de ${titulo}`}
+                    className="fixed inset-0 z-50 flex flex-col justify-between bg-black/95 p-4 backdrop-blur-2xl animate-in fade-in duration-200 sm:p-6"
                 >
-                    {/* Barra Superior del Modal */}
-                    <div className="flex items-center justify-between text-white border-b border-white/10 pb-3">
+                    <div className="flex items-center justify-between border-b border-white/10 pb-3 text-white">
                         <div className="flex items-center gap-3">
-                            <span className="text-xs font-bold uppercase tracking-wider bg-white/10 px-3 py-1 rounded-full text-emerald-400">
+                            <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold tracking-wider text-emerald-400 uppercase">
                                 Foto {indexActivo + 1} de {total}
                             </span>
-                            <span className="text-xs sm:text-sm font-semibold truncate max-w-xs sm:max-w-md text-slate-300">
+                            <span className="max-w-xs truncate text-xs font-semibold text-slate-300 sm:max-w-md sm:text-sm">
                                 {titulo}
                             </span>
                         </div>
@@ -246,32 +282,31 @@ function GaleriaInmueble({ imagenes = [], titulo = 'Propiedad' }) {
                             type="button"
                             onClick={() => setModalAbierto(false)}
                             aria-label="Cerrar vista completa"
-                            className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors btn-press cursor-pointer"
+                            className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 btn-press cursor-pointer"
                         >
                             <FaTimes className="text-base" />
                         </button>
                     </div>
 
-                    {/* Área Central: Foto Ampliada con soporte táctil */}
                     <div
                         onTouchStart={handleTouchStart}
                         onTouchMove={handleTouchMove}
                         onTouchEnd={handleTouchEnd}
-                        className="relative flex-grow flex items-center justify-center my-3 overflow-hidden"
+                        className="relative my-3 flex flex-grow items-center justify-center overflow-hidden"
                     >
                         <img
                             src={urlActual}
                             alt={`${titulo} - Foto ${indexActivo + 1}`}
-                            className="max-h-[78vh] max-w-[95vw] object-contain rounded-2xl shadow-2xl transition-all"
+                            className="max-h-[78vh] max-w-[95vw] rounded-2xl object-contain shadow-2xl transition-all"
                         />
 
-                        {/* Flechas en pantalla completa */}
                         {total > 1 && (
                             <>
                                 <button
                                     type="button"
                                     onClick={anterior}
-                                    className="absolute left-2 sm:left-6 w-12 h-12 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center border border-white/20 hover:scale-110 transition-all btn-press cursor-pointer"
+                                    aria-label="Foto anterior"
+                                    className="absolute left-2 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition-all hover:scale-110 hover:bg-black/90 btn-press cursor-pointer sm:left-6"
                                 >
                                     <FaChevronLeft className="text-base" />
                                 </button>
@@ -279,7 +314,8 @@ function GaleriaInmueble({ imagenes = [], titulo = 'Propiedad' }) {
                                 <button
                                     type="button"
                                     onClick={siguiente}
-                                    className="absolute right-2 sm:right-6 w-12 h-12 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center border border-white/20 hover:scale-110 transition-all btn-press cursor-pointer"
+                                    aria-label="Foto siguiente"
+                                    className="absolute right-2 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition-all hover:scale-110 hover:bg-black/90 btn-press cursor-pointer sm:right-6"
                                 >
                                     <FaChevronRight className="text-base" />
                                 </button>
@@ -287,28 +323,28 @@ function GaleriaInmueble({ imagenes = [], titulo = 'Propiedad' }) {
                         )}
                     </div>
 
-                    {/* Miniaturas en pantalla completa */}
                     {total > 1 && (
                         <div className="flex items-center justify-center gap-2 overflow-x-auto py-2">
                             {imagenes.map((img, index) => {
                                 const esActiva = index === indexActivo;
-                                const thumbUrl = img.formats?.thumbnail?.url || img.formats?.small?.url || img.url;
+                                const thumbUrl = obtenerUrl(img, 'thumbnail');
 
                                 return (
                                     <button
                                         key={img.id || index}
                                         type="button"
                                         onClick={() => setIndexActivo(index)}
-                                        className={`w-14 h-12 sm:w-16 sm:h-14 rounded-xl overflow-hidden shrink-0 transition-all cursor-pointer ${
+                                        aria-label={`Ir a foto ${index + 1}`}
+                                        className={`h-12 w-14 shrink-0 overflow-hidden rounded-xl transition-all cursor-pointer sm:h-14 sm:w-16 ${
                                             esActiva
-                                                ? 'ring-2 ring-emerald-400 scale-105 opacity-100'
+                                                ? 'scale-105 opacity-100 ring-2 ring-emerald-400'
                                                 : 'opacity-40 hover:opacity-80'
                                         }`}
                                     >
                                         <img
                                             src={thumbUrl}
                                             alt={`Miniatura ${index + 1}`}
-                                            className="w-full h-full object-cover"
+                                            className="h-full w-full object-cover"
                                         />
                                     </button>
                                 );

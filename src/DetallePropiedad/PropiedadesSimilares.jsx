@@ -33,25 +33,23 @@ function PropiedadesSimilares({ propiedadActual, todasLasPropiedades = [] }) {
     };
 
     return (
-        <section className="pt-8 border-t border-slate-200/80 space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-                <div>
-                    <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">
-                        Otras propiedades que te pueden interesar
-                    </h3>
-                </div>
+        <section className="space-y-5 border-t border-slate-200/80 pt-8">
+            <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+                <h3 className="text-2xl font-bold tracking-tight text-[#1E293B] sm:text-3xl">
+                    Propiedades similares
+                </h3>
 
                 <Link
                     to={operacionActual ? `/propiedades/${operacionActual}` : '/propiedades/Venta'}
                     onClick={scrollToTop}
-                    className="inline-flex items-center gap-2 text-xs font-bold text-[#0F766E] hover:text-[#0D9488] transition-colors group cursor-pointer"
+                    className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#0F766E] transition-colors hover:text-[#0D9488] group cursor-pointer"
                 >
                     <span>Ver más en {operacionActual || 'el catálogo'}</span>
-                    <FaArrowRight className="text-[10px] group-hover:translate-x-1 transition-transform" />
+                    <FaArrowRight className="text-xs transition-transform group-hover:translate-x-1" aria-hidden="true" />
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-3 lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:px-0 lg:pb-0">
                 {seleccionadas.map((prop) => {
                     const imagenURL = prop.Imagenes?.[0]?.formats?.small?.url || prop.Imagenes?.[0]?.url;
                     const isVenta = prop.TipoOperacion?.toLowerCase() === 'venta';
@@ -62,9 +60,11 @@ function PropiedadesSimilares({ propiedadActual, todasLasPropiedades = [] }) {
                     const titulo = capitalizarTitulo(prop.Titulo) || 'Inmueble disponible';
 
                     return (
-                        <div
+                        <Link
                             key={prop.documentId || prop.id}
-                            className="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                            to={`/propiedades/detalle/${prop.documentId}`}
+                            onClick={scrollToTop}
+                            className="group flex min-w-[82%] snap-start flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-md transition-all duration-300 hover:shadow-xl sm:min-w-[48%] lg:min-w-0"
                         >
                             {/* Imagen */}
                             <div className="relative h-48 w-full overflow-hidden bg-slate-100">
@@ -72,69 +72,64 @@ function PropiedadesSimilares({ propiedadActual, todasLasPropiedades = [] }) {
                                     <img
                                         src={imagenURL}
                                         alt={titulo}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                         loading="lazy"
                                     />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-slate-300">
-                                        <FaHome className="text-4xl" />
+                                    <div className="flex h-full w-full items-center justify-center text-slate-300">
+                                        <FaHome className="text-4xl" aria-hidden="true" />
                                     </div>
                                 )}
 
                                 <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                                    <span className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full text-white shadow-sm ${isVenta ? 'bg-slate-800' : 'bg-[#0F766E]'
-                                        }`}>
+                                    <span className={`rounded-full px-2.5 py-1 text-xs font-extrabold uppercase text-white shadow-sm ${isVenta ? 'bg-[#1E293B]' : 'bg-[#0F766E]'}`}>
                                         En {prop.TipoOperacion}
                                     </span>
                                     {prop.Disponible === false && (
-                                        <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full text-white shadow-sm bg-rose-600 inline-flex items-center gap-1">
-                                            <FaTimesCircle className="text-[10px]" /> No disponible
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-rose-600 px-2.5 py-1 text-xs font-extrabold uppercase text-white shadow-sm">
+                                            <FaTimesCircle className="text-xs" aria-hidden="true" /> No disponible
                                         </span>
                                     )}
                                 </div>
                             </div>
 
                             {/* Info */}
-                            <div className="p-5 flex-grow flex flex-col justify-between space-y-3">
+                            <div className="flex flex-grow flex-col justify-between gap-3 p-5">
                                 <div>
-                                    <p className="text-xl font-extrabold text-slate-800 tracking-tight">
+                                    <p className="text-xl font-extrabold tracking-tight text-[#1E293B]">
                                         {precio}
                                     </p>
-                                    <h4 className="font-bold text-slate-700 text-sm line-clamp-1 mt-1">
+                                    <h4 className="mt-1 line-clamp-1 text-sm font-bold text-[#1E293B]">
                                         {titulo}
                                     </h4>
-                                    <p className="text-slate-400 text-xs flex items-center gap-1.5 mt-1 truncate">
-                                        <FaMapMarkerAlt className="text-[#0F766E] shrink-0 text-[11px]" />
+                                    <p className="mt-1 flex items-center gap-1.5 truncate text-xs text-[#475569]">
+                                        <FaMapMarkerAlt className="shrink-0 text-xs text-[#0F766E]" aria-hidden="true" />
                                         <span>{ubicacionStr || 'Consultar ubicación'}</span>
                                     </p>
                                 </div>
 
                                 {/* Características rápidas */}
-                                <div className="flex items-center gap-4 text-xs font-semibold text-slate-500 pt-3 border-t border-slate-100">
+                                <div className="flex items-center gap-4 border-t border-slate-100 pt-3 text-xs font-semibold text-[#475569]">
                                     {prop.Dormitorios > 0 && (
                                         <div className="flex items-center gap-1.5">
-                                            <FaBed className="text-[#0F766E]" />
+                                            <FaBed className="text-[#0F766E]" aria-hidden="true" />
                                             <span>{prop.Dormitorios} dorm.</span>
                                         </div>
                                     )}
                                     {prop.SuperficieTotal > 0 && (
                                         <div className="flex items-center gap-1.5">
-                                            <FaRulerCombined className="text-[#0F766E]" />
+                                            <FaRulerCombined className="text-[#0F766E]" aria-hidden="true" />
                                             <span>{prop.SuperficieTotal} m²</span>
                                         </div>
                                     )}
                                 </div>
 
-                                <Link
-                                    to={`/inmueble/${prop.documentId}`}
-                                    onClick={scrollToTop}
-                                    className="w-full inline-flex items-center justify-center gap-2 bg-slate-50 hover:bg-[#0F766E] text-slate-700 hover:text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-colors btn-press mt-2 cursor-pointer border border-slate-100"
-                                >
+                                <span className="mt-2 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-4 text-xs font-bold text-[#1E293B] transition-colors group-hover:bg-[#0F766E] group-hover:text-white">
                                     <span>Ver detalles</span>
-                                    <FaArrowRight className="text-[10px]" />
-                                </Link>
+                                    <FaArrowRight className="text-xs" aria-hidden="true" />
+                                </span>
                             </div>
-                        </div>
+                        </Link>
                     );
                 })}
             </div>

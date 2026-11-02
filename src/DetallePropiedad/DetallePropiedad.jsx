@@ -1,16 +1,23 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import {   
-    FaMapMarkerAlt, FaChevronLeft, 
-    FaInfoCircle, FaCheckDouble, FaRulerCombined, FaBed, FaBath, FaHome, FaArrowRight,
-    FaWhatsapp, FaShareAlt, FaCheck, FaCheckCircle, FaTimesCircle
+import { useParams, Link, useLocation } from 'react-router-dom';
+import {
+    FaMapMarkerAlt,
+    FaInfoCircle,
+    FaCheckDouble,
+    FaRulerCombined,
+    FaBed,
+    FaBath,
+    FaHome,
+    FaWhatsapp,
+    FaPhoneAlt,
+    FaTimesCircle,
 } from 'react-icons/fa';
 import { PropertyContext } from '../context/PropertyContext';
 import { propertyService } from '../services/propertyService';
 import { capitalizarTitulo } from '../utils/formatearTexto';
 import { obtenerIconoServicio } from '../utils/serviciosIcons';
 import { formatearPrecio } from '../utils/formatearPrecio';
-import { generarLinkWhatsApp } from '../utils/funContacto';
+import { generarLinkWhatsApp, obtenerTelefonoOperacion } from '../utils/funContacto';
 import { useToast } from '../context/ToastContext';
 
 // Componentes modulares internos
@@ -18,13 +25,68 @@ import GaleriaInmueble from './GaleriaInmueble';
 import FichaTecnica from './FichaTecnica';
 import MapaPropiedad from './MapaPropiedad';
 import PropiedadesSimilares from './PropiedadesSimilares';
+import TarjetaPrecioContacto from './TarjetaPrecioContacto';
+
+const datosRapidosDe = (inmueble) => {
+    const datos = [
+        {
+            icono: <FaRulerCombined className="mb-1 text-base text-[#0F766E]" aria-hidden="true" />,
+            valor: `${inmueble.SuperficieTotal} m²`,
+            etiqueta: 'm² totales',
+            visible: inmueble.SuperficieTotal > 0,
+        },
+        {
+            icono: <FaBed className="mb-1 text-base text-[#0F766E]" aria-hidden="true" />,
+            valor: inmueble.Dormitorios,
+            etiqueta: inmueble.Dormitorios === 1 ? 'dormitorio' : 'dormitorios',
+            visible: inmueble.Dormitorios > 0,
+        },
+        {
+            icono: <FaBath className="mb-1 text-base text-[#0F766E]" aria-hidden="true" />,
+            valor: inmueble.Banos,
+            etiqueta: inmueble.Banos === 1 ? 'baño' : 'baños',
+            visible: inmueble.Banos > 0,
+        },
+        {
+            icono: <FaHome className="mb-1 text-base text-[#0F766E]" aria-hidden="true" />,
+            valor: inmueble.Ambientes,
+            etiqueta: inmueble.Ambientes === 1 ? 'ambiente' : 'ambientes',
+            visible: inmueble.Ambientes > 0,
+        },
+    ];
+
+    return datos.filter((dato) => dato.visible);
+};
+
+function DatosRapidos({ inmueble }) {
+    const datos = datosRapidosDe(inmueble);
+
+    if (datos.length === 0) return null;
+
+    return (
+        <div className="grid grid-cols-4 gap-2.5">
+            {datos.map(({ icono, valor, etiqueta }) => (
+                <div
+                    key={etiqueta}
+                    className="flex min-h-[76px] min-w-0 flex-col items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 px-1.5 py-3 text-center"
+                >
+                    {icono}
+                    <span className="text-sm font-extrabold leading-tight text-[#1E293B]">{valor}</span>
+                    <span className="mt-0.5 w-full truncate text-xs font-medium text-[#475569]">{etiqueta}</span>
+                </div>
+            ))}
+        </div>
+    );
+}
 
 function DetallePropiedad() {
     const { documentId } = useParams();
+    const location = useLocation();
     const [inmueble, setInmueble] = useState(null);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
     const [copiado, setCopiado] = useState(false);
+    const [descripcionExpandida, setDescripcionExpandida] = useState(false);
 
     const { allInmuebles } = useContext(PropertyContext);
     const { mostrarToast } = useToast();
@@ -61,17 +123,14 @@ function DetallePropiedad() {
 
     if (cargando && !inmueble) {
         return (
-            <div className="bg-slate-50/60 min-h-screen py-8 md:py-12">
-                <div className="container mx-auto px-4 md:px-8 max-w-7xl space-y-8">
+            <div className="min-h-screen bg-[#F0F2ED] py-8 md:py-12">
+                <div className="container mx-auto max-w-7xl space-y-8 px-4 md:px-8">
                     <div className="h-9 w-44 skeleton-shimmer rounded-full"></div>
-                    <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-100 space-y-4">
+                    <div className="h-[320px] skeleton-shimmer rounded-3xl"></div>
+                    <div className="space-y-4 rounded-3xl border border-slate-100 bg-white p-6 sm:p-8">
                         <div className="h-6 w-32 skeleton-shimmer rounded-full"></div>
                         <div className="h-8 w-2/3 skeleton-shimmer rounded-xl"></div>
                         <div className="h-4 w-1/3 skeleton-shimmer rounded-lg"></div>
-                    </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div className="lg:col-span-2 h-[420px] skeleton-shimmer rounded-3xl"></div>
-                        <div className="h-[360px] skeleton-shimmer rounded-3xl"></div>
                     </div>
                 </div>
             </div>
@@ -81,7 +140,7 @@ function DetallePropiedad() {
     if (error) {
         return (
             <div className="container mx-auto px-4 py-24 text-center">
-                <div className="bg-rose-50 border border-rose-200 text-rose-600 p-8 rounded-3xl max-w-md mx-auto font-bold">
+                <div className="mx-auto max-w-md rounded-3xl border border-rose-200 bg-rose-50 p-8 font-bold text-rose-600">
                     {error}
                 </div>
             </div>
@@ -90,7 +149,7 @@ function DetallePropiedad() {
 
     if (!inmueble) {
         return (
-            <div className="container mx-auto px-4 py-24 text-center text-slate-500 font-medium">
+            <div className="container mx-auto px-4 py-24 text-center font-medium text-[#475569]">
                 La propiedad solicitada no existe o no se encuentra disponible.
             </div>
         );
@@ -102,12 +161,33 @@ function DetallePropiedad() {
     const tipoInmueble = atributos.tipo_inmueble?.Tipo;
     const imagenes = atributos.Imagenes || [];
     const operacionUrl = atributos.TipoOperacion ? `/propiedades/${atributos.TipoOperacion}` : '/propiedades/Venta';
+    const volverUrl = location.state?.from || operacionUrl;
     const tituloFormateado = capitalizarTitulo(atributos.Titulo) || 'Inmueble sin título';
 
     const monedaSimbolo = atributos.Moneda === 'Peso' ? '$' : 'U$S';
-    const whatsappLink = generarLinkWhatsApp(atributos.Ubicacion, atributos.TipoOperacion, tituloFormateado);
     const tienePrecio = atributos.Valor != null && atributos.Valor > 0 && atributos.Valor !== '';
-    const textoPrecio = formatearPrecio(atributos.Valor, monedaSimbolo);
+    const textoPrecio = tienePrecio ? formatearPrecio(atributos.Valor, monedaSimbolo) : 'Precio a consultar';
+    const esAlquiler = atributos.TipoOperacion?.toLowerCase().includes('alquiler');
+    const disponible = atributos.Disponible !== false;
+    const estadoTexto = disponible ? 'Disponible' : 'No disponible';
+    const lineaTipo = `${tipoInmueble || atributos.TipoOperacion || 'Propiedad'} · ${estadoTexto}`;
+
+    const telefono = obtenerTelefonoOperacion(atributos.TipoOperacion);
+    const whatsappLink = generarLinkWhatsApp(
+        atributos.Ubicacion,
+        atributos.TipoOperacion,
+        tituloFormateado,
+        disponible ? 'consulta' : 'similares'
+    );
+    const whatsappSimilaresLink = generarLinkWhatsApp(
+        atributos.Ubicacion,
+        atributos.TipoOperacion,
+        tituloFormateado,
+        'similares'
+    );
+
+    const descripcion = atributos.Descripcion || atributos.Descipcion || 'Sin descripción detallada.';
+    const descripcionLarga = descripcion.length > 180;
 
     const handleCompartir = async () => {
         if (navigator.share) {
@@ -128,249 +208,228 @@ function DetallePropiedad() {
         }
     };
 
-    return (
-        <div className="bg-slate-50/60 min-h-screen py-8 md:py-12 animate-in fade-in duration-300">
-            <div className="container mx-auto px-4 md:px-8 max-w-7xl space-y-8">
-                
-                {/* Botón de Retorno & Breadcrumbs */}
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                    <Link 
-                        to={operacionUrl}
-                        className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-[#0F766E] transition-colors bg-white px-4 py-2.5 rounded-full border border-slate-200 shadow-sm hover:shadow-md btn-press cursor-pointer"
-                    >
-                        <FaChevronLeft className="text-[10px]" /> Volver a {atributos.TipoOperacion ? `Propiedades en ${atributos.TipoOperacion}` : 'Catálogo'}
-                    </Link>
+    const encabezadoPropiedad = (
+        <div className="space-y-4">
+            <p className={`text-xs font-extrabold uppercase tracking-[0.16em] ${disponible ? 'text-[#0F766E]' : 'text-rose-600'}`}>
+                {lineaTipo}
+            </p>
 
-                    {/* Breadcrumbs */}
-                    <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-slate-400">
-                        <Link to="/" className="hover:text-[#0F766E] transition-colors">Inicio</Link>
-                        <span>/</span>
-                        <Link to={operacionUrl} className="hover:text-[#0F766E] transition-colors">
-                            {atributos.TipoOperacion ? `En ${atributos.TipoOperacion}` : 'Propiedades'}
-                        </Link>
-                        <span>/</span>
-                        <span className="text-slate-700 truncate max-w-[200px]">{tituloFormateado}</span>
-                    </div>
+            <h1 className="text-3xl font-bold leading-tight tracking-tight text-[#1E293B] sm:text-4xl lg:text-5xl">
+                {tituloFormateado}
+            </h1>
+
+            <p className="flex items-start gap-2 text-sm font-medium leading-relaxed text-[#475569] sm:text-base">
+                <FaMapMarkerAlt className="mt-1 shrink-0 text-[#0F766E]" aria-hidden="true" />
+                <span>
+                    {atributos.Ubicacion || 'Ubicación no especificada'}
+                    {ciudad ? ` — ${ciudad.Ciudad}` : ''}
+                </span>
+            </p>
+
+            <DatosRapidos inmueble={atributos} />
+        </div>
+    );
+
+    return (
+        <div className="min-h-screen bg-[#F0F2ED] pb-28 animate-in fade-in duration-300 lg:pb-12">
+            <div className="container mx-auto max-w-7xl px-4 md:px-8">
+                {/* Breadcrumb de escritorio */}
+                <nav
+                    aria-label="Migas de pan"
+                    className="hidden items-center gap-2 py-5 text-xs font-semibold text-[#475569] lg:flex"
+                >
+                    <Link to="/" className="transition-colors hover:text-[#0F766E]">Inicio</Link>
+                    <span aria-hidden="true">/</span>
+                    <Link to={operacionUrl} className="transition-colors hover:text-[#0F766E]">
+                        {atributos.TipoOperacion ? `En ${atributos.TipoOperacion}` : 'Propiedades'}
+                    </Link>
+                    <span aria-hidden="true">/</span>
+                    <span className="max-w-[320px] truncate text-[#1E293B]">{tituloFormateado}</span>
+                </nav>
+
+                {/* Galería: en celular es lo primero y va a todo el ancho */}
+                <div id="seccion-fotos">
+                    <GaleriaInmueble
+                        imagenes={imagenes}
+                        titulo={tituloFormateado}
+                        operacion={atributos.TipoOperacion || ''}
+                        volverUrl={volverUrl}
+                        onCompartir={handleCompartir}
+                        compartido={copiado}
+                    />
                 </div>
 
-                {/* Banner de alerta si la propiedad no está disponible */}
-                {atributos.Disponible === false && (
-                    <div className="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-3.5 rounded-3xl flex items-center gap-3 shadow-sm">
-                        <FaTimesCircle className="text-rose-500 text-lg shrink-0" />
-                        <p className="font-bold text-sm text-rose-900">Esta propiedad no se encuentra disponible</p>
+                {!disponible && (
+                    <div className="mt-4 flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3.5 shadow-sm">
+                        <FaTimesCircle className="mt-0.5 shrink-0 text-lg text-rose-500" aria-hidden="true" />
+                        <div>
+                            <p className="text-sm font-bold text-rose-900">Esta propiedad no se encuentra disponible</p>
+                            <p className="mt-0.5 text-sm text-[#475569]">Consultanos por opciones similares en venta o alquiler.</p>
+                        </div>
                     </div>
                 )}
 
-                {/* Header de la Propiedad (con Valor y Contacto rediseñados de alta gama) */}
-                <div className="bg-white p-6 sm:p-8 md:p-10 rounded-3xl shadow-lg border border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-                    
-                    {/* Columna Izquierda: Badges, Título, Ubicación, Atributos Rápidos */}
-                    <div className="space-y-4 flex-grow">
-                        <div className="flex flex-wrap gap-2.5 items-center">
-                            {tipoInmueble && (
-                                <span className="text-xs font-bold uppercase tracking-wider text-white bg-[#0F766E] px-3.5 py-1 rounded-full shadow-sm">
-                                    {tipoInmueble}
-                                </span>
+                {/* Bloque blanco de presentación en celular */}
+                <section className="-mx-4 bg-white px-5 py-6 md:-mx-8 md:px-8 lg:hidden">
+                    {encabezadoPropiedad}
+
+                    <div className="mt-5 border-t border-slate-100 pt-5">
+                        <p className="text-3xl font-extrabold tracking-tight text-[#1E293B] sm:text-4xl">
+                            {textoPrecio}
+                            {esAlquiler && tienePrecio && (
+                                <span className="ml-1 text-sm font-semibold text-[#475569]">/ mes</span>
                             )}
-                            {atributos.TipoOperacion && (
-                                <span className="text-xs font-bold uppercase tracking-wider text-white bg-[#1E293B] px-3.5 py-1 rounded-full shadow-sm">
-                                    En {atributos.TipoOperacion}
-                                </span>
-                            )}
-                            <span className={`text-xs font-bold px-3 py-1 rounded-full inline-flex items-center gap-1.5 shadow-sm ${
-                                atributos.Disponible !== false 
-                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-                                    : 'bg-rose-50 text-rose-700 border border-rose-200'
-                            }`}>
-                                {atributos.Disponible !== false ? (
-                                    <>
-                                        <FaCheckCircle className="text-emerald-500 text-[11px]" />
-                                        <span>Disponible</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <FaTimesCircle className="text-rose-500 text-[11px]" />
-                                        <span>No disponible</span>
-                                    </>
-                                )}
-                            </span>
-                        </div>
-
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1E293B] tracking-tight leading-tight">
-                            {tituloFormateado}
-                        </h1>
-
-                        <p className="text-slate-500 text-sm sm:text-base flex items-center gap-2 font-medium">
-                            <FaMapMarkerAlt className="text-[#0F766E] shrink-0" />
-                            <span>{atributos.Ubicacion || 'Ubicación no especificada'} {ciudad ? `— ${ciudad.Ciudad}` : ''}</span>
-                        </p>
-
-                        {/* Barra de Atributos Rápidos */}
-                        <div className="pt-2 flex flex-wrap gap-3 sm:gap-4 text-xs sm:text-sm font-semibold text-slate-700">
-                            {atributos.SuperficieTotal > 0 && (
-                                <div className="flex items-center gap-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-100">
-                                    <FaRulerCombined className="text-[#0F766E]" />
-                                    <span>{atributos.SuperficieTotal} m² Totales</span>
-                                </div>
-                            )}
-                            {atributos.Dormitorios > 0 && (
-                                <div className="flex items-center gap-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-100">
-                                    <FaBed className="text-[#0F766E]" />
-                                    <span>{atributos.Dormitorios} {atributos.Dormitorios === 1 ? 'Dormitorio' : 'Dormitorios'}</span>
-                                </div>
-                            )}
-                            {atributos.Banos > 0 && (
-                                <div className="flex items-center gap-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-100">
-                                    <FaBath className="text-[#0F766E]" />
-                                    <span>{atributos.Banos} {atributos.Banos === 1 ? 'Baño' : 'Baños'}</span>
-                                </div>
-                            )}
-                            {atributos.Ambientes > 0 && (
-                                <div className="flex items-center gap-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-100">
-                                    <FaHome className="text-[#0F766E]" />
-                                    <span>{atributos.Ambientes} Amb.</span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Columna Derecha: Tarjeta Visual de Precio y Contacto */}
-                    <div className="bg-gradient-to-br from-slate-50/90 via-slate-50 to-teal-50/40 p-6 sm:p-7 rounded-3xl border border-slate-200/80 shadow-md flex flex-col items-start lg:items-end justify-between gap-5 w-full lg:w-auto shrink-0 min-w-[300px]">
-                        {/* Encabezado del precio */}
-                        <div className="space-y-1.5 w-full lg:text-right">
-                            <div className="flex items-center justify-between lg:justify-end gap-2">
-                                <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#0F766E] bg-[#0F766E]/10 px-3 py-1 rounded-full">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#0F766E] animate-pulse"></span>
-                                    {tienePrecio ? `Valor en ${atributos.TipoOperacion || 'Venta'}` : 'Cotización'}
-                                </span>
-                            </div>
-
-                            <div className="pt-1">
-                                {tienePrecio ? (
-                                    <div className="flex items-baseline lg:justify-end gap-1.5">
-                                        <span className="text-xl sm:text-2xl font-black text-[#0F766E]">
-                                            {monedaSimbolo}
-                                        </span>
-                                        <span className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
-                                            {Math.round(Number(atributos.Valor)).toLocaleString('es-AR')}
-                                        </span>
-                                    </div>
-                                ) : (
-                                    <span className="text-2xl sm:text-3xl font-extrabold text-slate-800">
-                                        Precio a consultar
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Botones de Acción */}
-                        <div className="flex items-center gap-2.5 w-full">
-                            <a
-                                href={whatsappLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-grow inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm sm:text-base py-3.5 px-6 rounded-2xl shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/35 btn-press transition-all cursor-pointer whitespace-nowrap"
-                            >
-                                <FaWhatsapp className="text-xl shrink-0" />
-                                <span>Consultar por WhatsApp</span>
-                            </a>
-
-                            <button
-                                type="button"
-                                onClick={handleCompartir}
-                                title="Compartir propiedad"
-                                aria-label="Compartir propiedad"
-                                className="p-3.5 rounded-2xl bg-white hover:bg-slate-100 text-slate-700 hover:text-slate-900 transition-all btn-press cursor-pointer border border-slate-200 shadow-sm shrink-0"
-                            >
-                                {copiado ? <FaCheck className="text-emerald-600 text-lg" /> : <FaShareAlt className="text-slate-600 text-lg" />}
-                            </button>
-                        </div>
-
-                        {/* Micro-aviso de confianza */}
-                        <p className="text-[11px] font-medium text-slate-400 flex items-center gap-1.5 self-center lg:self-end">
-                            <FaCheckCircle className="text-emerald-500 text-xs shrink-0" />
-                            <span>Respuesta y asesoramiento profesional</span>
                         </p>
                     </div>
+                </section>
 
-                </div>
+                <div className="mt-6 grid grid-cols-1 gap-6 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-8">
+                    <div className="space-y-6">
+                        {/* Título, ubicación y datos en escritorio */}
+                        <section className="hidden rounded-3xl border border-slate-100 bg-white p-6 shadow-sm lg:block lg:p-8">
+                            {encabezadoPropiedad}
+                        </section>
 
-                {/* Secciones de la Propiedad (Galería, Ficha Técnica, Descripción, Servicios, Ubicación) */}
-                <div className="space-y-8">
-                    
-                    {/* Galería Inmersiva de Fotos */}
-                    <div id="seccion-fotos">
-                        <GaleriaInmueble imagenes={imagenes} titulo={tituloFormateado} />
-                    </div>
+                        {/* Descripción */}
+                        <section
+                            id="seccion-descripcion"
+                            className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm sm:p-6 lg:p-8"
+                        >
+                            <div className="mb-4 flex items-center gap-2.5 border-b border-slate-100 pb-4">
+                                <div className="rounded-xl bg-[#0F766E]/10 p-2 text-[#0F766E]">
+                                    <FaInfoCircle className="text-xl" aria-hidden="true" />
+                                </div>
+                                <h2 className="text-xl font-bold text-[#1E293B]">Descripción</h2>
+                            </div>
 
-                    {/* Bloque de 3 Columnas en Computadora: Ficha Técnica, Descripción y Servicios */}
-                    <div className={`grid grid-cols-1 ${servicios.length > 0 ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} gap-8 items-stretch`}>
-                        
-                        {/* Columna 1: Ficha Técnica */}
-                        <div id="seccion-caracteristicas" className="flex flex-col h-full">
+                            <p
+                                id="texto-descripcion"
+                                className={`whitespace-pre-line text-sm leading-relaxed text-[#475569] sm:text-base ${
+                                    !descripcionExpandida ? 'line-clamp-3 lg:line-clamp-none' : ''
+                                }`}
+                            >
+                                {descripcion}
+                            </p>
+
+                            {descripcionLarga && (
+                                <button
+                                    type="button"
+                                    onClick={() => setDescripcionExpandida((valor) => !valor)}
+                                    aria-expanded={descripcionExpandida}
+                                    aria-controls="texto-descripcion"
+                                    className="mt-3 inline-flex min-h-11 items-center text-sm font-bold text-[#0F766E] transition-colors hover:text-[#0D9488] lg:hidden"
+                                >
+                                    {descripcionExpandida ? 'Leer menos' : 'Leer más'}
+                                </button>
+                            )}
+                        </section>
+
+                        <div id="seccion-caracteristicas">
                             <FichaTecnica inmueble={inmueble} />
                         </div>
 
-                        {/* Columna 2: Descripción General */}
-                        <div id="seccion-descripcion" className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-100 space-y-4 flex flex-col h-full">
-                            <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
-                                <div className="p-2 bg-[#0F766E]/10 rounded-xl text-[#0F766E]">
-                                    <FaInfoCircle className="text-xl" />
-                                </div>
-                                <h2 className="text-xl font-bold text-slate-800">Descripción General</h2>
-                            </div>
-
-                            <p className="text-slate-600 leading-relaxed text-sm sm:text-base whitespace-pre-line overflow-y-auto max-h-[460px] scrollbar-thin pr-1">
-                                {atributos.Descripcion || atributos.Descipcion || 'Sin descripción detallada.'}
-                            </p>
-                        </div>
-
-                        {/* Columna 3: Servicios Incluidos */}
                         {servicios.length > 0 && (
-                            <div id="seccion-servicios" className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-100 space-y-4 flex flex-col h-full">
-                                <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
-                                    <div className="p-2 bg-[#0F766E]/10 rounded-xl text-[#0F766E]">
-                                        <FaCheckDouble className="text-xl" />
+                            <section
+                                id="seccion-servicios"
+                                className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm sm:p-6 lg:p-8"
+                            >
+                                <div className="mb-4 flex items-center gap-2.5 border-b border-slate-100 pb-4">
+                                    <div className="rounded-xl bg-[#0F766E]/10 p-2 text-[#0F766E]">
+                                        <FaCheckDouble className="text-xl" aria-hidden="true" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-slate-800">Servicios Incluidos</h3>
+                                    <h2 className="text-xl font-bold text-[#1E293B]">Servicios</h2>
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 overflow-y-auto max-h-[460px] scrollbar-thin pr-1 text-sm">
+                                <div className="flex flex-wrap gap-2">
                                     {servicios.map(servicio => (
-                                        <div key={servicio.id} className="flex items-center gap-2.5 p-3 bg-slate-50 hover:bg-slate-100/80 rounded-2xl border border-slate-100 text-slate-700 font-semibold transition-colors">
+                                        <span
+                                            key={servicio.id}
+                                            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#0F766E]/15 bg-[#0F766E]/5 px-4 text-sm font-semibold text-[#1E293B]"
+                                        >
                                             {obtenerIconoServicio(servicio.Nombre)}
-                                            <span className="truncate">{servicio.Nombre}</span>
-                                        </div>
+                                            <span>{servicio.Nombre}</span>
+                                        </span>
                                     ))}
                                 </div>
-                            </div>
+                            </section>
                         )}
 
+                        {atributos.latitud != null && atributos.longitud != null && (
+                            <section
+                                id="seccion-ubicacion"
+                                className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm sm:p-6 lg:p-8"
+                            >
+                                <div className="mb-4 flex items-center gap-2.5 border-b border-slate-100 pb-4">
+                                    <div className="rounded-xl bg-[#0F766E]/10 p-2 text-[#0F766E]">
+                                        <FaMapMarkerAlt className="text-xl" aria-hidden="true" />
+                                    </div>
+                                    <h2 className="text-xl font-bold text-[#1E293B]">Ubicación</h2>
+                                </div>
+
+                                <MapaPropiedad
+                                    lat={atributos.latitud}
+                                    lng={atributos.longitud}
+                                    titulo={tituloFormateado}
+                                />
+                            </section>
+                        )}
                     </div>
 
-                    {/* Mapa de Ubicación */}
-                    {atributos.latitud != null && atributos.longitud != null && (
-                        <div id="seccion-ubicacion" className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-100 space-y-4">
-                            <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
-                                <div className="p-2 bg-[#0F766E]/10 rounded-xl text-[#0F766E]">
-                                    <FaMapMarkerAlt className="text-xl" />
-                                </div>
-                                <h2 className="text-xl font-bold text-slate-800">Ubicación Geográfica</h2>
-                            </div>
-
-                            <MapaPropiedad
-                                lat={atributos.latitud}
-                                lng={atributos.longitud}
-                                titulo={tituloFormateado}
-                            />
-                        </div>
-                    )}
-
+                    {/* Aside de escritorio */}
+                    <div className="hidden lg:block">
+                        <TarjetaPrecioContacto
+                            inmueble={inmueble}
+                            layout="aside"
+                            onConsultarSimilares={whatsappSimilaresLink}
+                        />
+                    </div>
                 </div>
 
-                {/* Propiedades Relacionadas / Sugerencias */}
-                <PropiedadesSimilares propiedadActual={inmueble} todasLasPropiedades={allInmuebles} />
+                <div className="mt-8">
+                    <PropiedadesSimilares
+                        propiedadActual={inmueble}
+                        todasLasPropiedades={allInmuebles}
+                    />
+                </div>
+            </div>
 
+            {/* Barra fija de contacto en celular y tablet */}
+            <div
+                className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 shadow-[0_-8px_30px_rgba(15,23,42,0.10)] backdrop-blur-md lg:hidden"
+                style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+            >
+                <div className="mx-auto flex max-w-7xl items-center gap-2 px-3 py-2.5">
+                    <div className="min-w-0 flex-1">
+                        <p className="truncate text-xs font-bold uppercase tracking-wide text-[#475569]">
+                            {disponible ? (atributos.TipoOperacion || 'Propiedad') : 'No disponible'}
+                        </p>
+                        <p className="truncate text-base font-extrabold text-[#1E293B]">
+                            {textoPrecio}
+                            {esAlquiler && tienePrecio && (
+                                <span className="ml-1 text-xs font-semibold text-[#475569]">/ mes</span>
+                            )}
+                        </p>
+                    </div>
+
+                    <a
+                        href={whatsappLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={disponible ? 'Consultar por WhatsApp' : 'Consultar por propiedades similares'}
+                        className="inline-flex h-[50px] min-w-0 flex-[1.35] items-center justify-center gap-2 rounded-xl bg-[#15803D] px-3 text-sm font-extrabold text-white shadow-md transition-colors hover:bg-[#166534] btn-press"
+                    >
+                        <FaWhatsapp className="shrink-0 text-lg" aria-hidden="true" />
+                        <span className="truncate">Consultar</span>
+                    </a>
+
+                    <a
+                        href={`tel:${telefono.tel}`}
+                        aria-label={`Llamar al ${telefono.display}`}
+                        className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#1E293B] shadow-sm transition-colors hover:bg-slate-50 btn-press"
+                    >
+                        <FaPhoneAlt aria-hidden="true" />
+                    </a>
+                </div>
             </div>
         </div>
     );

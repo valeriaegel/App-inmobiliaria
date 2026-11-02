@@ -16,15 +16,15 @@ function MapaPropiedad({ lat, lng, titulo }) {
     const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${numericLat},${numericLng}`;
 
     return (
-        <div className="relative h-[420px] w-full rounded-3xl overflow-hidden shadow-xl border border-slate-200 z-0 isolate group">
+        <div className="relative h-[320px] w-full overflow-hidden rounded-3xl border border-slate-200 shadow-xl sm:h-[420px] z-0 isolate group">
             {/* Botón flotante para abrir ruta directa en Google Maps */}
             <a
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="absolute top-3 right-3 z-10 inline-flex items-center gap-2 bg-white/95 hover:bg-white text-slate-700 hover:text-[#0F766E] font-extrabold text-xs px-3.5 py-2.5 rounded-2xl shadow-lg border border-slate-200 backdrop-blur-md btn-press transition-all cursor-pointer"
+                className="absolute top-3 right-3 z-10 inline-flex min-h-11 items-center gap-2 rounded-2xl border border-slate-200 bg-white/95 px-3.5 py-2.5 text-xs font-extrabold text-[#1E293B] shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-[#0F766E] btn-press cursor-pointer"
             >
-                <FaExternalLinkAlt className="text-[10px]" />
+                <FaExternalLinkAlt className="text-xs" aria-hidden="true" />
                 <span>Abrir en Google Maps</span>
             </a>
 
@@ -73,15 +73,15 @@ function MapaPropiedad({ lat, lng, titulo }) {
                             pixelOffset={[0, -45]}
                         >
                             <div className="p-2 min-w-[190px] max-w-[250px] space-y-1.5">
-                                <p className="font-extrabold text-slate-800 text-xs leading-snug">{titulo}</p>
-                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#0F766E]">
+                                <p className="text-xs font-extrabold leading-snug text-[#1E293B]">{titulo}</p>
+                                <div className="flex items-center gap-1.5 text-xs font-bold text-[#0F766E]">
                                     <span>✓ Ubicación verificada</span>
                                 </div>
                                 <a
                                     href={googleMapsUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-block text-[11px] font-extrabold text-[#0F766E] hover:underline pt-0.5"
+                                    className="inline-block pt-0.5 text-xs font-extrabold text-[#0F766E] hover:underline"
                                 >
                                     Cómo llegar ↗
                                 </a>
