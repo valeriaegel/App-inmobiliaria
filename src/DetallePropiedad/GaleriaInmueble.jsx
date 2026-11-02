@@ -102,7 +102,7 @@ function GaleriaInmueble({
     if (total === 0) {
         return (
             <div className="-mx-4 md:-mx-8 lg:mx-0">
-                <div className="relative flex aspect-[4/3] max-h-[60vh] w-full flex-col items-center justify-center gap-3 overflow-hidden bg-slate-100 text-[#475569] lg:hidden">
+                <div className="relative flex aspect-[4/3] max-h-[60vh] w-full flex-col items-center justify-center gap-3 overflow-hidden bg-slate-100 text-[#475569] lg:hidden galeria-movil">
                     <FaHome className="text-5xl opacity-30" />
                     <p className="px-8 text-center text-sm font-semibold">
                         No hay imágenes disponibles para esta propiedad.
@@ -138,7 +138,7 @@ function GaleriaInmueble({
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
-                    className="relative aspect-[4/3] max-h-[60vh] w-full overflow-hidden bg-slate-100"
+                    className="relative aspect-[4/3] max-h-[60vh] w-full overflow-hidden bg-slate-100 galeria-movil"
                 >
                     <img
                         src={urlActual}

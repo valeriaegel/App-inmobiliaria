@@ -30,7 +30,7 @@ function Encabezado() {
     };
 
     return (
-        <header className="sticky top-0 z-50 border-b border-[#E2E8F0] bg-white">
+        <header className="site-header sticky top-0 z-50 border-b border-[#E2E8F0] bg-white">
             <div className="mx-auto flex max-w-[1200px] items-center justify-between px-4 py-3 md:px-6 md:py-3.5">
 
                 {/* Marca */}

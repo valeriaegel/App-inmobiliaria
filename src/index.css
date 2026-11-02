@@ -214,3 +214,14 @@ a.btn-interactive {
   font-size: clamp(2rem, calc(1.5rem + 2.5vw), 3.75rem);
   line-height: 1.08;
 }
+
+/* Celular horizontal: el header deja de ser sticky y la galeria no tapa la pantalla */
+@media (max-height: 500px) and (max-width: 1023px) {
+  .site-header {
+    position: static;
+  }
+
+  .galeria-movil {
+    max-height: 70vh;
+  }
+}
