@@ -93,7 +93,8 @@ function ContactItem({ icon, title, content, enlace }) {
                         rel="noopener noreferrer"
                         className="text-slate-800 font-semibold text-sm hover:text-[#0F766E] transition-colors inline-flex items-center gap-1.5 leading-relaxed"
                     >
-                        <span>{content}</span>
+                        {/* El email corta en cualquier punto solo si no entra (evita desborde en 320px) */}
+                        <span className={enlace.startsWith('mailto:') ? '[overflow-wrap:anywhere]' : undefined}>{content}</span>
                         <FaExternalLinkAlt className="text-[10px] opacity-60" />
                     </a>
                 ) : (
