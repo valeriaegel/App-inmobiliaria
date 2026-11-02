@@ -10,7 +10,7 @@ const TABS = ['Todas', 'Venta', 'Alquiler'];
 function ContenedorPP() {
     const { allInmuebles, loading, error } = useContext(PropertyContext);
     const [operacionActiva, setOperacionActiva] = useState('Todas');
-    const whatsappUrl= `https://wa.me/549344666333?text=¡Hola%20Cristina!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20solicitar%20una%20consulta%20sobre%20su%20servicio%20de%20tasaciones.%20Mi%20nombre%20es...`;
+    const whatsappUrl= `https://wa.me/5493442666333?text=¡Hola%20Cristina!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20solicitar%20una%20consulta%20sobre%20su%20servicio%20de%20tasaciones.%20Mi%20nombre%20es...`;
 
     const propiedadesRecientes = useMemo(() => {
         return [...(allInmuebles || [])]
