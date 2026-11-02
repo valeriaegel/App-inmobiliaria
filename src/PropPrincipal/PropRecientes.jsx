@@ -3,7 +3,7 @@ import TarjetaPropiedad from '../components/TarjetaPropiedad';
 function PropRecientes({ propiedades, cargando, error, operacion = 'Todas' }) {
     if (cargando) {
         return (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
                 {[1, 2, 3, 4].map(i => (
                     <div key={i} className="flex h-96 flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white p-4 shadow-md">
                         <div className="mb-4 h-44 w-full skeleton-shimmer rounded-2xl"></div>
@@ -36,7 +36,7 @@ function PropRecientes({ propiedades, cargando, error, operacion = 'Todas' }) {
     }
 
     return (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
             {propiedades.map(propiedad => (
                 <TarjetaPropiedad
                     key={propiedad.id || propiedad.documentId}

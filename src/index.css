@@ -204,4 +204,13 @@ a.btn-interactive {
 .animate-badge-pop {
   animation: badgePop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-
+
+/* ========================================================
+   AJUSTES RESPONSIVE
+   ======================================================== */
+
+/* Hero: tipografía fluida para que el H1 no se corte en 320px */
+.hero-titulo {
+  font-size: clamp(2rem, calc(1.5rem + 2.5vw), 3.75rem);
+  line-height: 1.08;
+}

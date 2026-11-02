@@ -62,7 +62,7 @@ const Bienvenida = () => {
             Inmobiliaria Cristina Eckerdt
           </p>
 
-          <h1 className="mt-3 text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+          <h1 className="hero-titulo mt-3 font-extrabold tracking-tight">
             Encontrá tu próxima propiedad en Concepción del Uruguay
           </h1>
 
