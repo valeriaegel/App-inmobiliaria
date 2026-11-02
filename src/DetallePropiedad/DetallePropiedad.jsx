@@ -10,7 +10,6 @@ import {
     FaHome,
     FaWhatsapp,
     FaPhoneAlt,
-    FaTimesCircle,
 } from 'react-icons/fa';
 import { PropertyContext } from '../context/PropertyContext';
 import { propertyService } from '../services/propertyService';
@@ -187,8 +186,9 @@ function DetallePropiedad() {
     const textoPrecio = tienePrecio ? formatearPrecio(atributos.Valor, monedaSimbolo) : 'Precio a consultar';
     const esAlquiler = atributos.TipoOperacion?.toLowerCase().includes('alquiler');
     const disponible = atributos.Disponible !== false;
-    const estadoTexto = disponible ? 'Disponible' : 'No disponible';
-    const lineaTipo = `${tipoInmueble || atributos.TipoOperacion || 'Propiedad'} · ${estadoTexto}`;
+    const tipoTexto = tipoInmueble || atributos.TipoOperacion || 'Propiedad';
+    // El estado "no disponible" se comunica una sola vez, en el aviso debajo del título
+    const lineaTipo = disponible ? `${tipoTexto} · Disponible` : tipoTexto;
 
     const telefono = obtenerTelefonoOperacion(atributos.TipoOperacion);
     const whatsappLink = generarLinkWhatsApp(
@@ -228,7 +228,7 @@ function DetallePropiedad() {
 
     const encabezadoPropiedad = (
         <div className="space-y-4">
-            <p className={`text-xs font-extrabold uppercase tracking-[0.16em] ${disponible ? 'text-[#0F766E]' : 'text-rose-600'}`}>
+            <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0F766E]">
                 {lineaTipo}
             </p>
 
@@ -243,6 +243,16 @@ function DetallePropiedad() {
                     {ciudad ? ` — ${ciudad.Ciudad}` : ''}
                 </span>
             </p>
+
+            {!disponible && (
+                <div className="flex items-start gap-3 rounded-2xl bg-slate-50 px-4 py-3.5">
+                    <FaInfoCircle className="mt-0.5 shrink-0 text-lg text-[#475569]" aria-hidden="true" />
+                    <div>
+                        <p className="text-sm font-bold text-[#1E293B]">Esta propiedad ya no está disponible</p>
+                        <p className="mt-0.5 text-sm text-[#475569]">Consultanos por opciones similares.</p>
+                    </div>
+                </div>
+            )}
 
             <DatosRapidos inmueble={atributos} />
         </div>
@@ -276,16 +286,6 @@ function DetallePropiedad() {
                         compartido={copiado}
                     />
                 </div>
-
-                {!disponible && (
-                    <div className="mt-4 flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3.5 shadow-sm">
-                        <FaTimesCircle className="mt-0.5 shrink-0 text-lg text-rose-500" aria-hidden="true" />
-                        <div>
-                            <p className="text-sm font-bold text-rose-900">Esta propiedad no se encuentra disponible</p>
-                            <p className="mt-0.5 text-sm text-[#475569]">Consultanos por opciones similares en venta o alquiler.</p>
-                        </div>
-                    </div>
-                )}
 
                 {/* Bloque blanco de presentación en celular */}
                 <section className="-mx-4 bg-white px-5 py-6 md:-mx-8 md:px-8 lg:hidden">
@@ -415,10 +415,11 @@ function DetallePropiedad() {
                 <div className="mx-auto flex max-w-7xl items-center gap-2 px-3 py-2.5">
                     <div className="min-w-0 flex-1">
                         <p className="truncate text-xs font-bold uppercase tracking-wide text-[#475569]">
-                            {disponible ? (atributos.TipoOperacion || 'Propiedad') : 'No disponible'}
+                            {atributos.TipoOperacion || 'Propiedad'}
                         </p>
                         <p className="truncate text-base font-extrabold text-[#1E293B]">
-                            {textoPrecio}
+                            {/* Versión corta para que no se corte junto al botón */}
+                            {tienePrecio ? textoPrecio : 'A consultar'}
                             {esAlquiler && tienePrecio && (
                                 <span className="ml-1 text-xs font-semibold text-[#475569]">/ mes</span>
                             )}

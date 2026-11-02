@@ -49,7 +49,7 @@ function TarjetaPrecioContacto({ inmueble, layout = 'block', onConsultarSimilare
             <aside className="sticky top-[93px] rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
                 <div className="space-y-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#0F766E]">
-                        {disponible ? `Valor en ${TipoOperacion || 'Venta / Alquiler'}` : 'Propiedad no disponible'}
+                        {`Valor en ${TipoOperacion || 'Venta / Alquiler'}`}
                     </span>
                     <p className="text-4xl font-extrabold tracking-tight text-[#1E293B]">
                         {disponible ? textoPrecioConMes : 'Consultar valor'}
