@@ -63,17 +63,19 @@ const Servicios = () => {
                     />
 
                     {/* Tarjeta 3: Tasaciones */}
-                    <ServiceCard
-                        icon={<FaChartLine />}
-                        title="Tasaciones Profesionales"
-                        description="Valuaciones precisas."
-                        items={[
-                            "Informes técnicos y detallados",
-                            "Valor de mercado actual",
-                            "Asesoramiento estratégico",
-                        ]}
-                        Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20tasaciones."              
-                    />
+                    <div id="tasaciones" className="scroll-mt-28">
+                        <ServiceCard
+                            icon={<FaChartLine />}
+                            title="Tasaciones Profesionales"
+                            description="Valuaciones precisas."
+                            items={[
+                                "Informes técnicos y detallados",
+                                "Valor de mercado actual",
+                                "Asesoramiento estratégico",
+                            ]}
+                            Link="¡Hola%20Cristina!%20Quiero%20mas%20informacion%20sobre%20su%20servicio%20de%20tasaciones."
+                        />
+                    </div>
                 </div>
             </div>
 
