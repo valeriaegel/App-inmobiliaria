@@ -10,6 +10,7 @@ const TABS = ['Todas', 'Venta', 'Alquiler'];
 function ContenedorPP() {
     const { allInmuebles, loading, error } = useContext(PropertyContext);
     const [operacionActiva, setOperacionActiva] = useState('Todas');
+    const whatsappUrl= `https://wa.me/549344666333?text=¡Hola%20Cristina!%20Vi%20sus%20servicios%20en%20la%20web%20y%20quisiera%20solicitar%20una%20consulta%20sobre%20su%20servicio%20de%20tasaciones.%20Mi%20nombre%20es...`;
 
     const propiedadesRecientes = useMemo(() => {
         return [...(allInmuebles || [])]
@@ -98,14 +99,15 @@ function ContenedorPP() {
                             Coordinamos una visita sin compromiso.
                         </p>
                     </div>
-
-                    <Link
-                        to="/servicios#tasaciones"
+                    <a 
+                        href={whatsappUrl}     
+                        target="_blank" 
+                        rel="noopener noreferrer" 
                         className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-2xl bg-white px-6 text-sm font-extrabold text-[#1E293B] shadow-lg transition-colors hover:bg-slate-100 btn-press"
                     >
                         <span>Solicitar tasación</span>
                         <FaChevronRight className="text-xs" aria-hidden="true" />
-                    </Link>
+                    </a>
                 </div>
             </div>
 
