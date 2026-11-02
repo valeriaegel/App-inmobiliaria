@@ -187,8 +187,6 @@ function DetallePropiedad() {
     const esAlquiler = atributos.TipoOperacion?.toLowerCase().includes('alquiler');
     const disponible = atributos.Disponible !== false;
     const tipoTexto = tipoInmueble || atributos.TipoOperacion || 'Propiedad';
-    // El estado "no disponible" se comunica una sola vez, en el aviso debajo del título
-    const lineaTipo = disponible ? `${tipoTexto} · Disponible` : tipoTexto;
 
     const telefono = obtenerTelefonoOperacion(atributos.TipoOperacion);
     const whatsappLink = generarLinkWhatsApp(
@@ -229,7 +227,10 @@ function DetallePropiedad() {
     const encabezadoPropiedad = (
         <div className="space-y-4">
             <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0F766E]">
-                {lineaTipo}
+                {tipoTexto} ·{' '}
+                <span className={disponible ? undefined : 'text-rose-600'}>
+                    {disponible ? 'Disponible' : 'No disponible'}
+                </span>
             </p>
 
             <h1 className="text-3xl font-bold leading-tight tracking-tight text-[#1E293B] sm:text-4xl lg:text-5xl">
